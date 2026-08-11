@@ -112,10 +112,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ needs.verify.outputs.tag }}" \
-            --title "furnizsh ${{ needs.verify.outputs.version }}" \
-            --notes-file notes.md \
-            --verify-tag
+          TAG="${{ needs.verify.outputs.tag }}"
+          TITLE="furnizsh ${{ needs.verify.outputs.version }}"
+
+          # Idempotent: re-running a release (to pick up a newly added token,
+          # say) must update the existing one rather than failing on a 422 and
+          # taking every downstream publish job down with it.
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --title "$TITLE" --notes-file notes.md
+            echo "release $TAG already existed — notes updated"
+          else
+            gh release create "$TAG" --title "$TITLE" --notes-file notes.md --verify-tag
+            echo "release $TAG created"
+          fi
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v2
