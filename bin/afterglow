@@ -1,0 +1,162 @@
+#!/usr/bin/env bash
+# ============================================================
+#  afterglow — the command
+#  https://github.com/Wosmos/afterglow
+#
+#  A thin dispatcher over the scripts. This is what gets put on
+#  your PATH by Homebrew and npm, so `afterglow install` works
+#  the same whether you cloned the repo or installed a package.
+#
+#    afterglow install [flags]     set everything up
+#    afterglow uninstall [flags]   remove it
+#    afterglow doctor              health-check the setup
+#    afterglow theme [name]        list themes, or switch
+#    afterglow version             what's installed, and what's latest
+#    afterglow help                this message
+# ============================================================
+
+set -euo pipefail
+
+# ------------------------------------------------------------
+# Find where the payload lives.
+#
+# Three cases, in order:
+#   1. AFTERGLOW_SHARE set explicitly (packagers, testing)
+#   2. running from a git checkout — ../config exists next to bin/
+#   3. installed by a package manager — look in the usual prefixes
+# ------------------------------------------------------------
+find_share() {
+  if [ -n "${AFTERGLOW_SHARE:-}" ] && [ -d "$AFTERGLOW_SHARE/config" ]; then
+    printf '%s' "$AFTERGLOW_SHARE"
+    return 0
+  fi
+
+  # Resolve this script through any symlinks (brew links into bin/).
+  local src="${BASH_SOURCE[0]}" dir
+  while [ -L "$src" ]; do
+    dir="$(cd -P "$(dirname "$src")" && pwd)"
+    src="$(readlink "$src")"
+    case "$src" in /*) ;; *) src="$dir/$src" ;; esac
+  done
+  dir="$(cd -P "$(dirname "$src")" && pwd)"
+
+  # Case 2: git checkout — bin/afterglow, so the repo root is one up.
+  if [ -d "$dir/../config" ]; then
+    (cd "$dir/.." && pwd)
+    return 0
+  fi
+
+  # Case 3: packaged. brew --prefix resolves both Intel and Apple Silicon.
+  local prefix
+  for prefix in \
+    "$(brew --prefix 2>/dev/null || true)/share/afterglow" \
+    /usr/local/share/afterglow \
+    /opt/homebrew/share/afterglow \
+    "$HOME/.local/share/afterglow"
+  do
+    [ -d "$prefix/config" ] && { printf '%s' "$prefix"; return 0; }
+  done
+
+  printf 'afterglow: cannot find its files. Set AFTERGLOW_SHARE to the install directory.\n' >&2
+  return 1
+}
+
+SHARE="$(find_share)"
+VERSION="$(cat "$SHARE/VERSION" 2>/dev/null || printf 'unknown')"
+
+usage() {
+  cat <<EOF
+afterglow $VERSION — a neon terminal, in one command
+
+  afterglow <command> [flags]
+
+Commands:
+  install      set up the terminal        (flags: afterglow install --help)
+  uninstall    remove it, restore backups
+  doctor       health-check every part of the setup
+  theme [name] list themes, or switch to one
+  version      show installed and latest version
+  help         this message
+
+Examples:
+  afterglow install --theme gruvbox --tools extended
+  afterglow install --dry-run
+  afterglow theme catppuccin
+  afterglow doctor
+
+Docs: https://wosmos.github.io/afterglow
+EOF
+}
+
+cmd_version() {
+  printf 'afterglow %s\n' "$VERSION"
+  printf '  files:     %s\n' "$SHARE"
+
+  local installed="$HOME/.config/afterglow/VERSION"
+  if [ -f "$installed" ]; then
+    printf '  installed: %s\n' "$(cat "$installed")"
+  else
+    printf '  installed: not installed — run `afterglow install`\n'
+  fi
+
+  # Best-effort latest check; never fail the command over a network blip.
+  if command -v curl >/dev/null 2>&1; then
+    local latest
+    latest="$(curl -fsS --max-time 4 \
+      https://api.github.com/repos/Wosmos/afterglow/releases/latest 2>/dev/null \
+      | sed -n 's/.*"tag_name": *"v\{0,1\}\([^"]*\)".*/\1/p' | head -1)"
+    if [ -n "${latest:-}" ]; then
+      if [ "$latest" = "$VERSION" ]; then
+        printf '  latest:    %s (up to date)\n' "$latest"
+      else
+        printf '  latest:    %s — https://github.com/Wosmos/afterglow/releases\n' "$latest"
+      fi
+    fi
+  fi
+}
+
+# `theme` is also a shell function once installed. This is the version that
+# works before the shell config is loaded, or from a script — it rewrites the
+# configs but obviously cannot reload your running prompt.
+cmd_theme() {
+  local themes_dir="$SHARE/config/themes"
+  [ -d "$themes_dir" ] || { printf 'afterglow: no themes at %s\n' "$themes_dir" >&2; exit 1; }
+
+  if [ $# -eq 0 ]; then
+    printf '\nThemes  (afterglow theme <name> to switch)\n\n'
+    local f id label
+    for f in "$themes_dir"/*.theme; do
+      [ -e "$f" ] || continue
+      id="$(basename "$f" .theme)"
+      label="$(sed -n 's/^THEME_LABEL="\(.*\)"/\1/p' "$f")"
+      printf '  %-12s %s\n' "$id" "$label"
+    done
+    printf '\n'
+    return 0
+  fi
+
+  # Re-running install with just the theme is the least surprising way to do
+  # this: one code path, same backups, same validation.
+  exec "$SHARE/install.sh" --theme "$1" --yes --no-font --no-chsh --no-claude
+}
+
+main() {
+  local cmd="${1:-help}"
+  [ $# -gt 0 ] && shift
+
+  case "$cmd" in
+    install)          exec "$SHARE/install.sh" "$@" ;;
+    uninstall|remove) exec "$SHARE/uninstall.sh" "$@" ;;
+    doctor|check)     exec "$SHARE/doctor.sh" "$@" ;;
+    theme)            cmd_theme "$@" ;;
+    version|--version|-v) cmd_version ;;
+    help|--help|-h)   usage ;;
+    *)
+      printf 'afterglow: unknown command '\''%s'\''\n\n' "$cmd" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"

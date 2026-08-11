@@ -49,7 +49,9 @@ check() {
   fi
 }
 
-[ "$QUIET" -eq 1 ] || printf "\n%s%s  afterglow doctor%s\n" "$C_BOLD" "$C_BLUE" "$C_RESET"
+AG_VERSION="$(cat "$HOME/.config/afterglow/VERSION" 2>/dev/null || printf 'not installed')"
+[ "$QUIET" -eq 1 ] || printf "\n%s%s  afterglow doctor%s  %s(%s)%s\n" \
+  "$C_BOLD" "$C_BLUE" "$C_RESET" "$C_GRAY" "$AG_VERSION" "$C_RESET"
 
 # ------------------------------------------------------------
 section "Tools"

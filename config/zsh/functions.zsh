@@ -25,6 +25,15 @@ typeset -gA AFTERGLOW_C=(
   text   $'\033[38;2;205;214;244m'
 )
 
+# Installed version, stamped by install.sh. Empty on a dev checkout.
+_afterglow_version() {
+  if [[ -f "$AFTERGLOW_DIR/VERSION" ]]; then
+    cat "$AFTERGLOW_DIR/VERSION"
+  else
+    print -n "dev"
+  fi
+}
+
 # Name of the active theme, for the cheatsheet and doctor output.
 _afterglow_current_theme() {
   if [[ -f "$AFTERGLOW_DIR/current-theme" ]]; then
@@ -171,7 +180,7 @@ cheatsheet() {
 
   case "${1:-}" in
     --comp|--full|-a|--all)
-      printf "%s%safterglow cheatsheet -- FULL%s  %s(short version: cheatsheet / chs)%s\n\n" "$B" "$BLUE" "$D" "$TEXT" "$D"
+      printf "%s%safterglow cheatsheet -- FULL%s  %sv%s -- short version: cheatsheet / chs%s\n\n" "$B" "$BLUE" "$D" "$TEXT" "$(_afterglow_version)" "$D"
 
       printf "%s%sTheme%s  %s(active: %s%s%s%s -- switch with 'theme <name>')%s\n" "$B" "$ORANGE" "$D" "$GRAY" "$GREEN" "$active" "$D" "$GRAY" "$D"
       printf "  %sneon%s near-black + glow  %scatppuccin%s pastels  %sgruvbox%s warm retro  %stokyonight%s cool blues\n" "$YELLOW" "$D" "$YELLOW" "$D" "$YELLOW" "$D" "$YELLOW" "$D"
@@ -254,7 +263,7 @@ cheatsheet() {
       printf "%sDocs: https://wosmos.github.io/afterglow   Repo: https://github.com/Wosmos/afterglow%s\n" "$TEXT" "$D"
       ;;
     *)
-      printf "%s%safterglow cheatsheet%s  %s(run 'cheatsheet --comp' for everything)%s\n\n" "$B" "$BLUE" "$D" "$TEXT" "$D"
+      printf "%s%safterglow cheatsheet%s  %sv%s -- run 'cheatsheet --comp' for everything%s\n\n" "$B" "$BLUE" "$D" "$TEXT" "$(_afterglow_version)" "$D"
 
       printf "%s%sTheme%s  %s%s%s  %s(theme <name> to switch)%s\n\n" "$B" "$ORANGE" "$D" "$GREEN" "$active" "$D" "$GRAY" "$D"
 
@@ -312,7 +321,8 @@ agdoctor() {
     fi
   }
 
-  printf "\n%s%safterglow doctor%s  %s(theme: %s)%s\n\n" "$B" "$BLUE" "$D" "$dim" "$(_afterglow_current_theme)" "$D"
+  printf "\n%s%safterglow doctor%s  %s(v%s, theme: %s)%s\n\n" \
+    "$B" "$BLUE" "$D" "$dim" "$(_afterglow_version)" "$(_afterglow_current_theme)" "$D"
 
   printf "%s%sCore tools%s\n" "$B" "$AFTERGLOW_C[orange]" "$D"
   local t

@@ -26,6 +26,23 @@ together. macOS, Linux and Windows.
 ## Install
 
 ```bash
+curl -fsSL https://wosmos.github.io/afterglow/install | sh
+```
+
+Or through a package manager:
+
+```bash
+brew tap wosmos/tap && brew install afterglow && afterglow install   # macOS, Linux
+npm i -g afterglow-terminal && afterglow install                     # anywhere with Node
+```
+
+```powershell
+Install-Module afterglow -Scope CurrentUser; Install-Afterglow       # Windows
+```
+
+Or clone it, if you'd rather read every line first:
+
+```bash
 git clone https://github.com/Wosmos/afterglow.git
 cd afterglow
 ./install.sh
@@ -34,7 +51,7 @@ cd afterglow
 See exactly what it would do first — this changes nothing:
 
 ```bash
-./install.sh --dry-run
+curl -fsSL https://wosmos.github.io/afterglow/install | sh -s -- --dry-run
 ```
 
 Then open a new terminal and run `agdoctor` to verify, `cheatsheet` for the

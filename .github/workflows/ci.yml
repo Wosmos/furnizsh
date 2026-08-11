@@ -28,7 +28,15 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y shellcheck
 
       - name: Lint bash scripts
-        run: shellcheck --severity=warning install.sh uninstall.sh doctor.sh
+        run: shellcheck --severity=warning install.sh uninstall.sh doctor.sh bin/afterglow
+
+      - name: The bootstrap must be POSIX sh, not bash
+        run: |
+          # It runs before we know anything about the machine, including
+          # whether bash exists — so dash is the honest check.
+          sudo apt-get update && sudo apt-get install -y dash
+          dash -n docs/install
+          shellcheck --shell=sh --severity=warning docs/install
 
       # The zsh files use zsh-only syntax that shellcheck can't parse,
       # so they get zsh's own parser instead.
@@ -273,6 +281,24 @@ jobs:
             done
           '
 
+      - name: The afterglow command works from a packaged layout
+        run: |
+          # Simulate what Homebrew does: payload in share/, command in bin/.
+          mkdir -p /tmp/pkg/share/afterglow /tmp/pkg/bin
+          cp -R config extras install.sh uninstall.sh doctor.sh VERSION /tmp/pkg/share/afterglow/
+          cp bin/afterglow /tmp/pkg/bin/
+          export AFTERGLOW_SHARE=/tmp/pkg/share/afterglow
+          /tmp/pkg/bin/afterglow version | grep -q "$(cat VERSION)"
+          /tmp/pkg/bin/afterglow theme | grep -q gruvbox
+          /tmp/pkg/bin/afterglow help  | grep -q "neon terminal"
+          echo "dispatcher OK"
+
+      - name: The installed copy reports its version
+        run: |
+          test "$(cat "$HOME/.config/afterglow/VERSION")" = "$(cat VERSION)" \
+            || { echo "stamped version does not match VERSION"; exit 1; }
+          echo "version stamped correctly"
+
       - name: Rerun is idempotent
         run: |
           sha_before=$(sha256sum "$HOME/.zshrc" | cut -d' ' -f1)
@@ -288,6 +314,40 @@ jobs:
           grep -q 'afterglow' "$HOME/.zshrc" && { echo "block still present"; exit 1; }
           test ! -d "$HOME/.config/afterglow" || { echo "config dir still present"; exit 1; }
           echo "clean uninstall"
+
+  # ------------------------------------------------------------
+  # Version consistency. Cheap, and catches the mistake that would
+  # otherwise only surface at release time.
+  # ------------------------------------------------------------
+  version:
+    name: version consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: VERSION, CHANGELOG and the packaging manifests agree
+        run: |
+          V="$(cat VERSION)"
+          echo "VERSION: $V"
+          fail=0
+
+          echo "$V" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' \
+            || { echo "FAIL: '$V' is not semver"; fail=1; }
+
+          grep -q "^## \[$V\]" CHANGELOG.md \
+            || { echo "FAIL: CHANGELOG.md has no '## [$V]' section"; fail=1; }
+
+          NPM=$(python3 -c "import json;print(json.load(open('packaging/npm/package.json'))['version'])")
+          [ "$NPM" = "$V" ] || { echo "FAIL: package.json says $NPM"; fail=1; }
+
+          PSD=$(sed -n "s/.*ModuleVersion *= *'\([^']*\)'.*/\1/p" packaging/powershell/afterglow.psd1)
+          [ "$PSD" = "$V" ] || { echo "FAIL: afterglow.psd1 says $PSD"; fail=1; }
+
+          BREW=$(sed -n 's|.*/tags/v\([0-9.]*\)\.tar\.gz.*|\1|p' packaging/homebrew/afterglow.rb)
+          [ "$BREW" = "$V" ] || { echo "FAIL: the formula url pins $BREW"; fail=1; }
+
+          [ $fail -eq 0 ] && echo "all manifests agree on $V"
+          exit $fail
 
   # ------------------------------------------------------------
   # The Pages site must stay self-contained and well-formed.

@@ -1,0 +1,128 @@
+#!/bin/sh
+# ============================================================
+#  afterglow — bootstrap installer
+#  https://github.com/Wosmos/afterglow
+#
+#      curl -fsSL https://wosmos.github.io/afterglow/install | sh
+#
+#  Downloads the latest release tarball (~50 KB), extracts it to
+#  ~/.local/share/afterglow, and runs the installer. No git clone.
+#
+#  This script does not modify anything itself — install.sh does, and
+#  it backs up everything it touches. To see what it would do first:
+#
+#      curl -fsSL https://wosmos.github.io/afterglow/install | sh -s -- --dry-run
+#
+#  POSIX sh on purpose: it must run before we know anything about the
+#  machine, including whether bash exists.
+# ============================================================
+
+set -eu
+
+REPO="Wosmos/afterglow"
+PREFIX="${AFTERGLOW_PREFIX:-$HOME/.local/share/afterglow}"
+
+if [ -t 1 ]; then
+  C_BLUE=$(printf '\033[38;2;137;180;250m')
+  C_GRAY=$(printf '\033[38;2;108;112;134m')
+  C_ORANGE=$(printf '\033[38;2;250;179;135m')
+  C_BOLD=$(printf '\033[1m')
+  C_RESET=$(printf '\033[0m')
+else
+  C_BLUE='' C_GRAY='' C_ORANGE='' C_BOLD='' C_RESET=''
+fi
+
+say()  { printf '%s\n' "$1"; }
+info() { printf '  %s%s%s\n' "$C_GRAY" "$1" "$C_RESET"; }
+die()  { printf '\n%serror:%s %s\n\n' "$C_ORANGE" "$C_RESET" "$1" >&2; exit 1; }
+
+need() {
+  command -v "$1" >/dev/null 2>&1 || die "$1 is required but not installed."
+}
+
+printf '\n%s%s  afterglow%s  %sa neon terminal, in one command%s\n\n' \
+  "$C_BOLD" "$C_BLUE" "$C_RESET" "$C_GRAY" "$C_RESET"
+
+# ------------------------------------------------------------
+# Platform gate. Windows users need install.ps1 or WSL — say so
+# clearly rather than failing halfway through an extraction.
+# ------------------------------------------------------------
+case "$(uname -s)" in
+  Darwin|Linux) ;;
+  *)
+    die "unsupported platform: $(uname -s).
+  Windows: use PowerShell instead —
+    Install-Module afterglow -Scope CurrentUser
+  or run this inside WSL2. See https://wosmos.github.io/afterglow" ;;
+esac
+
+need curl
+need tar
+
+# ------------------------------------------------------------
+# Resolve the latest release tag. Falls back to main so the
+# bootstrap still works before the first release is cut.
+# ------------------------------------------------------------
+info "Finding the latest release..."
+TAG=$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null \
+      | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p' | head -1) || true
+
+if [ -n "${TAG:-}" ]; then
+  URL="https://github.com/$REPO/archive/refs/tags/$TAG.tar.gz"
+  info "Version $TAG"
+else
+  URL="https://github.com/$REPO/archive/refs/heads/main.tar.gz"
+  info "No release found yet — installing from main"
+fi
+
+# ------------------------------------------------------------
+# Download and extract.
+# ------------------------------------------------------------
+TMP=$(mktemp -d)
+# Clean up on any exit, including ctrl+c.
+trap 'rm -rf "$TMP"' EXIT INT TERM
+
+info "Downloading..."
+curl -fsSL "$URL" -o "$TMP/afterglow.tar.gz" \
+  || die "download failed. Check your connection, or clone the repo instead:
+  git clone https://github.com/$REPO.git"
+
+mkdir -p "$TMP/x"
+tar -xzf "$TMP/afterglow.tar.gz" -C "$TMP/x" --strip-components=1 \
+  || die "could not extract the archive."
+
+[ -f "$TMP/x/install.sh" ] || die "the archive looks wrong — install.sh is missing."
+
+# ------------------------------------------------------------
+# Place it. Replacing an old copy is fine: everything that matters
+# lives in ~/.config/afterglow, which install.sh manages separately.
+# ------------------------------------------------------------
+info "Installing to $PREFIX"
+rm -rf "$PREFIX"
+mkdir -p "$(dirname "$PREFIX")"
+cp -R "$TMP/x" "$PREFIX"
+chmod +x "$PREFIX/install.sh" "$PREFIX/uninstall.sh" "$PREFIX/doctor.sh" \
+         "$PREFIX/bin/afterglow" 2>/dev/null || true
+
+# Put `afterglow` on PATH if there's an obvious place for it.
+#
+# Only ever link a file that actually exists — linking blind leaves a dangling
+# symlink on any release that predates bin/afterglow, and a broken command on
+# someone's PATH is worse than no command at all.
+if [ -x "$PREFIX/bin/afterglow" ]; then
+  if mkdir -p "$HOME/.local/bin" 2>/dev/null; then
+    ln -sf "$PREFIX/bin/afterglow" "$HOME/.local/bin/afterglow"
+    info "Linked afterglow -> ~/.local/bin/afterglow"
+    case ":$PATH:" in
+      *":$HOME/.local/bin:"*) ;;
+      *) info "Note: ~/.local/bin is not on your PATH yet." ;;
+    esac
+  fi
+fi
+
+# ------------------------------------------------------------
+# Hand off. Any arguments given to this script go straight through,
+# so `sh -s -- --dry-run --theme gruvbox` works as you'd expect.
+# ------------------------------------------------------------
+say ""
+exec "$PREFIX/install.sh" "$@"

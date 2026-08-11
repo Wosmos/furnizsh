@@ -54,6 +54,15 @@ First public release.
 - `--dry-run` prints every action and changes nothing
 - Login-shell changes, git pager replacement and profile overwrites all prompt
 
+### Distribution
+
+- `curl -fsSL https://wosmos.github.io/afterglow/install | sh` — no clone, ~50 KB
+- Homebrew tap: `brew tap wosmos/tap && brew install afterglow`
+- npm: `npm i -g afterglow-terminal` (63 KB published)
+- PowerShell Gallery: `Install-Module afterglow`
+- An `afterglow` command wrapping install / uninstall / doctor / theme / version
+- Tag-triggered release workflow with build provenance attestation
+
 ### CI
 
 - shellcheck and zsh parse checks on every push

@@ -16,6 +16,7 @@ set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 AFTERGLOW_HOME="$HOME/.config/afterglow"
+AFTERGLOW_VERSION="$(cat "$REPO_DIR/VERSION" 2>/dev/null || printf 'dev')"
 BACKUP_DIR="$HOME/.afterglow-backup/$(date +%Y%m%d-%H%M%S)"
 MARKER_START="# >>> afterglow >>>"
 MARKER_END="# <<< afterglow <<<"
@@ -460,10 +461,12 @@ install_theme() {
   fi
   install_file "$REPO_DIR/config/themes/lazygit/$LAZYGIT_PALETTE.yml" "$lazygit_dir/config.yml"
 
-  # Record the active theme so `theme` and `cheatsheet` can report it.
+  # Record the active theme and version so `theme`, `cheatsheet` and
+  # `agdoctor` can report them without needing the repo on disk.
   if [ "$DRY_RUN" -eq 0 ]; then
     mkdir -p "$AFTERGLOW_HOME"
     printf '%s' "$THEME" > "$AFTERGLOW_HOME/current-theme"
+    printf '%s' "$AFTERGLOW_VERSION" > "$AFTERGLOW_HOME/VERSION"
   fi
 }
 
@@ -600,8 +603,8 @@ install_claude_extras() {
 # main
 # ------------------------------------------------------------
 main() {
-  printf "\n%s%s  afterglow%s  %sa neon terminal, in one command%s\n" \
-    "$C_BOLD" "$C_BLUE" "$C_RESET" "$C_GRAY" "$C_RESET"
+  printf "\n%s%s  afterglow%s %s%s%s  %sa neon terminal, in one command%s\n" \
+    "$C_BOLD" "$C_BLUE" "$C_RESET" "$C_GRAY" "$AFTERGLOW_VERSION" "$C_RESET" "$C_GRAY" "$C_RESET"
   printf "  %shttps://github.com/Wosmos/afterglow%s\n" "$C_GRAY" "$C_RESET"
 
   [ "$DRY_RUN" -eq 1 ] && printf "\n  %s%sDRY RUN — nothing will be changed.%s\n" "$C_BOLD" "$C_ORANGE" "$C_RESET"

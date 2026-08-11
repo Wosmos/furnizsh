@@ -1,0 +1,245 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g. v1.0.1)'
+        required: true
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  # ------------------------------------------------------------
+  # The tag and the VERSION file must agree. If they don't, the
+  # installed copy would report a version that doesn't exist.
+  # ------------------------------------------------------------
+  verify:
+    name: verify version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      tag: ${{ steps.v.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: v
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          VERSION="${TAG#v}"
+          FILE="$(cat VERSION)"
+
+          echo "tag=$TAG"        >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          if [ "$FILE" != "$VERSION" ]; then
+            echo "::error::VERSION file says '$FILE' but the tag says '$VERSION'."
+            echo "Bump VERSION and re-tag."
+            exit 1
+          fi
+          echo "VERSION and tag agree: $VERSION"
+
+      - name: CHANGELOG has an entry for this version
+        run: |
+          VERSION="${{ steps.v.outputs.version }}"
+          grep -q "^## \[$VERSION\]" CHANGELOG.md || {
+            echo "::error::CHANGELOG.md has no '## [$VERSION]' section."
+            exit 1
+          }
+          echo "CHANGELOG entry found"
+
+  # ------------------------------------------------------------
+  # GitHub Release + the tarball everything else is built from.
+  # ------------------------------------------------------------
+  release:
+    name: github release
+    needs: verify
+    runs-on: ubuntu-latest
+    outputs:
+      sha256: ${{ steps.hash.outputs.sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute the tarball checksum
+        id: hash
+        run: |
+          TAG="${{ needs.verify.outputs.tag }}"
+          # The archive GitHub generates for the tag is what Homebrew fetches,
+          # so hash exactly that rather than building our own.
+          URL="https://github.com/${{ github.repository }}/archive/refs/tags/${TAG}.tar.gz"
+          for i in 1 2 3 4 5; do
+            if curl -fsSL "$URL" -o release.tar.gz; then break; fi
+            echo "tarball not published yet, retrying in 10s ($i/5)"; sleep 10
+          done
+          SHA=$(sha256sum release.tar.gz | cut -d' ' -f1)
+          echo "sha256=$SHA" >> "$GITHUB_OUTPUT"
+          echo "sha256: $SHA"
+
+      - name: Extract this version's changelog section
+        run: |
+          VERSION="${{ needs.verify.outputs.version }}"
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" { p=1; next }
+            p && /^## \[/          { exit }
+            p                       { print }
+          ' CHANGELOG.md > notes.md
+          {
+            echo ""
+            echo "---"
+            echo ""
+            echo '### Install'
+            echo ''
+            echo '```bash'
+            echo 'curl -fsSL https://wosmos.github.io/afterglow/install | sh'
+            echo '# or'
+            echo 'brew tap wosmos/tap && brew install afterglow'
+            echo '```'
+            echo ''
+            echo '```powershell'
+            echo 'Install-Module afterglow -Scope CurrentUser'
+            echo '```'
+            echo ''
+            echo "\`sha256\`: \`${{ steps.hash.outputs.sha256 }}\`"
+          } >> notes.md
+          cat notes.md
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ needs.verify.outputs.tag }}" \
+            --title "afterglow ${{ needs.verify.outputs.version }}" \
+            --notes-file notes.md \
+            --verify-tag
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: release.tar.gz
+
+  # ------------------------------------------------------------
+  # Homebrew tap. Requires TAP_TOKEN — a PAT with `repo` on
+  # Wosmos/homebrew-tap. Skipped cleanly if it isn't set.
+  # ------------------------------------------------------------
+  homebrew:
+    name: homebrew tap
+    needs: [verify, release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Push the updated formula
+        env:
+          TAP_TOKEN: ${{ secrets.TAP_TOKEN }}
+        run: |
+          if [ -z "${TAP_TOKEN:-}" ]; then
+            echo "::warning::TAP_TOKEN not set — skipping the Homebrew tap update."
+            echo "Add a PAT with repo scope on Wosmos/homebrew-tap as TAP_TOKEN."
+            exit 0
+          fi
+
+          VERSION="${{ needs.verify.outputs.version }}"
+          SHA="${{ needs.release.outputs.sha256 }}"
+
+          sed -e "s|/v[0-9][0-9.]*\.tar\.gz|/v${VERSION}.tar.gz|" \
+              -e "s|REPLACE_WITH_SHA256|${SHA}|" \
+              -e "s|sha256 \"[a-f0-9]\{64\}\"|sha256 \"${SHA}\"|" \
+              packaging/homebrew/afterglow.rb > afterglow.rb
+
+          git clone "https://x-access-token:${TAP_TOKEN}@github.com/Wosmos/homebrew-tap.git" tap
+          mkdir -p tap/Formula
+          cp afterglow.rb tap/Formula/afterglow.rb
+
+          cd tap
+          git config user.name  "Wosmos"
+          git config user.email "m.wasifmalik17@gmail.com"
+          git add Formula/afterglow.rb
+          git diff --staged --quiet && { echo "formula already current"; exit 0; }
+          git commit -m "afterglow ${VERSION}"
+          git push
+
+  # ------------------------------------------------------------
+  # npm. Requires NPM_TOKEN (automation token). The payload is
+  # assembled here rather than committed, so it can never drift.
+  # ------------------------------------------------------------
+  npm:
+    name: npm
+    needs: [verify, release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Assemble the package
+        run: |
+          VERSION="${{ needs.verify.outputs.version }}"
+          mkdir -p dist/npm
+          cp -R packaging/npm/* dist/npm/
+          mkdir -p dist/npm/payload
+          cp -R config extras install.sh uninstall.sh doctor.sh VERSION dist/npm/payload/
+          cp -R install.ps1 uninstall.ps1 doctor.ps1 dist/npm/payload/
+          cp README.md LICENSE dist/npm/
+          cd dist/npm
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+          node bin/afterglow.js help   # smoke test before publishing
+
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "::warning::NPM_TOKEN not set — skipping the npm publish."
+            echo "Create an automation token at npmjs.com and add it as NPM_TOKEN."
+            exit 0
+          fi
+          cd dist/npm && npm publish --provenance --access public
+
+  # ------------------------------------------------------------
+  # PowerShell Gallery. Requires PSGALLERY_KEY.
+  # ------------------------------------------------------------
+  psgallery:
+    name: powershell gallery
+    needs: [verify, release]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble the module
+        shell: pwsh
+        run: |
+          $version = "${{ needs.verify.outputs.version }}"
+          New-Item -ItemType Directory -Force -Path dist/afterglow/payload | Out-Null
+          Copy-Item packaging/powershell/* dist/afterglow/ -Recurse
+          Copy-Item config, extras -Destination dist/afterglow/payload -Recurse
+          Copy-Item install.ps1, uninstall.ps1, doctor.ps1, VERSION, LICENSE, README.md `
+                    -Destination dist/afterglow/payload
+
+          # Keep the manifest version in lockstep with VERSION.
+          $psd1 = 'dist/afterglow/afterglow.psd1'
+          (Get-Content $psd1 -Raw) -replace "ModuleVersion\s*=\s*'[^']*'", "ModuleVersion     = '$version'" |
+            Set-Content $psd1 -Encoding UTF8
+
+          Test-ModuleManifest $psd1
+          Import-Module (Resolve-Path 'dist/afterglow/afterglow.psd1') -Force
+          Get-AfterglowVersion
+
+      - name: Publish
+        shell: pwsh
+        env:
+          PSGALLERY_KEY: ${{ secrets.PSGALLERY_KEY }}
+        run: |
+          if (-not $env:PSGALLERY_KEY) {
+            Write-Warning "PSGALLERY_KEY not set - skipping the PowerShell Gallery publish."
+            Write-Host "Create an API key at powershellgallery.com and add it as PSGALLERY_KEY."
+            exit 0
+          }
+          Publish-Module -Path dist/afterglow -NuGetApiKey $env:PSGALLERY_KEY -Verbose
