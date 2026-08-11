@@ -411,10 +411,21 @@ jobs:
                   if not url.startswith(ALLOWED):
                       print(f"FAIL {f}: unexpected external reference {url}"); ok = False
 
-              for tag in re.findall(r'<(?:script|link)[^>]*>', src):
-                  m = re.search(r'(?:src|href)="(https?://[^"]+)"', tag)
+              # Only tags that actually FETCH something matter. rel="canonical",
+              # og:url and friends are absolute by definition and load nothing,
+              # so they must not trip this.
+              FETCHING = ('stylesheet', 'preload', 'modulepreload', 'prefetch',
+                          'preconnect', 'dns-prefetch', 'icon', 'manifest',
+                          'apple-touch-icon')
+              for tag in re.findall(r'<script[^>]*>', src):
+                  m = re.search(r'src="(https?://[^"]+)"', tag)
                   if m:
-                      print(f"FAIL {f}: script/stylesheet loaded from {m.group(1)}"); ok = False
+                      print(f"FAIL {f}: script loaded from {m.group(1)}"); ok = False
+              for tag in re.findall(r'<link[^>]*>', src):
+                  rel = re.search(r'rel="([^"]+)"', tag)
+                  href = re.search(r'href="(https?://[^"]+)"', tag)
+                  if rel and href and any(r in FETCHING for r in rel.group(1).split()):
+                      print(f"FAIL {f}: {rel.group(1)} fetched from {href.group(1)}"); ok = False
 
           print("site is self-contained" if ok else "")
           sys.exit(0 if ok else 1)
@@ -446,8 +457,28 @@ jobs:
           for f in assets/icons/favicon.ico assets/icons/icon-192.png \
                    assets/icons/icon-512.png assets/icons/apple-touch-icon.png \
                    assets/img/og-image.png assets/img/mascot.png \
-                   site.webmanifest css/style.css js/app.js install; do
+                   site.webmanifest css/style.css js/app.js install \
+                   sitemap.xml robots.txt; do
             test -f "$f" || { echo "missing $f"; exit 1; }
           done
           python3 -c "import json; json.load(open('site.webmanifest'))"
-          echo "assets present, manifest valid"
+          python3 -c "import xml.dom.minidom as m; m.parse('sitemap.xml')"
+
+          # every page must be listed in the sitemap, or it won't be indexed
+          python3 - <<'PY'
+          import pathlib, re, sys
+          sm = pathlib.Path("sitemap.xml").read_text()
+          listed = set(re.findall(r'<loc>([^<]+)</loc>', sm))
+          missing = []
+          for p in sorted(pathlib.Path(".").glob("*.html")):
+              url = "https://wosmos.github.io/furnizsh/" + ("" if p.name == "index.html" else p.name)
+              if url not in listed:
+                  missing.append(p.name)
+          if missing:
+              print("pages missing from sitemap.xml:", missing); sys.exit(1)
+          print(f"sitemap lists all {len(listed)} pages")
+          PY
+
+          grep -q "Sitemap: https://wosmos.github.io/furnizsh/sitemap.xml" robots.txt \
+            || { echo "robots.txt does not point at the sitemap"; exit 1; }
+          echo "assets present, manifest/sitemap/robots valid"
