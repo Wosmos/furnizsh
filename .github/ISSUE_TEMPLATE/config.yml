@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
   - name: Documentation
-    url: https://wosmos.github.io/afterglow
+    url: https://wosmos.github.io/furnizsh
     about: Setup guide, cheatsheet, command reference and per-platform notes.

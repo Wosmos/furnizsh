@@ -1,7 +1,7 @@
 ﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
-    afterglow — health check for Windows / PowerShell.
+    furnizsh — health check for Windows / PowerShell.
 
 .DESCRIPTION
     Verifies every part of the setup and tells you the exact command to fix
@@ -56,7 +56,7 @@ function Test-Item {
     }
 }
 
-if (-not $Quiet) { Write-Host "`n$($C.Bold)$($C.Blue)  afterglow doctor$($C.Reset)  $($C.Gray)(PowerShell)$($C.Reset)" }
+if (-not $Quiet) { Write-Host "`n$($C.Bold)$($C.Blue)  furnizsh doctor$($C.Reset)  $($C.Gray)(PowerShell)$($C.Reset)" }
 
 # ------------------------------------------------------------
 Write-Section "Tools"
@@ -84,8 +84,8 @@ Test-Item "PSFzf" "Install-Module PSFzf -Scope CurrentUser" {
 }
 
 Test-Item "profile installed" "rerun .\install.ps1" { Test-Path $PROFILE }
-Test-Item "profile is afterglow's" "rerun .\install.ps1" {
-    (Test-Path $PROFILE) -and ((Get-Content $PROFILE -Raw -ErrorAction SilentlyContinue) -match 'afterglow')
+Test-Item "profile is furnizsh's" "rerun .\install.ps1" {
+    (Test-Path $PROFILE) -and ((Get-Content $PROFILE -Raw -ErrorAction SilentlyContinue) -match 'furnizsh')
 }
 
 # ------------------------------------------------------------
@@ -104,7 +104,7 @@ $wtSettings = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbw
 Test-Item "Windows Terminal" "winget install Microsoft.WindowsTerminal" { Test-Path $wtSettings }
 Test-Item "colour schemes added" "rerun .\install.ps1 (or add them by hand)" {
     (Test-Path $wtSettings) -and
-    ((Get-Content $wtSettings -Raw -ErrorAction SilentlyContinue) -match 'Catppuccin Mocha|Afterglow Neon')
+    ((Get-Content $wtSettings -Raw -ErrorAction SilentlyContinue) -match 'Catppuccin Mocha|Furnizsh Neon')
 }
 
 Test-Item "JetBrainsMono Nerd Font" "rerun .\install.ps1 (installs it per-user)" {
@@ -127,6 +127,6 @@ if ($script:Failures -eq 0) {
     }
     exit 0
 } else {
-    Write-Host "`n$($C.Bold)$($C.Orange)  $($script:Failures) check(s) failed.$($C.Reset) Docs: https://wosmos.github.io/afterglow`n"
+    Write-Host "`n$($C.Bold)$($C.Orange)  $($script:Failures) check(s) failed.$($C.Reset) Docs: https://wosmos.github.io/furnizsh`n"
     exit 1
 }

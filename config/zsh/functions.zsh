@@ -1,19 +1,19 @@
 # ============================================================
-#  afterglow — core helper commands
-#  https://github.com/Wosmos/afterglow
+#  furnizsh — core helper commands
+#  https://github.com/Wosmos/furnizsh
 #
-#  Sourced by afterglow.zsh. Full reference: docs/COMMANDS.md
+#  Sourced by furnizsh.zsh. Full reference: docs/COMMANDS.md
 #  Optional network-dependent extras live in extras.zsh.
 # ============================================================
 
-# Where the installed copy lives. afterglow.zsh sets this; the fallback
+# Where the installed copy lives. furnizsh.zsh sets this; the fallback
 # keeps this file usable if it's sourced on its own.
-: ${AFTERGLOW_DIR:="$HOME/.config/afterglow"}
+: ${FURNIZSH_DIR:="$HOME/.config/furnizsh"}
 
 # ------------------------------------------------------------
 # Shared palette. Truecolor escapes — orange/yellow accents, no red.
 # ------------------------------------------------------------
-typeset -gA AFTERGLOW_C=(
+typeset -gA FURNIZSH_C=(
   bold   $'\033[1m'
   reset  $'\033[0m'
   orange $'\033[38;2;250;179;135m'
@@ -26,18 +26,18 @@ typeset -gA AFTERGLOW_C=(
 )
 
 # Installed version, stamped by install.sh. Empty on a dev checkout.
-_afterglow_version() {
-  if [[ -f "$AFTERGLOW_DIR/VERSION" ]]; then
-    cat "$AFTERGLOW_DIR/VERSION"
+_furnizsh_version() {
+  if [[ -f "$FURNIZSH_DIR/VERSION" ]]; then
+    cat "$FURNIZSH_DIR/VERSION"
   else
     print -n "dev"
   fi
 }
 
 # Name of the active theme, for the cheatsheet and doctor output.
-_afterglow_current_theme() {
-  if [[ -f "$AFTERGLOW_DIR/current-theme" ]]; then
-    cat "$AFTERGLOW_DIR/current-theme"
+_furnizsh_current_theme() {
+  if [[ -f "$FURNIZSH_DIR/current-theme" ]]; then
+    cat "$FURNIZSH_DIR/current-theme"
   else
     print -n "neon"
   fi
@@ -49,17 +49,17 @@ _afterglow_current_theme() {
 #  never drift out of sync.
 # ============================================================
 theme() {
-  local C=$AFTERGLOW_C[reset] B=$AFTERGLOW_C[bold]
-  local ORANGE=$AFTERGLOW_C[orange] YELLOW=$AFTERGLOW_C[yellow]
-  local GREEN=$AFTERGLOW_C[green] GRAY=$AFTERGLOW_C[gray] BLUE=$AFTERGLOW_C[blue]
-  local themes_dir="$AFTERGLOW_DIR/themes"
+  local C=$FURNIZSH_C[reset] B=$FURNIZSH_C[bold]
+  local ORANGE=$FURNIZSH_C[orange] YELLOW=$FURNIZSH_C[yellow]
+  local GREEN=$FURNIZSH_C[green] GRAY=$FURNIZSH_C[gray] BLUE=$FURNIZSH_C[blue]
+  local themes_dir="$FURNIZSH_DIR/themes"
 
   if [[ ! -d "$themes_dir" ]]; then
     print -u2 "theme: no themes installed at $themes_dir — rerun ./install.sh"
     return 1
   fi
 
-  local current="$(_afterglow_current_theme)"
+  local current="$(_furnizsh_current_theme)"
 
   # No argument: show what's active and what's available.
   if [[ -z "${1:-}" ]]; then
@@ -134,37 +134,37 @@ theme() {
     printf "  %s✓%s lazygit  %s%s%s\n" "$GREEN" "$C" "$GRAY" "$LAZYGIT_PALETTE" "$C"
   fi
 
-  print -n "$want" > "$AFTERGLOW_DIR/current-theme"
+  print -n "$want" > "$FURNIZSH_DIR/current-theme"
 
   printf "\n%sGhostty reloads on save. Run %sreload%s%s for the new prompt.%s\n\n" \
     "$GRAY" "$YELLOW" "$C" "$GRAY" "$C"
 }
 
 # Completion for `theme <tab>`
-_afterglow_theme_complete() {
+_furnizsh_theme_complete() {
   local -a ids
-  ids=(${${(f)"$(print -l $AFTERGLOW_DIR/themes/*.theme(N:t:r))"}})
+  ids=(${${(f)"$(print -l $FURNIZSH_DIR/themes/*.theme(N:t:r))"}})
   compadd -- $ids
 }
-compdef _afterglow_theme_complete theme 2>/dev/null
+compdef _furnizsh_theme_complete theme 2>/dev/null
 
 # ============================================================
-#  agupdate — pull the latest afterglow and reapply it
+#  agupdate — pull the latest furnizsh and reapply it
 # ============================================================
 agupdate() {
-  local GRAY=$AFTERGLOW_C[gray] C=$AFTERGLOW_C[reset] GREEN=$AFTERGLOW_C[green]
-  local repo="${AFTERGLOW_REPO:-$HOME/Documents/GitHub/afterglow}"
+  local GRAY=$FURNIZSH_C[gray] C=$FURNIZSH_C[reset] GREEN=$FURNIZSH_C[green]
+  local repo="${FURNIZSH_REPO:-$HOME/Documents/GitHub/furnizsh}"
 
   if [[ ! -d "$repo/.git" ]]; then
-    print -u2 "agupdate: no afterglow checkout at $repo"
-    print -u2 "          set AFTERGLOW_REPO to where you cloned it."
+    print -u2 "agupdate: no furnizsh checkout at $repo"
+    print -u2 "          set FURNIZSH_REPO to where you cloned it."
     return 1
   fi
 
   printf "%sUpdating %s%s\n" "$GRAY" "$repo" "$C"
   git -C "$repo" pull --ff-only || { print -u2 "agupdate: pull failed"; return 1 }
   "$repo/install.sh" --yes || return 1
-  printf "%s✓%s updated — run %sreload%s\n" "$GREEN" "$C" "$AFTERGLOW_C[yellow]" "$C"
+  printf "%s✓%s updated — run %sreload%s\n" "$GREEN" "$C" "$FURNIZSH_C[yellow]" "$C"
 }
 
 # ============================================================
@@ -172,15 +172,15 @@ agupdate() {
 #  --comp | --full | -a | --all  prints the exhaustive version
 # ============================================================
 cheatsheet() {
-  local B=$AFTERGLOW_C[bold] D=$AFTERGLOW_C[reset]
-  local ORANGE=$AFTERGLOW_C[orange] YELLOW=$AFTERGLOW_C[yellow]
-  local BLUE=$AFTERGLOW_C[blue] GREEN=$AFTERGLOW_C[green] TEXT=$AFTERGLOW_C[text]
-  local GRAY=$AFTERGLOW_C[gray]
-  local active="$(_afterglow_current_theme)"
+  local B=$FURNIZSH_C[bold] D=$FURNIZSH_C[reset]
+  local ORANGE=$FURNIZSH_C[orange] YELLOW=$FURNIZSH_C[yellow]
+  local BLUE=$FURNIZSH_C[blue] GREEN=$FURNIZSH_C[green] TEXT=$FURNIZSH_C[text]
+  local GRAY=$FURNIZSH_C[gray]
+  local active="$(_furnizsh_current_theme)"
 
   case "${1:-}" in
     --comp|--full|-a|--all)
-      printf "%s%safterglow cheatsheet -- FULL%s  %sv%s -- short version: cheatsheet / chs%s\n\n" "$B" "$BLUE" "$D" "$TEXT" "$(_afterglow_version)" "$D"
+      printf "%s%sfurnizsh cheatsheet -- FULL%s  %sv%s -- short version: cheatsheet / chs%s\n\n" "$B" "$BLUE" "$D" "$TEXT" "$(_furnizsh_version)" "$D"
 
       printf "%s%sTheme%s  %s(active: %s%s%s%s -- switch with 'theme <name>')%s\n" "$B" "$ORANGE" "$D" "$GRAY" "$GREEN" "$active" "$D" "$GRAY" "$D"
       printf "  %sneon%s near-black + glow  %scatppuccin%s pastels  %sgruvbox%s warm retro  %stokyonight%s cool blues\n" "$YELLOW" "$D" "$YELLOW" "$D" "$YELLOW" "$D" "$YELLOW" "$D"
@@ -219,7 +219,7 @@ cheatsheet() {
       printf "  %sdust%s visual disk usage   %sprocs%s modern ps   %sbtop%s system monitor   %stldr%s short man pages\n" "$YELLOW" "$D" "$YELLOW" "$D" "$YELLOW" "$D" "$YELLOW" "$D"
       printf "  %sgh%s GitHub CLI\n\n" "$YELLOW" "$D"
 
-      printf "%s%safterglow commands -- core%s\n" "$B" "$ORANGE" "$D"
+      printf "%s%sfurnizsh commands -- core%s\n" "$B" "$ORANGE" "$D"
       printf "  %scheatsheet%s / %schs%s   this reference (--comp for the full version)\n" "$YELLOW" "$D" "$YELLOW" "$D"
       printf "  %sagdoctor%s        health-check every part of the setup, with the fix for each failure\n" "$YELLOW" "$D"
       printf "  %stheme%s [name]    list themes, or switch ghostty + starship + lazygit together\n" "$YELLOW" "$D"
@@ -238,7 +238,7 @@ cheatsheet() {
       printf "  %sreload%s          restart zsh in place, picking up config changes\n\n" "$YELLOW" "$D"
 
       if typeset -f weather >/dev/null 2>&1; then
-        printf "%s%safterglow commands -- extras%s  %s(need network)%s\n" "$B" "$ORANGE" "$D" "$GRAY" "$D"
+        printf "%s%sfurnizsh commands -- extras%s  %s(need network)%s\n" "$B" "$ORANGE" "$D" "$GRAY" "$D"
         printf "  %sweather%s [city]  forecast in the terminal      %scheat%s <cmd>   practical examples for any command\n" "$YELLOW" "$D" "$YELLOW" "$D"
         printf "  %sqr%s <text>       QR code in the terminal       %sgitignore%s <langs>  fetch a .gitignore\n" "$YELLOW" "$D" "$YELLOW" "$D"
         printf "  %snote%s [text]     timestamped scratch notes     %stimer%s <mins>  countdown + notification\n" "$YELLOW" "$D" "$YELLOW" "$D"
@@ -260,10 +260,10 @@ cheatsheet() {
       printf "  Fires on task completion and permission prompts, muted while you're looking at the terminal.\n"
       printf "  Full env var reference: %shead -40 ~/.claude/hooks/cc-alert.sh%s\n\n" "$YELLOW" "$D"
 
-      printf "%sDocs: https://wosmos.github.io/afterglow   Repo: https://github.com/Wosmos/afterglow%s\n" "$TEXT" "$D"
+      printf "%sDocs: https://wosmos.github.io/furnizsh   Repo: https://github.com/Wosmos/furnizsh%s\n" "$TEXT" "$D"
       ;;
     *)
-      printf "%s%safterglow cheatsheet%s  %sv%s -- run 'cheatsheet --comp' for everything%s\n\n" "$B" "$BLUE" "$D" "$TEXT" "$(_afterglow_version)" "$D"
+      printf "%s%sfurnizsh cheatsheet%s  %sv%s -- run 'cheatsheet --comp' for everything%s\n\n" "$B" "$BLUE" "$D" "$TEXT" "$(_furnizsh_version)" "$D"
 
       printf "%s%sTheme%s  %s%s%s  %s(theme <name> to switch)%s\n\n" "$B" "$ORANGE" "$D" "$GREEN" "$active" "$D" "$GRAY" "$D"
 
@@ -296,7 +296,7 @@ cheatsheet() {
       printf "  cmd+shift+]/[          next / prev tab\n"
       printf "  cmd+1..9               jump to tab N\n\n"
 
-      printf "%sDocs: https://wosmos.github.io/afterglow%s\n" "$TEXT" "$D"
+      printf "%sDocs: https://wosmos.github.io/furnizsh%s\n" "$TEXT" "$D"
       ;;
   esac
 }
@@ -307,8 +307,8 @@ alias chs='cheatsheet'
 #  Also available standalone as ./doctor.sh in the repo.
 # ============================================================
 agdoctor() {
-  local ok=$AFTERGLOW_C[green] bad=$AFTERGLOW_C[orange] dim=$AFTERGLOW_C[gray]
-  local B=$AFTERGLOW_C[bold] D=$AFTERGLOW_C[reset] BLUE=$AFTERGLOW_C[blue]
+  local ok=$FURNIZSH_C[green] bad=$FURNIZSH_C[orange] dim=$FURNIZSH_C[gray]
+  local B=$FURNIZSH_C[bold] D=$FURNIZSH_C[reset] BLUE=$FURNIZSH_C[blue]
   local failures=0
 
   _ag_check() {
@@ -321,10 +321,10 @@ agdoctor() {
     fi
   }
 
-  printf "\n%s%safterglow doctor%s  %s(v%s, theme: %s)%s\n\n" \
-    "$B" "$BLUE" "$D" "$dim" "$(_afterglow_version)" "$(_afterglow_current_theme)" "$D"
+  printf "\n%s%sfurnizsh doctor%s  %s(v%s, theme: %s)%s\n\n" \
+    "$B" "$BLUE" "$D" "$dim" "$(_furnizsh_version)" "$(_furnizsh_current_theme)" "$D"
 
-  printf "%s%sCore tools%s\n" "$B" "$AFTERGLOW_C[orange]" "$D"
+  printf "%s%sCore tools%s\n" "$B" "$FURNIZSH_C[orange]" "$D"
   local t
   for t in starship zoxide fzf eza bat fd delta lazygit git; do
     _ag_check "$t" "not on PATH — rerun ./install.sh" command -v "$t"
@@ -337,26 +337,26 @@ agdoctor() {
     command -v "$t" >/dev/null 2>&1 && present+=($t) || missing+=($t)
   done
   if (( ${#present} )); then
-    printf "\n%s%sExtended tools%s %s(optional)%s\n" "$B" "$AFTERGLOW_C[orange]" "$D" "$dim" "$D"
+    printf "\n%s%sExtended tools%s %s(optional)%s\n" "$B" "$FURNIZSH_C[orange]" "$D" "$dim" "$D"
     printf "  %s✓%s %s\n" "$ok" "$D" "${present[*]}"
     (( ${#missing} )) && printf "  %s·%s not installed: %s  %s(./install.sh --tools extended)%s\n" \
       "$dim" "$D" "${missing[*]}" "$dim" "$D"
   fi
 
-  printf "\n%s%sShell%s\n" "$B" "$AFTERGLOW_C[orange]" "$D"
+  printf "\n%s%sShell%s\n" "$B" "$FURNIZSH_C[orange]" "$D"
   _ag_check "zsh is the login shell" "run: chsh -s \"\$(command -v zsh)\"" test "${SHELL##*/}" = zsh
   _ag_check "oh-my-zsh installed"    "missing ~/.oh-my-zsh" test -d "${ZSH:-$HOME/.oh-my-zsh}"
   _ag_check "zsh-autosuggestions"    "plugin not cloned into \$ZSH_CUSTOM/plugins" \
     test -d "${ZSH_CUSTOM:-${ZSH:-$HOME/.oh-my-zsh}/custom}/plugins/zsh-autosuggestions"
   _ag_check "zsh-syntax-highlighting" "plugin not cloned into \$ZSH_CUSTOM/plugins" \
     test -d "${ZSH_CUSTOM:-${ZSH:-$HOME/.oh-my-zsh}/custom}/plugins/zsh-syntax-highlighting"
-  _ag_check "afterglow sourced"      "no source line in ~/.zshrc — rerun ./install.sh" \
-    grep -q '>>> afterglow >>>' "$HOME/.zshrc"
+  _ag_check "furnizsh sourced"      "no source line in ~/.zshrc — rerun ./install.sh" \
+    grep -q '>>> furnizsh >>>' "$HOME/.zshrc"
 
-  printf "\n%s%sConfig%s\n" "$B" "$AFTERGLOW_C[orange]" "$D"
+  printf "\n%s%sConfig%s\n" "$B" "$FURNIZSH_C[orange]" "$D"
   _ag_check "starship.toml"  "missing ~/.config/starship.toml" test -f "$HOME/.config/starship.toml"
   _ag_check "ghostty config" "missing ~/.config/ghostty/config" test -f "$HOME/.config/ghostty/config"
-  _ag_check "themes installed" "rerun ./install.sh" test -d "$AFTERGLOW_DIR/themes"
+  _ag_check "themes installed" "rerun ./install.sh" test -d "$FURNIZSH_DIR/themes"
   _ag_check "delta as git pager" "run: git config --global core.pager delta" \
     test "$(git config --global core.pager 2>/dev/null)" = delta
 
@@ -368,7 +368,7 @@ agdoctor() {
   fi
   _ag_check "lazygit theme" "missing $lazygit_cfg" test -f "$lazygit_cfg"
 
-  printf "\n%s%sFont%s\n" "$B" "$AFTERGLOW_C[orange]" "$D"
+  printf "\n%s%sFont%s\n" "$B" "$FURNIZSH_C[orange]" "$D"
   if [[ "$OSTYPE" == darwin* ]]; then
     _ag_check "JetBrainsMono Nerd Font" "brew install --cask font-jetbrains-mono-nerd-font" \
       sh -c 'ls ~/Library/Fonts /Library/Fonts 2>/dev/null | grep -qi "jetbrainsmono.*nerd"'
@@ -382,9 +382,9 @@ agdoctor() {
   unfunction _ag_check
 
   if (( failures == 0 )); then
-    printf "%s%sAll good.%s Run %scheatsheet%s for the reference.\n\n" "$B" "$ok" "$D" "$AFTERGLOW_C[yellow]" "$D"
+    printf "%s%sAll good.%s Run %scheatsheet%s for the reference.\n\n" "$B" "$ok" "$D" "$FURNIZSH_C[yellow]" "$D"
   else
-    printf "%s%s%d check(s) failed.%s See https://wosmos.github.io/afterglow\n\n" "$B" "$bad" "$failures" "$D"
+    printf "%s%s%d check(s) failed.%s See https://wosmos.github.io/furnizsh\n\n" "$B" "$bad" "$failures" "$D"
   fi
   return $(( failures > 0 ))
 }
@@ -429,9 +429,9 @@ serve() {
     lan=$(hostname -I 2>/dev/null | awk '{print $1}')
   fi
 
-  printf "%sServing %s%s\n" "$AFTERGLOW_C[gray]" "${PWD/#$HOME/~}" "$AFTERGLOW_C[reset]"
-  printf "  local   %shttp://localhost:%s%s\n" "$AFTERGLOW_C[green]" "$port" "$AFTERGLOW_C[reset]"
-  [[ -n "$lan" ]] && printf "  network %shttp://%s:%s%s\n" "$AFTERGLOW_C[green]" "$lan" "$port" "$AFTERGLOW_C[reset]"
+  printf "%sServing %s%s\n" "$FURNIZSH_C[gray]" "${PWD/#$HOME/~}" "$FURNIZSH_C[reset]"
+  printf "  local   %shttp://localhost:%s%s\n" "$FURNIZSH_C[green]" "$port" "$FURNIZSH_C[reset]"
+  [[ -n "$lan" ]] && printf "  network %shttp://%s:%s%s\n" "$FURNIZSH_C[green]" "$lan" "$port" "$FURNIZSH_C[reset]"
   printf "\n"
   python3 -m http.server "$port"
 }
@@ -464,7 +464,7 @@ killport() {
   fi
 
   if [[ -z "$pids" ]]; then
-    printf "%sNothing listening on port %s.%s\n" "$AFTERGLOW_C[gray]" "$port" "$AFTERGLOW_C[reset]"
+    printf "%sNothing listening on port %s.%s\n" "$FURNIZSH_C[gray]" "$port" "$FURNIZSH_C[reset]"
     return 0
   fi
 
@@ -472,8 +472,8 @@ killport() {
   for pid in ${=pids}; do
     local name=$(ps -p "$pid" -o comm= 2>/dev/null)
     kill -9 "$pid" 2>/dev/null \
-      && printf "%sKilled%s %s (pid %s) on port %s\n" "$AFTERGLOW_C[orange]" "$AFTERGLOW_C[reset]" "${name:-?}" "$pid" "$port" \
-      || printf "%sCould not kill pid %s — try with sudo.%s\n" "$AFTERGLOW_C[gray]" "$pid" "$AFTERGLOW_C[reset]"
+      && printf "%sKilled%s %s (pid %s) on port %s\n" "$FURNIZSH_C[orange]" "$FURNIZSH_C[reset]" "${name:-?}" "$pid" "$port" \
+      || printf "%sCould not kill pid %s — try with sudo.%s\n" "$FURNIZSH_C[gray]" "$pid" "$FURNIZSH_C[reset]"
   done
 }
 
@@ -495,8 +495,8 @@ fkill() {
   [[ -z "$pids" ]] && return 0
   print -r -- "$pids" | while read -r pid; do
     kill -${1:-15} "$pid" 2>/dev/null \
-      && printf "%skilled%s %s\n" "$AFTERGLOW_C[orange]" "$AFTERGLOW_C[reset]" "$pid" \
-      || printf "%scould not kill %s%s\n" "$AFTERGLOW_C[gray]" "$pid" "$AFTERGLOW_C[reset]"
+      && printf "%skilled%s %s\n" "$FURNIZSH_C[orange]" "$FURNIZSH_C[reset]" "$pid" \
+      || printf "%scould not kill %s%s\n" "$FURNIZSH_C[gray]" "$pid" "$FURNIZSH_C[reset]"
   done
 }
 
@@ -527,7 +527,7 @@ bak() {
   [[ -e "${1:-}" ]] || { print -u2 "usage: bak <file-or-dir>"; return 1 }
   local src="${1%/}"
   local dest="${src}.$(date +%Y%m%d-%H%M%S).bak"
-  cp -a -- "$src" "$dest" && printf "%s->%s %s\n" "$AFTERGLOW_C[gray]" "$AFTERGLOW_C[reset]" "$dest"
+  cp -a -- "$src" "$dest" && printf "%s->%s %s\n" "$FURNIZSH_C[gray]" "$FURNIZSH_C[reset]" "$dest"
 }
 
 # sizeof [dir] — biggest items in a directory, human-readable, largest first
@@ -567,12 +567,12 @@ gprune() {
     | grep -vxE "$default|main|master|develop|trunk")"})
 
   if (( ${#stale} == 0 )); then
-    printf "%sNothing to prune — no branches merged into %s.%s\n" "$AFTERGLOW_C[gray]" "$default" "$AFTERGLOW_C[reset]"
+    printf "%sNothing to prune — no branches merged into %s.%s\n" "$FURNIZSH_C[gray]" "$default" "$FURNIZSH_C[reset]"
     return 0
   fi
 
-  printf "%sMerged into %s, safe to delete:%s\n" "$AFTERGLOW_C[gray]" "$default" "$AFTERGLOW_C[reset]"
-  printf "  %s%s%s\n" "$AFTERGLOW_C[yellow]" "${^stale}" "$AFTERGLOW_C[reset]"
+  printf "%sMerged into %s, safe to delete:%s\n" "$FURNIZSH_C[gray]" "$default" "$FURNIZSH_C[reset]"
+  printf "  %s%s%s\n" "$FURNIZSH_C[yellow]" "${^stale}" "$FURNIZSH_C[reset]"
 
   printf "\nDelete %d branch(es)? [y/N] " "${#stale}"
   local reply; read -r reply
@@ -592,11 +592,11 @@ paths() {
   local dir
   for dir in ${(s.:.)PATH}; do
     if [[ -n "${seen[$dir]:-}" ]]; then
-      printf "%s%-50s dup%s\n" "$AFTERGLOW_C[gray]" "$dir" "$AFTERGLOW_C[reset]"
+      printf "%s%-50s dup%s\n" "$FURNIZSH_C[gray]" "$dir" "$FURNIZSH_C[reset]"
     elif [[ ! -d "$dir" ]]; then
-      printf "%s%-50s missing%s\n" "$AFTERGLOW_C[orange]" "$dir" "$AFTERGLOW_C[reset]"
+      printf "%s%-50s missing%s\n" "$FURNIZSH_C[orange]" "$dir" "$FURNIZSH_C[reset]"
     else
-      printf "%s%s%s\n" "$AFTERGLOW_C[text]" "$dir" "$AFTERGLOW_C[reset]"
+      printf "%s%s%s\n" "$FURNIZSH_C[text]" "$dir" "$FURNIZSH_C[reset]"
     fi
     seen[$dir]=1
   done
@@ -604,6 +604,6 @@ paths() {
 
 # reload — restart zsh in place, picking up config changes
 reload() {
-  printf "%sReloading zsh...%s\n" "$AFTERGLOW_C[gray]" "$AFTERGLOW_C[reset]"
+  printf "%sReloading zsh...%s\n" "$FURNIZSH_C[gray]" "$FURNIZSH_C[reset]"
   exec zsh -l
 }

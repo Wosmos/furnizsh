@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ============================================================
-#  afterglow — health check
-#  https://github.com/Wosmos/afterglow
+#  furnizsh — health check
+#  https://github.com/Wosmos/furnizsh
 #
 #  Verifies every part of the setup and tells you the exact command
 #  to fix whatever is missing. This is the standalone version; once
@@ -49,8 +49,8 @@ check() {
   fi
 }
 
-AG_VERSION="$(cat "$HOME/.config/afterglow/VERSION" 2>/dev/null || printf 'not installed')"
-[ "$QUIET" -eq 1 ] || printf "\n%s%s  afterglow doctor%s  %s(%s)%s\n" \
+AG_VERSION="$(cat "$HOME/.config/furnizsh/VERSION" 2>/dev/null || printf 'not installed')"
+[ "$QUIET" -eq 1 ] || printf "\n%s%s  furnizsh doctor%s  %s(%s)%s\n" \
   "$C_BOLD" "$C_BLUE" "$C_RESET" "$C_GRAY" "$AG_VERSION" "$C_RESET"
 
 # ------------------------------------------------------------
@@ -82,12 +82,12 @@ check "zsh-autosuggestions" "git clone into \$ZSH_CUSTOM/plugins" \
 check "zsh-syntax-highlighting" "git clone into \$ZSH_CUSTOM/plugins" \
   test -d "$ZSH_CUSTOM_DIR/plugins/zsh-syntax-highlighting"
 
-check "afterglow.zsh installed" "rerun ./install.sh" \
-  test -f "$HOME/.config/afterglow/afterglow.zsh"
+check "furnizsh.zsh installed" "rerun ./install.sh" \
+  test -f "$HOME/.config/furnizsh/furnizsh.zsh"
 check "functions.zsh installed" "rerun ./install.sh" \
-  test -f "$HOME/.config/afterglow/functions.zsh"
+  test -f "$HOME/.config/furnizsh/functions.zsh"
 check "sourced from ~/.zshrc" "rerun ./install.sh" \
-  grep -qF ">>> afterglow >>>" "$HOME/.zshrc"
+  grep -qF ">>> furnizsh >>>" "$HOME/.zshrc"
 
 # ------------------------------------------------------------
 section "Config"
@@ -131,7 +131,7 @@ if [ "$FAILURES" -eq 0 ]; then
     "$C_BOLD" "$C_GREEN" "$C_RESET" "$C_YELLOW" "$C_RESET"
   exit 0
 else
-  printf "\n%s%s  %d check(s) failed.%s Docs: https://wosmos.github.io/afterglow\n\n" \
+  printf "\n%s%s  %d check(s) failed.%s Docs: https://wosmos.github.io/furnizsh\n\n" \
     "$C_BOLD" "$C_ORANGE" "$FAILURES" "$C_RESET"
   exit 1
 fi

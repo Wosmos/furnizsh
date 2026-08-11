@@ -16,7 +16,7 @@ Three of these tools have naming trouble on Debian and Ubuntu:
 | `bat` | `bat` | **`batcat`** | same — `bat` collided with `bacula-console-qt` |
 | `delta` | `git-delta` | `delta` | `delta` was taken by a different tool |
 
-`config/zsh/afterglow.zsh` detects the renamed binaries and aliases both `bat`
+`config/zsh/furnizsh.zsh` detects the renamed binaries and aliases both `bat`
 and `cat` to `batcat`, and both `fd` and `find` to `fdfind` — so once installed,
 everything works under the normal names regardless. `agdoctor` accepts either
 name as a pass.
@@ -71,7 +71,7 @@ curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh 
 ```
 
 **fzf** from apt is often below 0.48, which is when `fzf --zsh` was added.
-afterglow falls back to `~/.fzf.zsh` automatically, but for the current version:
+furnizsh falls back to `~/.fzf.zsh` automatically, but for the current version:
 
 ```bash
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
@@ -133,7 +133,7 @@ Ghostty doesn't ship official distro packages for everything — see
 state. As of writing: Arch via AUR, Nix via nixpkgs, community `.deb` builds for
 Debian/Ubuntu, and building from source (Zig) everywhere else.
 
-afterglow doesn't require Ghostty. The shell config, tools, prompt and commands
+furnizsh doesn't require Ghostty. The shell config, tools, prompt and commands
 all work in any terminal — you just lose the specific Neon look. Alacritty,
 Kitty, WezTerm and GNOME Terminal all work fine; set the font to
 `JetBrainsMono Nerd Font Mono` and pick a dark theme.

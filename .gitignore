@@ -29,7 +29,7 @@ id_ed25519*
 settings.local.json
 
 # Backups produced by the installers
-.afterglow-backup/
+.furnizsh-backup/
 *.bak
 *.orig
 

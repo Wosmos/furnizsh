@@ -3,20 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>afterglow — a neon terminal, in one command</title>
+<title>furnizsh — a neon terminal, in one command</title>
 <meta name="description" content="Ghostty + zsh + Starship, themed and installed in one command. macOS, Linux and Windows.">
 <meta name="color-scheme" content="dark light">
 
-<meta property="og:title" content="afterglow — a neon terminal, in one command">
+<meta property="og:title" content="furnizsh — a neon terminal, in one command">
 <meta property="og:description" content="Ghostty + zsh + Starship, themed and installed in one command.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://wosmos.github.io/afterglow/">
+<meta property="og:url" content="https://wosmos.github.io/furnizsh/">
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230B0B12'/%3E%3Ctext x='50' y='72' font-family='monospace' font-size='62' font-weight='700' fill='%2300F5D4' text-anchor='middle'%3E%E2%9D%AF%3C/text%3E%3C/svg%3E">
 
 <style>
 /* ============================================================
-   afterglow — design tokens
+   furnizsh — design tokens
 
    Dark-first: the subject is a near-black terminal, so :root
    carries the dark palette and light is the override. Every
@@ -718,20 +718,20 @@ footer { border-top: 1px solid var(--line-soft); padding-block: 2.75rem 3.5rem; 
       <div class="term">
         <div class="term-bar">
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="term-title">~/afterglow</span>
+          <span class="term-title">~/furnizsh</span>
         </div>
         <div class="term-body">
-          <div class="line"><span class="p">❯</span><span class="cmd">git clone https://github.com/Wosmos/afterglow.git</span></div>
-          <div class="line"><span class="p">❯</span><span class="cmd">cd afterglow</span></div>
+          <div class="line"><span class="p">❯</span><span class="cmd">git clone https://github.com/Wosmos/furnizsh.git</span></div>
+          <div class="line"><span class="p">❯</span><span class="cmd">cd furnizsh</span></div>
           <div class="line"><span class="p">❯</span><span class="cmd"><span class="typed">./install.sh</span><span class="cursor"></span></span></div>
         </div>
         <div class="term-actions">
-          <button class="btn" id="copy" type="button" data-clip="git clone https://github.com/Wosmos/afterglow.git&#10;cd afterglow&#10;./install.sh">Copy all three</button>
-          <a class="btn" href="https://github.com/Wosmos/afterglow">GitHub</a>
+          <button class="btn" id="copy" type="button" data-clip="git clone https://github.com/Wosmos/furnizsh.git&#10;cd furnizsh&#10;./install.sh">Copy all three</button>
+          <a class="btn" href="https://github.com/Wosmos/furnizsh">GitHub</a>
         </div>
       </div>
       <div class="cta-row">
-        <a class="btn primary" href="https://github.com/Wosmos/afterglow/blob/main/docs/SETUP.md">Read the guide</a>
+        <a class="btn primary" href="https://github.com/Wosmos/furnizsh/blob/main/docs/SETUP.md">Read the guide</a>
         <a class="btn" href="#what">See what you get</a>
       </div>
     </div>
@@ -750,7 +750,7 @@ footer { border-top: 1px solid var(--line-soft); padding-block: 2.75rem 3.5rem; 
       <span class="n">STEP 01</span>
       <h3>Clone it</h3>
       <p>Grab the repo. Nothing is installed yet.</p>
-      <code>git clone …/afterglow.git</code>
+      <code>git clone …/furnizsh.git</code>
     </div>
     <div class="step">
       <span class="n">STEP 02</span>
@@ -873,9 +873,9 @@ footer { border-top: 1px solid var(--line-soft); padding-block: 2.75rem 3.5rem; 
       <div class="pane-body">
         <h3>A prompt that tells you where you are</h3>
         <p>Directory, git branch, and whether you have uncommitted changes — colour-coded, always in the same place. The Catppuccin Powerline preset, unmodified.</p>
-        <div class="prompt-demo" aria-label="Example prompt: home directory, projects/afterglow, main branch, modified">
+        <div class="prompt-demo" aria-label="Example prompt: home directory, projects/furnizsh, main branch, modified">
           <span class="seg s1">&nbsp;~&nbsp;</span>
-          <span class="seg s2">projects/afterglow</span>
+          <span class="seg s2">projects/furnizsh</span>
           <span class="seg s3">⎇ main</span>
           <span class="seg s4">!2</span>
           <span class="seg tail">❯ _</span>
@@ -939,7 +939,7 @@ footer { border-top: 1px solid var(--line-soft); padding-block: 2.75rem 3.5rem; 
 
     <!-- commands count -->
     <div class="tile flat">
-      <div class="pane-bar">extras<span class="right">afterglow</span></div>
+      <div class="pane-bar">extras<span class="right">furnizsh</span></div>
       <div class="pane-body">
         <div class="big">24</div>
         <h3>helper commands</h3>
@@ -1089,9 +1089,9 @@ footer { border-top: 1px solid var(--line-soft); padding-block: 2.75rem 3.5rem; 
         <div class="term" style="margin-top:.9rem;box-shadow:none">
           <div class="term-body" style="padding:.75rem .85rem">
             <div class="out" style="padding:0"># your existing config, untouched</div>
-            <div class="out" style="padding:0;color:var(--green)"># &gt;&gt;&gt; afterglow &gt;&gt;&gt;</div>
-            <div class="cmd">source ~/.config/afterglow/afterglow.zsh</div>
-            <div class="out" style="padding:0;color:var(--green)"># &lt;&lt;&lt; afterglow &lt;&lt;&lt;</div>
+            <div class="out" style="padding:0;color:var(--green)"># &gt;&gt;&gt; furnizsh &gt;&gt;&gt;</div>
+            <div class="cmd">source ~/.config/furnizsh/furnizsh.zsh</div>
+            <div class="out" style="padding:0;color:var(--green)"># &lt;&lt;&lt; furnizsh &lt;&lt;&lt;</div>
           </div>
         </div>
       </div>
@@ -1221,7 +1221,7 @@ footer { border-top: 1px solid var(--line-soft); padding-block: 2.75rem 3.5rem; 
         <p class="cmd-desc" style="margin-top:.9rem">
           Every command has a usage line, degrades gracefully when a tool is missing, and is
           documented with examples in
-          <a href="https://github.com/Wosmos/afterglow/blob/main/docs/COMMANDS.md">COMMANDS.md</a>.
+          <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/COMMANDS.md">COMMANDS.md</a>.
         </p>
       </div>
     </div>
@@ -1252,7 +1252,7 @@ footer { border-top: 1px solid var(--line-soft); padding-block: 2.75rem 3.5rem; 
     Windows you pick: run everything inside <b>WSL2</b> and get the setup exactly as described,
     or install the <b>PowerShell</b> version, which has the same tools and all 24 commands
     with Windows Terminal and a matching colour scheme.
-    <a href="https://github.com/Wosmos/afterglow/blob/main/docs/WINDOWS.md">Both routes are written up in full.</a>
+    <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/WINDOWS.md">Both routes are written up in full.</a>
   </p>
 </section>
 
@@ -1269,15 +1269,15 @@ footer { border-top: 1px solid var(--line-soft); padding-block: 2.75rem 3.5rem; 
       <div class="pane-body">
         <div class="term" style="box-shadow:none;margin-bottom:.9rem">
           <div class="term-body" style="padding:.8rem .9rem">
-            <div class="line"><span class="p">❯</span><span class="cmd">git clone https://github.com/Wosmos/afterglow.git</span></div>
-            <div class="line"><span class="p">❯</span><span class="cmd">cd afterglow &amp;&amp; ./install.sh</span></div>
+            <div class="line"><span class="p">❯</span><span class="cmd">git clone https://github.com/Wosmos/furnizsh.git</span></div>
+            <div class="line"><span class="p">❯</span><span class="cmd">cd furnizsh &amp;&amp; ./install.sh</span></div>
             <div class="line"><span class="p">❯</span><span class="cmd">agdoctor</span></div>
             <div class="out ok">All good. Run cheatsheet for the reference.</div>
           </div>
         </div>
         <div class="cta-row" style="margin-top:0">
-          <a class="btn primary" href="https://github.com/Wosmos/afterglow">Clone the repo</a>
-          <button class="btn" id="copy2" type="button" data-clip="git clone https://github.com/Wosmos/afterglow.git&#10;cd afterglow &amp;&amp; ./install.sh">Copy</button>
+          <a class="btn primary" href="https://github.com/Wosmos/furnizsh">Clone the repo</a>
+          <button class="btn" id="copy2" type="button" data-clip="git clone https://github.com/Wosmos/furnizsh.git&#10;cd furnizsh &amp;&amp; ./install.sh">Copy</button>
         </div>
       </div>
     </div>
@@ -1288,11 +1288,11 @@ footer { border-top: 1px solid var(--line-soft); padding-block: 2.75rem 3.5rem; 
         <h3>Everything is written down</h3>
         <p>No "figure it out from the dotfiles" — each part has a page explaining what it does and why.</p>
         <div class="kv" style="gap:.6rem">
-          <div><span class="k">setup</span><span class="v"><a href="https://github.com/Wosmos/afterglow/blob/main/docs/SETUP.md">Manual step-by-step, if you'd rather not run a script</a></span></div>
-          <div><span class="k">cheat</span><span class="v"><a href="https://github.com/Wosmos/afterglow/blob/main/docs/CHEATSHEET.md">Every plugin, tool and keybind in one page</a></span></div>
-          <div><span class="k">cmds</span><span class="v"><a href="https://github.com/Wosmos/afterglow/blob/main/docs/COMMANDS.md">The 24 commands, with examples</a></span></div>
-          <div><span class="k">linux</span><span class="v"><a href="https://github.com/Wosmos/afterglow/blob/main/docs/LINUX.md">Per-distro package names and gotchas</a></span></div>
-          <div><span class="k">win</span><span class="v"><a href="https://github.com/Wosmos/afterglow/blob/main/docs/WINDOWS.md">WSL2 and PowerShell routes</a></span></div>
+          <div><span class="k">setup</span><span class="v"><a href="https://github.com/Wosmos/furnizsh/blob/main/docs/SETUP.md">Manual step-by-step, if you'd rather not run a script</a></span></div>
+          <div><span class="k">cheat</span><span class="v"><a href="https://github.com/Wosmos/furnizsh/blob/main/docs/CHEATSHEET.md">Every plugin, tool and keybind in one page</a></span></div>
+          <div><span class="k">cmds</span><span class="v"><a href="https://github.com/Wosmos/furnizsh/blob/main/docs/COMMANDS.md">The 24 commands, with examples</a></span></div>
+          <div><span class="k">linux</span><span class="v"><a href="https://github.com/Wosmos/furnizsh/blob/main/docs/LINUX.md">Per-distro package names and gotchas</a></span></div>
+          <div><span class="k">win</span><span class="v"><a href="https://github.com/Wosmos/furnizsh/blob/main/docs/WINDOWS.md">WSL2 and PowerShell routes</a></span></div>
         </div>
       </div>
     </div>
@@ -1309,12 +1309,12 @@ footer { border-top: 1px solid var(--line-soft); padding-block: 2.75rem 3.5rem; 
       <p style="margin:.45rem 0 0;color:var(--ink-faint);font-size:var(--fs-sm)">MIT — take it, fork it, make it yours.</p>
     </div>
     <nav class="footer-links" aria-label="Documentation">
-      <a href="https://github.com/Wosmos/afterglow">repo</a>
-      <a href="https://github.com/Wosmos/afterglow/blob/main/docs/SETUP.md">setup</a>
-      <a href="https://github.com/Wosmos/afterglow/blob/main/docs/CHEATSHEET.md">cheatsheet</a>
-      <a href="https://github.com/Wosmos/afterglow/blob/main/docs/COMMANDS.md">commands</a>
-      <a href="https://github.com/Wosmos/afterglow/blob/main/docs/LINUX.md">linux</a>
-      <a href="https://github.com/Wosmos/afterglow/blob/main/docs/WINDOWS.md">windows</a>
+      <a href="https://github.com/Wosmos/furnizsh">repo</a>
+      <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/SETUP.md">setup</a>
+      <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/CHEATSHEET.md">cheatsheet</a>
+      <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/COMMANDS.md">commands</a>
+      <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/LINUX.md">linux</a>
+      <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/WINDOWS.md">windows</a>
     </nav>
   </div>
   <p class="credits">
@@ -1335,9 +1335,9 @@ footer { border-top: 1px solid var(--line-soft); padding-block: 2.75rem 3.5rem; 
   var buttons = document.querySelectorAll('[data-theme-set]');
 
   // localStorage throws in some sandboxed frames — never let that break the page.
-  function read()  { try { return localStorage.getItem('afterglow-theme'); } catch (e) { return null; } }
-  function write(v){ try { v ? localStorage.setItem('afterglow-theme', v)
-                            : localStorage.removeItem('afterglow-theme'); } catch (e) {} }
+  function read()  { try { return localStorage.getItem('furnizsh-theme'); } catch (e) { return null; } }
+  function write(v){ try { v ? localStorage.setItem('furnizsh-theme', v)
+                            : localStorage.removeItem('furnizsh-theme'); } catch (e) {} }
 
   // "auto" means: remove the stamp and let prefers-color-scheme decide.
   function apply(mode) {

@@ -1,7 +1,7 @@
 ﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
-    afterglow — installer for Windows / PowerShell.
+    furnizsh — installer for Windows / PowerShell.
 
 .DESCRIPTION
     Installs the same tool stack as the Unix installer (starship, zoxide, fzf,
@@ -13,7 +13,7 @@
     native-PowerShell half.
 
     Safe by design: backs up anything it replaces to
-    ~/.afterglow-backup/<timestamp>/, and is idempotent.
+    ~/.furnizsh-backup/<timestamp>/, and is idempotent.
 
 .PARAMETER DryRun
     Print every action without changing anything.
@@ -67,7 +67,7 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $RepoDir       = $PSScriptRoot
-$BackupDir     = Join-Path $HOME ".afterglow-backup\$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+$BackupDir     = Join-Path $HOME ".furnizsh-backup\$(Get-Date -Format 'yyyyMMdd-HHmmss')"
 $ConfigDir     = Join-Path $HOME '.config'
 
 # ------------------------------------------------------------
@@ -271,7 +271,7 @@ function Install-NerdFont {
 
     # winget/choco don't reliably carry Nerd Fonts, so download the release zip.
     Invoke-Step "download + install JetBrainsMono Nerd Font" {
-        $tmp = Join-Path $env:TEMP "afterglow-font-$(Get-Random)"
+        $tmp = Join-Path $env:TEMP "furnizsh-font-$(Get-Random)"
         New-Item -ItemType Directory -Force -Path $tmp | Out-Null
         $zip = Join-Path $tmp 'JetBrainsMono.zip'
 
@@ -304,7 +304,7 @@ function Install-Profile {
 
     if (Test-Path $PROFILE) {
         $existing = Get-Content $PROFILE -Raw -ErrorAction SilentlyContinue
-        if ($existing -and $existing -notmatch 'afterglow') {
+        if ($existing -and $existing -notmatch 'furnizsh') {
             Write-Warn "You already have a PowerShell profile with your own content."
             Write-Info "It will be backed up to $BackupDir before being replaced."
             if (-not (Confirm-Action "Replace it?")) { Write-Skip "left as-is"; return }
@@ -320,8 +320,8 @@ function Install-Profile {
             $lines = Get-Content $source
             $keep = @(); $inExtras = $false
             foreach ($line in $lines) {
-                if ($line -match '^# >>> afterglow extras >>>') { $inExtras = $true; continue }
-                if ($line -match '^# <<< afterglow extras <<<') { $inExtras = $false; continue }
+                if ($line -match '^# >>> furnizsh extras >>>') { $inExtras = $true; continue }
+                if ($line -match '^# <<< furnizsh extras <<<') { $inExtras = $false; continue }
                 if (-not $inExtras) { $keep += $line }
             }
             New-Item -ItemType Directory -Force -Path (Split-Path $PROFILE -Parent) | Out-Null
@@ -336,7 +336,7 @@ function Install-Profile {
 function Install-Config {
     Write-Step "Installing config  (theme: $Theme)"
 
-    $agHome = Join-Path $HOME '.config\afterglow'
+    $agHome = Join-Path $HOME '.config\furnizsh'
 
     # Every theme ships, so `theme <name>` can switch later without the repo.
     New-Item -ItemType Directory -Force -Path (Join-Path $agHome 'themes\lazygit') | Out-Null
@@ -450,8 +450,8 @@ function Set-WindowsTerminal {
 # ------------------------------------------------------------
 # main
 # ------------------------------------------------------------
-Write-Host "`n$($C.Bold)$($C.Blue)  afterglow$($C.Reset)  $($C.Gray)a neon terminal, in one command$($C.Reset)"
-Write-Host "  $($C.Gray)https://github.com/Wosmos/afterglow$($C.Reset)"
+Write-Host "`n$($C.Bold)$($C.Blue)  furnizsh$($C.Reset)  $($C.Gray)a neon terminal, in one command$($C.Reset)"
+Write-Host "  $($C.Gray)https://github.com/Wosmos/furnizsh$($C.Reset)"
 
 if ($DryRun) { Write-Host "`n  $($C.Bold)$($C.Orange)DRY RUN - nothing will be changed.$($C.Reset)" }
 

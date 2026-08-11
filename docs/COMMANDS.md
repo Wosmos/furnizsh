@@ -1,6 +1,6 @@
 # Commands
 
-The helper commands afterglow adds, beyond what the tools and plugins give you.
+The helper commands furnizsh adds, beyond what the tools and plugins give you.
 All of them exist in both zsh (`config/zsh/functions.zsh`) and PowerShell
 (`config/powershell/Microsoft.PowerShell_profile.ps1`) with the same names and
 the same behaviour.
@@ -107,18 +107,18 @@ you at the matching Windows Terminal scheme.
 
 ## `agupdate`
 
-Pull the latest afterglow and reapply it.
+Pull the latest furnizsh and reapply it.
 
 ```bash
 agupdate
 ```
 
 Runs `git pull --ff-only` in the repo, then `install.sh --yes`. It looks for the
-checkout at `~/Documents/GitHub/afterglow`; set `AFTERGLOW_REPO` if yours is
+checkout at `~/Documents/GitHub/furnizsh`; set `FURNIZSH_REPO` if yours is
 elsewhere:
 
 ```bash
-export AFTERGLOW_REPO=~/code/afterglow
+export FURNIZSH_REPO=~/code/furnizsh
 ```
 
 ---
@@ -294,7 +294,7 @@ exports.
 Put them in `config/zsh/functions.zsh` and rerun `./install.sh` to copy them
 into place. Two conventions worth following:
 
-- Use the `$AFTERGLOW_C` colour map rather than raw escape codes, so your output
+- Use the `$FURNIZSH_C` colour map rather than raw escape codes, so your output
   matches the rest.
 - Guard external tools with `command -v` and print a usage line on bad input —
   every command here does, which is why a partial install degrades instead of
@@ -356,7 +356,7 @@ note -l        # last 20 lines
 note           # open in $EDITOR
 ```
 
-Stored at `~/.afterglow-notes.md`, or wherever `$AFTERGLOW_NOTES` points.
+Stored at `~/.furnizsh-notes.md`, or wherever `$FURNIZSH_NOTES` points.
 
 ## `timer <minutes> [label]`
 

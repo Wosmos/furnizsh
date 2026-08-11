@@ -1,17 +1,17 @@
 #!/bin/sh
 # ============================================================
-#  afterglow — bootstrap installer
-#  https://github.com/Wosmos/afterglow
+#  furnizsh — bootstrap installer
+#  https://github.com/Wosmos/furnizsh
 #
-#      curl -fsSL https://wosmos.github.io/afterglow/install | sh
+#      curl -fsSL https://wosmos.github.io/furnizsh/install | sh
 #
 #  Downloads the latest release tarball (~50 KB), extracts it to
-#  ~/.local/share/afterglow, and runs the installer. No git clone.
+#  ~/.local/share/furnizsh, and runs the installer. No git clone.
 #
 #  This script does not modify anything itself — install.sh does, and
 #  it backs up everything it touches. To see what it would do first:
 #
-#      curl -fsSL https://wosmos.github.io/afterglow/install | sh -s -- --dry-run
+#      curl -fsSL https://wosmos.github.io/furnizsh/install | sh -s -- --dry-run
 #
 #  POSIX sh on purpose: it must run before we know anything about the
 #  machine, including whether bash exists.
@@ -19,8 +19,8 @@
 
 set -eu
 
-REPO="Wosmos/afterglow"
-PREFIX="${AFTERGLOW_PREFIX:-$HOME/.local/share/afterglow}"
+REPO="Wosmos/furnizsh"
+PREFIX="${FURNIZSH_PREFIX:-$HOME/.local/share/furnizsh}"
 
 if [ -t 1 ]; then
   C_BLUE=$(printf '\033[38;2;137;180;250m')
@@ -40,7 +40,7 @@ need() {
   command -v "$1" >/dev/null 2>&1 || die "$1 is required but not installed."
 }
 
-printf '\n%s%s  afterglow%s  %sa neon terminal, in one command%s\n\n' \
+printf '\n%s%s  furnizsh%s  %sa neon terminal, in one command%s\n\n' \
   "$C_BOLD" "$C_BLUE" "$C_RESET" "$C_GRAY" "$C_RESET"
 
 # ------------------------------------------------------------
@@ -52,8 +52,8 @@ case "$(uname -s)" in
   *)
     die "unsupported platform: $(uname -s).
   Windows: use PowerShell instead —
-    Install-Module afterglow -Scope CurrentUser
-  or run this inside WSL2. See https://wosmos.github.io/afterglow" ;;
+    Install-Module furnizsh -Scope CurrentUser
+  or run this inside WSL2. See https://wosmos.github.io/furnizsh" ;;
 esac
 
 need curl
@@ -83,36 +83,36 @@ TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT INT TERM
 
 info "Downloading..."
-curl -fsSL "$URL" -o "$TMP/afterglow.tar.gz" \
+curl -fsSL "$URL" -o "$TMP/furnizsh.tar.gz" \
   || die "download failed. Check your connection, or clone the repo instead:
   git clone https://github.com/$REPO.git"
 
 mkdir -p "$TMP/x"
-tar -xzf "$TMP/afterglow.tar.gz" -C "$TMP/x" --strip-components=1 \
+tar -xzf "$TMP/furnizsh.tar.gz" -C "$TMP/x" --strip-components=1 \
   || die "could not extract the archive."
 
 [ -f "$TMP/x/install.sh" ] || die "the archive looks wrong — install.sh is missing."
 
 # ------------------------------------------------------------
 # Place it. Replacing an old copy is fine: everything that matters
-# lives in ~/.config/afterglow, which install.sh manages separately.
+# lives in ~/.config/furnizsh, which install.sh manages separately.
 # ------------------------------------------------------------
 info "Installing to $PREFIX"
 rm -rf "$PREFIX"
 mkdir -p "$(dirname "$PREFIX")"
 cp -R "$TMP/x" "$PREFIX"
 chmod +x "$PREFIX/install.sh" "$PREFIX/uninstall.sh" "$PREFIX/doctor.sh" \
-         "$PREFIX/bin/afterglow" 2>/dev/null || true
+         "$PREFIX/bin/furnizsh" 2>/dev/null || true
 
-# Put `afterglow` on PATH if there's an obvious place for it.
+# Put `furnizsh` on PATH if there's an obvious place for it.
 #
 # Only ever link a file that actually exists — linking blind leaves a dangling
-# symlink on any release that predates bin/afterglow, and a broken command on
+# symlink on any release that predates bin/furnizsh, and a broken command on
 # someone's PATH is worse than no command at all.
-if [ -x "$PREFIX/bin/afterglow" ]; then
+if [ -x "$PREFIX/bin/furnizsh" ]; then
   if mkdir -p "$HOME/.local/bin" 2>/dev/null; then
-    ln -sf "$PREFIX/bin/afterglow" "$HOME/.local/bin/afterglow"
-    info "Linked afterglow -> ~/.local/bin/afterglow"
+    ln -sf "$PREFIX/bin/furnizsh" "$HOME/.local/bin/furnizsh"
+    info "Linked furnizsh -> ~/.local/bin/furnizsh"
     case ":$PATH:" in
       *":$HOME/.local/bin:"*) ;;
       *) info "Note: ~/.local/bin is not on your PATH yet." ;;

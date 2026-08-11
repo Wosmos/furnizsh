@@ -34,7 +34,7 @@ uninstallable and safe to run on a machine someone actually works on. Don't
 "simplify" it into copying a whole `.zshrc`.
 
 **Back up before replacing.** Anything that overwrites a file goes through
-`install_file`, which copies the original into `~/.afterglow-backup/<timestamp>/`
+`install_file`, which copies the original into `~/.furnizsh-backup/<timestamp>/`
 first.
 
 **Everything optional gets a flag.** If your addition isn't needed by everyone,

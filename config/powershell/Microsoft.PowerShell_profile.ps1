@@ -1,6 +1,6 @@
 ﻿# ============================================================
-#  afterglow — PowerShell profile
-#  https://github.com/Wosmos/afterglow
+#  furnizsh — PowerShell profile
+#  https://github.com/Wosmos/furnizsh
 #
 #  The Windows half of the setup: same tools, same aliases, same
 #  helper commands, same Starship prompt as the zsh version.
@@ -119,7 +119,7 @@ function prompt {
 }
 
 # ============================================================
-#  afterglow commands — the PowerShell ports
+#  furnizsh commands — the PowerShell ports
 # ============================================================
 
 $script:AGColors = @{
@@ -136,13 +136,13 @@ $script:AGColors = @{
 function cheatsheet {
     <#
     .SYNOPSIS
-      Print the afterglow terminal reference. -Full for the exhaustive version.
+      Print the furnizsh terminal reference. -Full for the exhaustive version.
     #>
     param([switch]$Full)
 
     $c = $script:AGColors
     Write-Host ""
-    Write-Host "$($c.Bold)$($c.Blue)afterglow cheatsheet$($c.Reset)  $($c.Text)(PowerShell)$($c.Reset)"
+    Write-Host "$($c.Bold)$($c.Blue)furnizsh cheatsheet$($c.Reset)  $($c.Text)(PowerShell)$($c.Reset)"
     Write-Host ""
 
     Write-Host "$($c.Bold)$($c.Orange)Tools$($c.Reset)"
@@ -155,7 +155,7 @@ function cheatsheet {
     Write-Host "  $($c.Yellow)lazygit$($c.Reset)     lg                       full git TUI"
     Write-Host ""
 
-    Write-Host "$($c.Bold)$($c.Orange)afterglow commands$($c.Reset)"
+    Write-Host "$($c.Bold)$($c.Orange)furnizsh commands$($c.Reset)"
     Write-Host "  $($c.Yellow)mkcd$($c.Reset) <dir>    make + enter a dir        $($c.Yellow)up$($c.Reset) [n]          cd up n levels"
     Write-Host "  $($c.Yellow)serve$($c.Reset) [port]  static server here        $($c.Yellow)ports$($c.Reset)           what's listening"
     Write-Host "  $($c.Yellow)killport$($c.Reset) <p>  free a port               $($c.Yellow)fkill$($c.Reset)           fzf-pick + kill a process"
@@ -183,7 +183,7 @@ function cheatsheet {
         Write-Host ""
     }
 
-    Write-Host "$($c.Text)Docs: https://wosmos.github.io/afterglow$($c.Reset)"
+    Write-Host "$($c.Text)Docs: https://wosmos.github.io/furnizsh$($c.Reset)"
     Write-Host ""
 }
 Set-Alias chs cheatsheet
@@ -191,7 +191,7 @@ Set-Alias chs cheatsheet
 function agdoctor {
     <#
     .SYNOPSIS
-      Health-check every part of the afterglow setup.
+      Health-check every part of the furnizsh setup.
     #>
     $c = $script:AGColors
     $failures = 0
@@ -210,7 +210,7 @@ function agdoctor {
 
     $script:failures = 0
     Write-Host ""
-    Write-Host "$($c.Bold)$($c.Blue)afterglow doctor$($c.Reset)"
+    Write-Host "$($c.Bold)$($c.Blue)furnizsh doctor$($c.Reset)"
     Write-Host ""
 
     Write-Host "$($c.Bold)$($c.Orange)Tools$($c.Reset)"
@@ -243,7 +243,7 @@ function agdoctor {
     if ($script:failures -eq 0) {
         Write-Host "$($c.Bold)$($c.Green)All good.$($c.Reset) Run $($c.Yellow)cheatsheet$($c.Reset) for the reference."
     } else {
-        Write-Host "$($c.Bold)$($c.Orange)$($script:failures) check(s) failed.$($c.Reset) See https://wosmos.github.io/afterglow"
+        Write-Host "$($c.Bold)$($c.Orange)$($script:failures) check(s) failed.$($c.Reset) See https://wosmos.github.io/furnizsh"
     }
     Write-Host ""
 }
@@ -466,9 +466,9 @@ function reload {
 #  Ghostty has no Windows build, so on this side "theme" means
 #  Starship + lazygit + the Windows Terminal colour scheme.
 # ============================================================
-$script:AGHome = Join-Path $HOME '.config\afterglow'
+$script:AGHome = Join-Path $HOME '.config\furnizsh'
 
-function Get-AfterglowTheme {
+function Get-FurnizshTheme {
     $marker = Join-Path $script:AGHome 'current-theme'
     if (Test-Path $marker) { (Get-Content $marker -Raw).Trim() } else { 'neon' }
 }
@@ -476,7 +476,7 @@ function Get-AfterglowTheme {
 function theme {
     <#
     .SYNOPSIS
-      List afterglow themes, or switch to one.
+      List furnizsh themes, or switch to one.
     .EXAMPLE
       theme            # list, with the active one marked
     .EXAMPLE
@@ -492,7 +492,7 @@ function theme {
         return
     }
 
-    $current = Get-AfterglowTheme
+    $current = Get-FurnizshTheme
 
     # The .theme files are plain KEY="value" lines, shared with the Unix side.
     function Read-ThemeFile {
@@ -564,12 +564,12 @@ function theme {
 }
 
 function agupdate {
-    <#  .SYNOPSIS  git pull the afterglow repo and reapply it.  #>
+    <#  .SYNOPSIS  git pull the furnizsh repo and reapply it.  #>
     $c = $script:AGColors
-    $repo = if ($env:AFTERGLOW_REPO) { $env:AFTERGLOW_REPO } else { Join-Path $HOME 'Documents\GitHub\afterglow' }
+    $repo = if ($env:FURNIZSH_REPO) { $env:FURNIZSH_REPO } else { Join-Path $HOME 'Documents\GitHub\furnizsh' }
 
     if (-not (Test-Path (Join-Path $repo '.git'))) {
-        Write-Error "agupdate: no afterglow checkout at $repo. Set `$env:AFTERGLOW_REPO."
+        Write-Error "agupdate: no furnizsh checkout at $repo. Set `$env:FURNIZSH_REPO."
         return
     }
     Write-Host "$($c.Gray)Updating $repo$($c.Reset)"
@@ -579,7 +579,7 @@ function agupdate {
     Write-Host "$($c.Green)OK$($c.Reset) updated - run $($c.Yellow)reload$($c.Reset)"
 }
 
-# >>> afterglow extras >>>
+# >>> furnizsh extras >>>
 # ============================================================
 #  Extras — the network-dependent helpers, matching extras.zsh
 #  install.ps1 -NoExtras strips everything between these markers.
@@ -630,7 +630,7 @@ function note {
     <#  .SYNOPSIS  Timestamped scratch notes, stored locally.  #>
     param([Parameter(ValueFromRemainingArguments)][string[]]$Text, [switch]$List)
 
-    $file = if ($env:AFTERGLOW_NOTES) { $env:AFTERGLOW_NOTES } else { Join-Path $HOME '.afterglow-notes.md' }
+    $file = if ($env:FURNIZSH_NOTES) { $env:FURNIZSH_NOTES } else { Join-Path $HOME '.furnizsh-notes.md' }
     if (-not (Test-Path $file)) { Set-Content $file "# notes`n" }
 
     if ($List)      { Get-Content $file -Tail 20 }
@@ -681,7 +681,7 @@ function sysinfo {
     Row 'uptime'  ((Get-Date) - $os.LastBootUpTime).ToString('d\d\ hh\h\ mm\m')
     if ($disk) { Row 'disk' ("{0:N0} GB free of {1:N0} GB" -f ($disk.Free / 1GB), (($disk.Free + $disk.Used) / 1GB)) }
     Row 'shell'   "PowerShell $($PSVersionTable.PSVersion)"
-    Row 'theme'   (Get-AfterglowTheme)
+    Row 'theme'   (Get-FurnizshTheme)
     Write-Host ""
 }
 
@@ -701,7 +701,7 @@ function dockerclean {
     Write-Host "`n$($c.Green)OK$($c.Reset) done`n"
 }
 
-# <<< afterglow extras <<<
+# <<< furnizsh extras <<<
 
 # ------------------------------------------------------------
 # Starship prompt — must stay last so nothing below overrides

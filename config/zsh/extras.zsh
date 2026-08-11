@@ -1,6 +1,6 @@
 # ============================================================
-#  afterglow — optional extra commands
-#  https://github.com/Wosmos/afterglow
+#  furnizsh — optional extra commands
+#  https://github.com/Wosmos/furnizsh
 #
 #  Kept separate from functions.zsh because most of these call an
 #  external service. Skip them entirely with:
@@ -10,7 +10,7 @@
 #  names, city names and language names. `note` writes locally only.
 # ============================================================
 
-: ${AFTERGLOW_C:=}   # populated by functions.zsh, which loads first
+: ${FURNIZSH_C:=}   # populated by functions.zsh, which loads first
 
 # Every command below needs the network. One shared check so the
 # failure message is the same everywhere.
@@ -87,12 +87,12 @@ gitignore() {
 
   if (( write )); then
     if [[ -e .gitignore ]]; then
-      printf "%s.gitignore already exists — appending.%s\n" "$AFTERGLOW_C[gray]" "$AFTERGLOW_C[reset]"
+      printf "%s.gitignore already exists — appending.%s\n" "$FURNIZSH_C[gray]" "$FURNIZSH_C[reset]"
       print -r -- "$body" >> .gitignore
     else
       print -r -- "$body" > .gitignore
     fi
-    printf "%s✓%s wrote .gitignore (%s)\n" "$AFTERGLOW_C[green]" "$AFTERGLOW_C[reset]" "$list"
+    printf "%s✓%s wrote .gitignore (%s)\n" "$FURNIZSH_C[green]" "$FURNIZSH_C[reset]" "$list"
   else
     print -r -- "$body"
   fi
@@ -103,10 +103,10 @@ gitignore() {
 #    note "fix the retry logic"   append a line
 #    note                          open the file in $EDITOR
 #    note -l                       print the last 20 lines
-#  Location: $AFTERGLOW_NOTES, default ~/.afterglow-notes.md
+#  Location: $FURNIZSH_NOTES, default ~/.furnizsh-notes.md
 # ============================================================
 note() {
-  local file="${AFTERGLOW_NOTES:-$HOME/.afterglow-notes.md}"
+  local file="${FURNIZSH_NOTES:-$HOME/.furnizsh-notes.md}"
   [[ -f "$file" ]] || print -- "# notes\n" > "$file"
 
   case "${1:-}" in
@@ -117,7 +117,7 @@ note() {
       ;;
     *)
       printf -- "- %s  %s\n" "$(date '+%Y-%m-%d %H:%M')" "$*" >> "$file"
-      printf "%s✓%s noted\n" "$AFTERGLOW_C[green]" "$AFTERGLOW_C[reset]"
+      printf "%s✓%s noted\n" "$FURNIZSH_C[green]" "$FURNIZSH_C[reset]"
       ;;
   esac
 }
@@ -137,15 +137,15 @@ timer() {
   local end=$(( $(date +%s) + secs ))
 
   printf "%s%s%s — %s min. ctrl+c to cancel.%s\n" \
-    "$AFTERGLOW_C[bold]" "$label" "$AFTERGLOW_C[reset]" "$mins" "$AFTERGLOW_C[reset]"
+    "$FURNIZSH_C[bold]" "$label" "$FURNIZSH_C[reset]" "$mins" "$FURNIZSH_C[reset]"
 
   local left
   while (( (left = end - $(date +%s)) > 0 )); do
     printf "\r  %s%02d:%02d remaining%s " \
-      "$AFTERGLOW_C[gray]" $(( left / 60 )) $(( left % 60 )) "$AFTERGLOW_C[reset]"
+      "$FURNIZSH_C[gray]" $(( left / 60 )) $(( left % 60 )) "$FURNIZSH_C[reset]"
     sleep 1
   done
-  printf "\r%s✓ %s done%s%-20s\n" "$AFTERGLOW_C[green]" "$label" "$AFTERGLOW_C[reset]" " "
+  printf "\r%s✓ %s done%s%-20s\n" "$FURNIZSH_C[green]" "$label" "$FURNIZSH_C[reset]" " "
 
   # Best-effort desktop notification, per platform.
   if [[ "$OSTYPE" == darwin* ]]; then
@@ -160,12 +160,12 @@ timer() {
 #  sysinfo — a compact summary of the machine
 # ============================================================
 sysinfo() {
-  local B=$AFTERGLOW_C[bold] D=$AFTERGLOW_C[reset]
-  local Y=$AFTERGLOW_C[yellow] G=$AFTERGLOW_C[gray]
+  local B=$FURNIZSH_C[bold] D=$FURNIZSH_C[reset]
+  local Y=$FURNIZSH_C[yellow] G=$FURNIZSH_C[gray]
 
   _row() { printf "  %s%-12s%s %s\n" "$Y" "$1" "$D" "$2"; }
 
-  printf "\n%s%ssysinfo%s\n\n" "$B" "$AFTERGLOW_C[blue]" "$D"
+  printf "\n%s%ssysinfo%s\n\n" "$B" "$FURNIZSH_C[blue]" "$D"
 
   if [[ "$OSTYPE" == darwin* ]]; then
     _row "os"      "$(sw_vers -productName) $(sw_vers -productVersion) ($(uname -m))"
@@ -188,7 +188,7 @@ sysinfo() {
 
   _row "shell"   "zsh $ZSH_VERSION"
   _row "term"    "${TERM_PROGRAM:-$TERM}"
-  _row "theme"   "$(_afterglow_current_theme)"
+  _row "theme"   "$(_furnizsh_current_theme)"
 
   unfunction _row
   printf "\n"
@@ -201,17 +201,17 @@ dockerclean() {
   command -v docker >/dev/null 2>&1 || { print -u2 "dockerclean: docker not installed"; return 1 }
   docker info >/dev/null 2>&1 || { print -u2 "dockerclean: docker isn't running"; return 1 }
 
-  printf "\n%sCurrent usage%s\n" "$AFTERGLOW_C[bold]" "$AFTERGLOW_C[reset]"
+  printf "\n%sCurrent usage%s\n" "$FURNIZSH_C[bold]" "$FURNIZSH_C[reset]"
   docker system df
 
   printf "\n%sThis removes stopped containers, unused networks, dangling images and build cache.%s\n" \
-    "$AFTERGLOW_C[gray]" "$AFTERGLOW_C[reset]"
+    "$FURNIZSH_C[gray]" "$FURNIZSH_C[reset]"
   printf "%sNamed volumes are NOT touched — your database data is safe.%s\n" \
-    "$AFTERGLOW_C[gray]" "$AFTERGLOW_C[reset]"
+    "$FURNIZSH_C[gray]" "$FURNIZSH_C[reset]"
   printf "\nProceed? [y/N] "
   local reply; read -r reply
   [[ "$reply" == [yY]* ]] || { printf "Aborted.\n"; return 0 }
 
   docker system prune -f
-  printf "\n%s✓%s done\n\n" "$AFTERGLOW_C[green]" "$AFTERGLOW_C[reset]"
+  printf "\n%s✓%s done\n\n" "$FURNIZSH_C[green]" "$FURNIZSH_C[reset]"
 }

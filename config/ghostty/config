@@ -1,4 +1,4 @@
-# afterglow — Ghostty config
+# furnizsh — Ghostty config
 # Reference: https://ghostty.org/docs/config/reference
 #
 # Installed to ~/.config/ghostty/config (macOS and Linux alike).
@@ -25,7 +25,7 @@ cursor-style-blink = true
 
 # Ghostty's default shell-integration title feature shows the running
 # command name, not the folder. Disabled here — zsh sets its own title
-# (current directory) via a precmd hook in afterglow.zsh instead, so both
+# (current directory) via a precmd hook in furnizsh.zsh instead, so both
 # tabs and windows always show which folder you're in.
 shell-integration-features = no-title,cursor,no-sudo,no-ssh-env,no-ssh-terminfo,path
 

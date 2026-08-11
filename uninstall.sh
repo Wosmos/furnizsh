@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # ============================================================
-#  afterglow — uninstaller
-#  https://github.com/Wosmos/afterglow
+#  furnizsh — uninstaller
+#  https://github.com/Wosmos/furnizsh
 #
-#  Removes the source block from ~/.zshrc, deletes the afterglow
+#  Removes the source block from ~/.zshrc, deletes the furnizsh
 #  config directory, and optionally restores the configs that
 #  install.sh backed up.
 #
@@ -17,10 +17,10 @@
 
 set -euo pipefail
 
-AFTERGLOW_HOME="$HOME/.config/afterglow"
-BACKUP_ROOT="$HOME/.afterglow-backup"
-MARKER_START="# >>> afterglow >>>"
-MARKER_END="# <<< afterglow <<<"
+FURNIZSH_HOME="$HOME/.config/furnizsh"
+BACKUP_ROOT="$HOME/.furnizsh-backup"
+MARKER_START="# >>> furnizsh >>>"
+MARKER_END="# <<< furnizsh <<<"
 
 DRY_RUN=0
 ASSUME_YES=0
@@ -64,7 +64,7 @@ confirm() {
 
 usage() {
   cat <<'EOF'
-afterglow uninstaller
+furnizsh uninstaller
 
   ./uninstall.sh [options]
 
@@ -97,7 +97,7 @@ unwire_zshrc() {
 
   local zshrc="$HOME/.zshrc"
   if [ ! -f "$zshrc" ] || ! grep -qF "$MARKER_START" "$zshrc"; then
-    skip "no afterglow block found"
+    skip "no furnizsh block found"
     return 0
   fi
 
@@ -107,7 +107,7 @@ unwire_zshrc() {
   fi
 
   # Keep a safety copy of the pre-edit .zshrc regardless.
-  cp -a "$zshrc" "$zshrc.afterglow-uninstall.bak"
+  cp -a "$zshrc" "$zshrc.furnizsh-uninstall.bak"
 
   # Delete everything between the markers, inclusive. Portable across
   # BSD and GNU sed (no -i, no in-place extension differences).
@@ -116,19 +116,19 @@ unwire_zshrc() {
   sed "/^${MARKER_START}\$/,/^${MARKER_END}\$/d" "$zshrc" >"$tmp"
   mv "$tmp" "$zshrc"
 
-  ok "removed (pre-edit copy at ~/.zshrc.afterglow-uninstall.bak)"
+  ok "removed (pre-edit copy at ~/.zshrc.furnizsh-uninstall.bak)"
 }
 
 # ------------------------------------------------------------
-# Delete ~/.config/afterglow
+# Delete ~/.config/furnizsh
 # ------------------------------------------------------------
 remove_config_dir() {
-  step "Removing ~/.config/afterglow"
-  if [ ! -d "$AFTERGLOW_HOME" ]; then
+  step "Removing ~/.config/furnizsh"
+  if [ ! -d "$FURNIZSH_HOME" ]; then
     skip "not present"
     return 0
   fi
-  run rm -rf "$AFTERGLOW_HOME"
+  run rm -rf "$FURNIZSH_HOME"
   ok "removed"
 }
 
@@ -141,7 +141,7 @@ restore_backup() {
   step "Restoring from backup"
 
   if [ ! -d "$BACKUP_ROOT" ]; then
-    warn "no backups found under ~/.afterglow-backup"
+    warn "no backups found under ~/.furnizsh-backup"
     return 0
   fi
 
@@ -179,7 +179,7 @@ restore_backup() {
       starship.toml) dest="$HOME/.config/starship.toml" ;;
       config)        dest="$HOME/.config/ghostty/config" ;;
       config.yml)    dest="$lazygit_dir/config.yml" ;;
-      afterglow.zsh|functions.zsh) continue ;;
+      furnizsh.zsh|functions.zsh) continue ;;
       cc-alert.sh)   dest="$HOME/.claude/hooks/cc-alert.sh" ;;
       statusline.sh) dest="$HOME/.claude/statusline.sh" ;;
       *)             warn "don't know where $name came from — skipping"; continue ;;
@@ -215,7 +215,7 @@ remove_tools() {
 
   step "Uninstalling tools"
   warn "This removes starship, zoxide, eza, bat, fd, delta, lazygit and fzf."
-  warn "They're useful outside afterglow — you probably want to keep them."
+  warn "They're useful outside furnizsh — you probably want to keep them."
   confirm "Uninstall them anyway?" || { skip "kept"; return 0; }
 
   if command -v brew >/dev/null 2>&1; then
@@ -235,7 +235,7 @@ remove_tools() {
 }
 
 main() {
-  printf "\n%s%s  afterglow uninstall%s\n" "$C_BOLD" "$C_BLUE" "$C_RESET"
+  printf "\n%s%s  furnizsh uninstall%s\n" "$C_BOLD" "$C_BLUE" "$C_RESET"
   [ "$DRY_RUN" -eq 1 ] && printf "\n  %s%sDRY RUN — nothing will be changed.%s\n" "$C_BOLD" "$C_ORANGE" "$C_RESET"
 
   unwire_zshrc

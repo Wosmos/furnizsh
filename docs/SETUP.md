@@ -130,14 +130,14 @@ Log out and back in, or just open a new terminal.
 Copy this repo's shell config into place:
 
 ```bash
-mkdir -p ~/.config/afterglow
-cp config/zsh/afterglow.zsh config/zsh/functions.zsh ~/.config/afterglow/
+mkdir -p ~/.config/furnizsh
+cp config/zsh/furnizsh.zsh config/zsh/functions.zsh ~/.config/furnizsh/
 ```
 
 Then add **one line** to the bottom of `~/.zshrc`:
 
 ```bash
-[ -f "$HOME/.config/afterglow/afterglow.zsh" ] && source "$HOME/.config/afterglow/afterglow.zsh"
+[ -f "$HOME/.config/furnizsh/furnizsh.zsh" ] && source "$HOME/.config/furnizsh/furnizsh.zsh"
 ```
 
 That's the whole wiring. Keeping it in a separate file rather than pasting a
@@ -146,7 +146,7 @@ your own config never gets tangled up in it.
 
 ### What's in there
 
-`afterglow.zsh` sets up, in order:
+`furnizsh.zsh` sets up, in order:
 
 **Oh My Zsh** with `ZSH_THEME=""`. The theme must be empty — Starship renders
 the prompt, and if an omz theme is also set the two fight over `$PROMPT` and you
@@ -170,8 +170,8 @@ it.
 
 ```bash
 autoload -Uz add-zsh-hook
-_afterglow_set_title() { print -Pn '\e]2;%~\a' }
-add-zsh-hook precmd _afterglow_set_title
+_furnizsh_set_title() { print -Pn '\e]2;%~\a' }
+add-zsh-hook precmd _furnizsh_set_title
 ```
 
 This pairs with turning off Ghostty's own title feature in step 7. Ghostty's
@@ -186,7 +186,7 @@ whatever you've already typed rather than walking it blindly.
 
 **`starship init zsh`, last.** It must be the final thing that touches the
 prompt. If you later add prompt-related config to `~/.zshrc`, put it *above* the
-afterglow block.
+furnizsh block.
 
 ---
 
@@ -204,7 +204,7 @@ That's the whole config — the preset is complete, no hand-editing needed. This
 repo's `config/starship/starship.toml` is that preset verbatim, so you can copy
 it instead if you'd rather not depend on the preset name staying stable.
 
-Or let afterglow do it: `theme gruvbox` sets the Ghostty theme, the Starship
+Or let furnizsh do it: `theme gruvbox` sets the Ghostty theme, the Starship
 preset and the lazygit palette together, so they can't drift apart. `theme` with
 no argument lists what's available.
 
@@ -370,4 +370,4 @@ you're not inside a tmux session that's stripping colour.
 
 **Something's broken and I want out.** `./uninstall.sh` — and
 `./uninstall.sh --restore` to also put your previous configs back from
-`~/.afterglow-backup/`.
+`~/.furnizsh-backup/`.

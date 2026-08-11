@@ -28,7 +28,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y shellcheck
 
       - name: Lint bash scripts
-        run: shellcheck --severity=warning install.sh uninstall.sh doctor.sh bin/afterglow
+        run: shellcheck --severity=warning install.sh uninstall.sh doctor.sh bin/furnizsh
 
       - name: The bootstrap must be POSIX sh, not bash
         run: |
@@ -240,18 +240,18 @@ jobs:
           ./install.sh --dry-run --tools core
           cp "$HOME/.zshrc" /tmp/zshrc.after 2>/dev/null || touch /tmp/zshrc.after
           diff /tmp/zshrc.before /tmp/zshrc.after && echo "dry run left .zshrc untouched"
-          test ! -d "$HOME/.config/afterglow" && echo "dry run created nothing"
+          test ! -d "$HOME/.config/furnizsh" && echo "dry run created nothing"
 
       - name: Install
         run: ./install.sh --yes --no-font --no-claude --no-chsh --tools core
 
       - name: The shell config loads without error
-        run: zsh -c 'source "$HOME/.config/afterglow/afterglow.zsh" && echo "afterglow.zsh sourced OK"'
+        run: zsh -c 'source "$HOME/.config/furnizsh/furnizsh.zsh" && echo "furnizsh.zsh sourced OK"'
 
       - name: Commands are defined
         run: |
           zsh -c '
-            source "$HOME/.config/afterglow/afterglow.zsh"
+            source "$HOME/.config/furnizsh/furnizsh.zsh"
             missing=0
             for fn in cheatsheet agdoctor theme agupdate mkcd up serve ports killport \
                       fkill fe bak sizeof gprune paths reload \
@@ -266,36 +266,36 @@ jobs:
           '
 
       - name: cheatsheet renders
-        run: zsh -c 'source "$HOME/.config/afterglow/afterglow.zsh"; cheatsheet | head -5; cheatsheet --comp | head -5'
+        run: zsh -c 'source "$HOME/.config/furnizsh/furnizsh.zsh"; cheatsheet | head -5; cheatsheet --comp | head -5'
 
       - name: Themes are installed and switchable
         run: |
           zsh -c '
-            source "$HOME/.config/afterglow/afterglow.zsh"
+            source "$HOME/.config/furnizsh/furnizsh.zsh"
             theme
             for t in catppuccin gruvbox tokyonight neon; do
               theme $t >/dev/null || exit 1
-              got=$(cat "$HOME/.config/afterglow/current-theme")
+              got=$(cat "$HOME/.config/furnizsh/current-theme")
               [ "$got" = "$t" ] || { echo "expected $t, got $got"; exit 1; }
               echo "  OK   switched to $t"
             done
           '
 
-      - name: The afterglow command works from a packaged layout
+      - name: The furnizsh command works from a packaged layout
         run: |
           # Simulate what Homebrew does: payload in share/, command in bin/.
-          mkdir -p /tmp/pkg/share/afterglow /tmp/pkg/bin
-          cp -R config extras install.sh uninstall.sh doctor.sh VERSION /tmp/pkg/share/afterglow/
-          cp bin/afterglow /tmp/pkg/bin/
-          export AFTERGLOW_SHARE=/tmp/pkg/share/afterglow
-          /tmp/pkg/bin/afterglow version | grep -q "$(cat VERSION)"
-          /tmp/pkg/bin/afterglow theme | grep -q gruvbox
-          /tmp/pkg/bin/afterglow help  | grep -q "neon terminal"
+          mkdir -p /tmp/pkg/share/furnizsh /tmp/pkg/bin
+          cp -R config extras install.sh uninstall.sh doctor.sh VERSION /tmp/pkg/share/furnizsh/
+          cp bin/furnizsh /tmp/pkg/bin/
+          export FURNIZSH_SHARE=/tmp/pkg/share/furnizsh
+          /tmp/pkg/bin/furnizsh version | grep -q "$(cat VERSION)"
+          /tmp/pkg/bin/furnizsh theme | grep -q gruvbox
+          /tmp/pkg/bin/furnizsh help  | grep -q "neon terminal"
           echo "dispatcher OK"
 
       - name: The installed copy reports its version
         run: |
-          test "$(cat "$HOME/.config/afterglow/VERSION")" = "$(cat VERSION)" \
+          test "$(cat "$HOME/.config/furnizsh/VERSION")" = "$(cat VERSION)" \
             || { echo "stamped version does not match VERSION"; exit 1; }
           echo "version stamped correctly"
 
@@ -305,14 +305,14 @@ jobs:
           ./install.sh --yes --no-font --no-claude --no-chsh --tools core
           sha_after=$(sha256sum "$HOME/.zshrc" | cut -d' ' -f1)
           [ "$sha_before" = "$sha_after" ] || { echo ".zshrc changed on rerun"; exit 1; }
-          [ "$(grep -c 'afterglow.zsh' "$HOME/.zshrc")" = "1" ] || { echo "duplicate source line"; exit 1; }
+          [ "$(grep -c 'furnizsh.zsh' "$HOME/.zshrc")" = "1" ] || { echo "duplicate source line"; exit 1; }
           echo "idempotent"
 
       - name: Uninstall restores the original .zshrc
         run: |
           ./uninstall.sh --yes
-          grep -q 'afterglow' "$HOME/.zshrc" && { echo "block still present"; exit 1; }
-          test ! -d "$HOME/.config/afterglow" || { echo "config dir still present"; exit 1; }
+          grep -q 'furnizsh' "$HOME/.zshrc" && { echo "block still present"; exit 1; }
+          test ! -d "$HOME/.config/furnizsh" || { echo "config dir still present"; exit 1; }
           echo "clean uninstall"
 
   # ------------------------------------------------------------
@@ -340,10 +340,10 @@ jobs:
           NPM=$(python3 -c "import json;print(json.load(open('packaging/npm/package.json'))['version'])")
           [ "$NPM" = "$V" ] || { echo "FAIL: package.json says $NPM"; fail=1; }
 
-          PSD=$(sed -n "s/.*ModuleVersion *= *'\([^']*\)'.*/\1/p" packaging/powershell/afterglow.psd1)
-          [ "$PSD" = "$V" ] || { echo "FAIL: afterglow.psd1 says $PSD"; fail=1; }
+          PSD=$(sed -n "s/.*ModuleVersion *= *'\([^']*\)'.*/\1/p" packaging/powershell/furnizsh.psd1)
+          [ "$PSD" = "$V" ] || { echo "FAIL: furnizsh.psd1 says $PSD"; fail=1; }
 
-          BREW=$(sed -n 's|.*/tags/v\([0-9.]*\)\.tar\.gz.*|\1|p' packaging/homebrew/afterglow.rb)
+          BREW=$(sed -n 's|.*/tags/v\([0-9.]*\)\.tar\.gz.*|\1|p' packaging/homebrew/furnizsh.rb)
           [ "$BREW" = "$V" ] || { echo "FAIL: the formula url pins $BREW"; fail=1; }
 
           [ $fail -eq 0 ] && echo "all manifests agree on $V"

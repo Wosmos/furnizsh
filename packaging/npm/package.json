@@ -1,5 +1,5 @@
 {
-  "name": "afterglow-terminal",
+  "name": "furnizsh",
   "version": "1.0.0",
   "description": "A neon terminal in one command — Ghostty + zsh + Starship, four matched themes, 24 helper commands. macOS, Linux and Windows.",
   "keywords": [
@@ -16,17 +16,17 @@
     "tokyonight",
     "setup"
   ],
-  "homepage": "https://wosmos.github.io/afterglow",
-  "bugs": "https://github.com/Wosmos/afterglow/issues",
+  "homepage": "https://wosmos.github.io/furnizsh",
+  "bugs": "https://github.com/Wosmos/furnizsh/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Wosmos/afterglow.git"
+    "url": "git+https://github.com/Wosmos/furnizsh.git"
   },
   "license": "MIT",
   "author": "Wosmos",
   "type": "commonjs",
   "bin": {
-    "afterglow": "bin/afterglow.js"
+    "furnizsh": "bin/furnizsh.js"
   },
   "files": [
     "bin/",
@@ -43,7 +43,7 @@
     "win32"
   ],
   "scripts": {
-    "test": "node bin/afterglow.js help"
+    "test": "node bin/furnizsh.js help"
   },
   "publishConfig": {
     "access": "public"

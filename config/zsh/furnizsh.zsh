@@ -1,6 +1,6 @@
 # ============================================================
-#  afterglow — terminal setup
-#  https://github.com/Wosmos/afterglow
+#  furnizsh — terminal setup
+#  https://github.com/Wosmos/furnizsh
 #
 #  Sourced from ~/.zshrc by install.sh. Everything here is the
 #  terminal environment only: no PATH exports, no secrets, no
@@ -10,7 +10,7 @@
 #  block is skipped silently instead of erroring on every prompt.
 # ============================================================
 
-AFTERGLOW_DIR="${${(%):-%x}:A:h}"
+FURNIZSH_DIR="${${(%):-%x}:A:h}"
 
 # ------------------------------------------------------------
 # Oh My Zsh
@@ -134,10 +134,10 @@ fi
 # config/ghostty/config in favour of this hook.
 # ------------------------------------------------------------
 autoload -Uz add-zsh-hook
-_afterglow_set_title() {
+_furnizsh_set_title() {
   print -Pn '\e]2;%~\a'
 }
-add-zsh-hook precmd _afterglow_set_title
+add-zsh-hook precmd _furnizsh_set_title
 
 # ------------------------------------------------------------
 # history-substring-search keybindings
@@ -191,26 +191,26 @@ command -v tldr  >/dev/null 2>&1 && alias help='tldr'
 # Clear any collision before the definitions are parsed. This has to
 # live here, not in functions.zsh, so it runs in an earlier parse unit.
 # ------------------------------------------------------------
-for _afterglow_name in \
+for _furnizsh_name in \
   cheatsheet chs agdoctor doctor theme agupdate mkcd up serve ports \
   killport fkill fe bak sizeof gprune paths reload \
   weather cheat qr gitignore note timer sysinfo dockerclean
 do
-  unalias "$_afterglow_name" 2>/dev/null
+  unalias "$_furnizsh_name" 2>/dev/null
 done
-unset _afterglow_name
+unset _furnizsh_name
 
 # ------------------------------------------------------------
 # Helper commands — cheatsheet/chs, agdoctor, theme, agupdate,
 # mkcd, up, serve, ports, killport, fkill, fe, bak, sizeof,
 # gprune, paths, reload.  Full reference: docs/COMMANDS.md
 # ------------------------------------------------------------
-[[ -f "$AFTERGLOW_DIR/functions.zsh" ]] && source "$AFTERGLOW_DIR/functions.zsh"
+[[ -f "$FURNIZSH_DIR/functions.zsh" ]] && source "$FURNIZSH_DIR/functions.zsh"
 
 # Optional network-dependent extras: weather, cheat, qr, gitignore,
 # note, timer, sysinfo, dockerclean. Absent if installed with
 # --no-extras.
-[[ -f "$AFTERGLOW_DIR/extras.zsh" ]] && source "$AFTERGLOW_DIR/extras.zsh"
+[[ -f "$FURNIZSH_DIR/extras.zsh" ]] && source "$FURNIZSH_DIR/extras.zsh"
 
 # ------------------------------------------------------------
 # Starship prompt — must stay last so nothing further down

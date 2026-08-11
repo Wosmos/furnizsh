@@ -72,7 +72,7 @@ The default:
 
 ---
 
-## afterglow commands
+## furnizsh commands
 
 | Command | What it does |
 |---|---|
@@ -145,13 +145,13 @@ Full environment-variable reference: `head -40 ~/.claude/hooks/cc-alert.sh`, or
 | Path | What |
 |---|---|
 | `~/.zshrc` | **appended to** — one guarded `source` block, nothing else changed |
-| `~/.config/afterglow/afterglow.zsh` | created — the shell config |
-| `~/.config/afterglow/functions.zsh` | created — the helper commands |
+| `~/.config/furnizsh/furnizsh.zsh` | created — the shell config |
+| `~/.config/furnizsh/functions.zsh` | created — the helper commands |
 | `~/.config/starship.toml` | created — Catppuccin Powerline preset |
 | `~/.config/ghostty/config` | created — theme, font, title handling |
 | `~/Library/Application Support/lazygit/config.yml` | created — Catppuccin Mocha theme (`~/.config/lazygit/` on Linux) |
 | global git config | `core.pager`, `interactive.diffFilter`, `delta.navigate` set via `git config` |
 | `~/.oh-my-zsh/custom/plugins/` | two plugins cloned in |
-| `~/.afterglow-backup/<timestamp>/` | created — copies of anything that was replaced |
+| `~/.furnizsh-backup/<timestamp>/` | created — copies of anything that was replaced |
 
 `./uninstall.sh` reverses all of it.

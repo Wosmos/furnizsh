@@ -1,10 +1,10 @@
 ﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
-    afterglow — uninstaller for Windows / PowerShell.
+    furnizsh — uninstaller for Windows / PowerShell.
 
 .DESCRIPTION
-    Removes the afterglow PowerShell profile and optionally restores whatever
+    Removes the furnizsh PowerShell profile and optionally restores whatever
     was there before, unsets the git-delta config, and can strip the colour
     schemes from Windows Terminal.
 
@@ -25,7 +25,7 @@
     Also uninstall the CLI tools and PowerShell modules (asks first).
 
 .PARAMETER Schemes
-    Also remove the afterglow colour schemes from Windows Terminal.
+    Also remove the furnizsh colour schemes from Windows Terminal.
 
 .EXAMPLE
     .\uninstall.ps1 -DryRun
@@ -45,7 +45,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$BackupRoot = Join-Path $HOME '.afterglow-backup'
+$BackupRoot = Join-Path $HOME '.furnizsh-backup'
 
 $C = @{
     Orange = "`e[38;2;250;179;135m"
@@ -81,23 +81,23 @@ function Get-NewestBackup {
 }
 
 # ------------------------------------------------------------
-function Remove-AfterglowProfile {
+function Remove-FurnizshProfile {
     Write-Step "Removing the PowerShell profile"
 
     if (-not (Test-Path $PROFILE)) { Write-Skip "no profile at $PROFILE"; return }
 
     $content = Get-Content $PROFILE -Raw -ErrorAction SilentlyContinue
-    if ($content -notmatch 'afterglow') {
-        Write-Warn "the profile at $PROFILE isn't afterglow's — leaving it alone"
+    if ($content -notmatch 'furnizsh') {
+        Write-Warn "the profile at $PROFILE isn't furnizsh's — leaving it alone"
         return
     }
 
     # Keep a safety copy regardless of what else happens.
     Invoke-Step "back up and remove $PROFILE" {
-        Copy-Item $PROFILE "$PROFILE.afterglow-uninstall.bak" -Force
+        Copy-Item $PROFILE "$PROFILE.furnizsh-uninstall.bak" -Force
         Remove-Item $PROFILE -Force
     }
-    Write-Ok "removed (pre-uninstall copy at $(Split-Path $PROFILE -Leaf).afterglow-uninstall.bak)"
+    Write-Ok "removed (pre-uninstall copy at $(Split-Path $PROFILE -Leaf).furnizsh-uninstall.bak)"
 }
 
 function Restore-Backup {
@@ -164,14 +164,14 @@ function Remove-TerminalScheme {
     $settingsPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
     if (-not (Test-Path $settingsPath)) { Write-Skip "Windows Terminal settings not found"; return }
 
-    if (-not (Confirm-Action "Remove the 'Catppuccin Mocha' and 'Afterglow Neon' schemes?")) {
+    if (-not (Confirm-Action "Remove the 'Catppuccin Mocha' and 'Furnizsh Neon' schemes?")) {
         Write-Skip "kept"; return
     }
 
-    Invoke-Step "strip afterglow schemes from settings.json" {
-        Copy-Item $settingsPath "$settingsPath.afterglow-uninstall.bak" -Force
+    Invoke-Step "strip furnizsh schemes from settings.json" {
+        Copy-Item $settingsPath "$settingsPath.furnizsh-uninstall.bak" -Force
         $settings = Get-Content $settingsPath -Raw | ConvertFrom-Json
-        $ours = @('Catppuccin Mocha', 'Afterglow Neon')
+        $ours = @('Catppuccin Mocha', 'Furnizsh Neon')
         $settings.schemes = @($settings.schemes | Where-Object { $ours -notcontains $_.name })
         $settings | ConvertTo-Json -Depth 32 | Set-Content $settingsPath -Encoding UTF8
     }
@@ -184,7 +184,7 @@ function Remove-ToolSet {
 
     Write-Step "Uninstalling tools"
     Write-Warn "This removes starship, zoxide, eza, bat, fd, delta, lazygit and fzf."
-    Write-Warn "They're useful outside afterglow — you probably want to keep them."
+    Write-Warn "They're useful outside furnizsh — you probably want to keep them."
     if (-not (Confirm-Action "Uninstall them anyway?")) { Write-Skip "kept"; return }
 
     $ids = @(
@@ -222,11 +222,11 @@ function Remove-ToolSet {
 }
 
 # ------------------------------------------------------------
-Write-Host "`n$($C.Bold)$($C.Blue)  afterglow uninstall$($C.Reset)  $($C.Gray)(PowerShell)$($C.Reset)"
+Write-Host "`n$($C.Bold)$($C.Blue)  furnizsh uninstall$($C.Reset)  $($C.Gray)(PowerShell)$($C.Reset)"
 if ($DryRun) { Write-Host "`n  $($C.Bold)$($C.Orange)DRY RUN - nothing will be changed.$($C.Reset)" }
 
 try {
-    Remove-AfterglowProfile
+    Remove-FurnizshProfile
     Restore-Backup
     Reset-GitDelta
     Remove-TerminalScheme

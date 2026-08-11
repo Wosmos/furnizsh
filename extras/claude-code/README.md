@@ -37,7 +37,7 @@ straight to the editor window for that folder.
 
 ### Install
 
-The afterglow installer copies it to `~/.claude/hooks/cc-alert.sh`. Then wire it
+The furnizsh installer copies it to `~/.claude/hooks/cc-alert.sh`. Then wire it
 into a project:
 
 ```bash
@@ -110,5 +110,5 @@ Wire it into `~/.claude/settings.json`:
 
 These are here because the terminal cheatsheet references the notification hook,
 and a guide that mentions something without shipping it is annoying. They're
-deliberately isolated in this folder — no other part of afterglow depends on
+deliberately isolated in this folder — no other part of furnizsh depends on
 them, and the installer asks before touching `~/.claude/`.

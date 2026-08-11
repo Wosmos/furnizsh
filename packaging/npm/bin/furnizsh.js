@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 /* ============================================================
- *  afterglow — npm entry point
- *  https://github.com/Wosmos/afterglow
+ *  furnizsh — npm entry point
+ *  https://github.com/Wosmos/furnizsh
  *
  *  Node is only the delivery mechanism here. This file locates the
  *  payload that ships alongside it and hands off to the real script:
  *  install.sh on macOS/Linux, install.ps1 on Windows.
  *
- *      npx afterglow-terminal install
- *      npm i -g afterglow-terminal && afterglow install
+ *      npx furnizsh install
+ *      npm i -g furnizsh && furnizsh install
  *
  *  Nothing is installed, downloaded or written by requiring this file —
  *  there is deliberately no postinstall hook. Setting up your shell only
- *  happens when you run `afterglow install` yourself.
+ *  happens when you run `furnizsh install` yourself.
  * ============================================================ */
 
 'use strict';
@@ -34,12 +34,12 @@ function readVersion() {
 }
 
 function usage() {
-  console.log(`afterglow ${readVersion()} — a neon terminal, in one command
+  console.log(`furnizsh ${readVersion()} — a neon terminal, in one command
 
-  afterglow <command> [flags]
+  furnizsh <command> [flags]
 
 Commands:
-  install      set up the terminal   (afterglow install --help for flags)
+  install      set up the terminal   (furnizsh install --help for flags)
   uninstall    remove it, restore backups
   doctor       health-check every part of the setup
   theme [name] list themes, or switch to one
@@ -47,11 +47,11 @@ Commands:
   help         this message
 
 Examples:
-  afterglow install --dry-run
-  afterglow install --theme gruvbox --tools extended
-  afterglow theme catppuccin
+  furnizsh install --dry-run
+  furnizsh install --theme gruvbox --tools extended
+  furnizsh theme catppuccin
 
-Docs: https://wosmos.github.io/afterglow`);
+Docs: https://wosmos.github.io/furnizsh`);
 }
 
 /**
@@ -63,7 +63,7 @@ function run(script, args) {
   const target = path.join(PAYLOAD, script);
 
   if (!fs.existsSync(target)) {
-    console.error(`afterglow: missing payload file ${script}.`);
+    console.error(`furnizsh: missing payload file ${script}.`);
     console.error('The package looks incomplete — try reinstalling it.');
     process.exit(1);
   }
@@ -81,19 +81,19 @@ function run(script, args) {
 
   const child = spawn(cmd, cmdArgs, {
     stdio: 'inherit',
-    env: { ...process.env, AFTERGLOW_SHARE: PAYLOAD },
+    env: { ...process.env, FURNIZSH_SHARE: PAYLOAD },
   });
 
   child.on('error', (err) => {
     if (err.code === 'ENOENT') {
-      console.error(`afterglow: ${cmd} not found on PATH.`);
+      console.error(`furnizsh: ${cmd} not found on PATH.`);
       if (IS_WINDOWS) {
         console.error('Install PowerShell 7: winget install Microsoft.PowerShell');
       } else {
         console.error('bash is required to run the installer.');
       }
     } else {
-      console.error(`afterglow: ${err.message}`);
+      console.error(`furnizsh: ${err.message}`);
     }
     process.exit(1);
   });
@@ -105,14 +105,14 @@ function run(script, args) {
 }
 
 function version() {
-  console.log(`afterglow ${readVersion()}  (npm package)`);
+  console.log(`furnizsh ${readVersion()}  (npm package)`);
   console.log(`  payload:   ${PAYLOAD}`);
 
-  const installed = path.join(os.homedir(), '.config', 'afterglow', 'VERSION');
+  const installed = path.join(os.homedir(), '.config', 'furnizsh', 'VERSION');
   if (fs.existsSync(installed)) {
     console.log(`  installed: ${fs.readFileSync(installed, 'utf8').trim()}`);
   } else {
-    console.log('  installed: not installed — run `afterglow install`');
+    console.log('  installed: not installed — run `furnizsh install`');
   }
 }
 
@@ -137,7 +137,7 @@ function main() {
       // one code path, same backups, same validation.
       if (args.length === 0) {
         const dir = path.join(PAYLOAD, 'config', 'themes');
-        console.log('\nThemes  (afterglow theme <name> to switch)\n');
+        console.log('\nThemes  (furnizsh theme <name> to switch)\n');
         for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.theme'))) {
           const body = fs.readFileSync(path.join(dir, file), 'utf8');
           const label = /^THEME_LABEL="(.*)"$/m.exec(body)?.[1] ?? '';
@@ -158,7 +158,7 @@ function main() {
     case '-h':
       return usage();
     default:
-      console.error(`afterglow: unknown command '${command}'\n`);
+      console.error(`furnizsh: unknown command '${command}'\n`);
       usage();
       process.exit(1);
   }

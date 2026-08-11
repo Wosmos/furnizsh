@@ -1,5 +1,5 @@
 # lazygit — Catppuccin Mocha
-# Used by the `neon` and `catppuccin` afterglow themes.
+# Used by the `neon` and `catppuccin` furnizsh themes.
 gui:
   nerdFontsVersion: "3"
   showIcons: true

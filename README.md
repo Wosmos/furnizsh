@@ -1,6 +1,6 @@
 <div align="center">
 
-# afterglow
+# furnizsh
 
 **A neon terminal — Ghostty + zsh + Starship, in one command.**
 
@@ -8,7 +8,7 @@ Four matched themes, 24 helper commands, and the modern replacements for `ls`,
 `cat`, `find`, `cd`, `diff` and `git` — installed, themed to match, and wired
 together. macOS, Linux and Windows.
 
-[**Docs**](https://wosmos.github.io/afterglow) ·
+[**Docs**](https://wosmos.github.io/furnizsh) ·
 [Setup guide](docs/SETUP.md) ·
 [Cheatsheet](docs/CHEATSHEET.md) ·
 [Commands](docs/COMMANDS.md) ·
@@ -26,32 +26,32 @@ together. macOS, Linux and Windows.
 ## Install
 
 ```bash
-curl -fsSL https://wosmos.github.io/afterglow/install | sh
+curl -fsSL https://wosmos.github.io/furnizsh/install | sh
 ```
 
 Or through a package manager:
 
 ```bash
-brew tap wosmos/tap && brew install afterglow && afterglow install   # macOS, Linux
-npm i -g afterglow-terminal && afterglow install                     # anywhere with Node
+brew tap wosmos/tap && brew install furnizsh && furnizsh install   # macOS, Linux
+npm i -g furnizsh && furnizsh install                     # anywhere with Node
 ```
 
 ```powershell
-Install-Module afterglow -Scope CurrentUser; Install-Afterglow       # Windows
+Install-Module furnizsh -Scope CurrentUser; Install-Furnizsh       # Windows
 ```
 
 Or clone it, if you'd rather read every line first:
 
 ```bash
-git clone https://github.com/Wosmos/afterglow.git
-cd afterglow
+git clone https://github.com/Wosmos/furnizsh.git
+cd furnizsh
 ./install.sh
 ```
 
 See exactly what it would do first — this changes nothing:
 
 ```bash
-curl -fsSL https://wosmos.github.io/afterglow/install | sh -s -- --dry-run
+curl -fsSL https://wosmos.github.io/furnizsh/install | sh -s -- --dry-run
 ```
 
 Then open a new terminal and run `agdoctor` to verify, `cheatsheet` for the
@@ -90,11 +90,11 @@ Everything optional is behind a flag. A plain `./install.sh` stays minimal.
 
 ## It won't wreck your setup
 
-This is the part most dotfiles repos get wrong. afterglow:
+This is the part most dotfiles repos get wrong. furnizsh:
 
 - **Never overwrites your `~/.zshrc`.** It appends one guarded `source` line and
   keeps everything else. Your PATH exports, work tooling and aliases — untouched.
-- **Backs up every file it replaces** to `~/.afterglow-backup/<timestamp>/`.
+- **Backs up every file it replaces** to `~/.furnizsh-backup/<timestamp>/`.
 - **Is idempotent.** Run it as often as you like; it only changes what drifted.
 - **Uninstalls cleanly.** `./uninstall.sh` strips the block and restores your
   originals. Verified in CI — your `.zshrc` comes back byte-for-byte.
@@ -214,7 +214,7 @@ scheme. Both routes: [docs/WINDOWS.md](docs/WINDOWS.md).
 install.sh  · uninstall.sh  · doctor.sh    macOS + Linux
 install.ps1 · uninstall.ps1 · doctor.ps1   Windows
 config/
-  zsh/afterglow.zsh                        the shell config that gets sourced
+  zsh/furnizsh.zsh                        the shell config that gets sourced
   zsh/functions.zsh                        cheatsheet + the core commands
   zsh/extras.zsh                           the network-dependent commands
   themes/*.theme                           the four looks
@@ -241,7 +241,7 @@ hostnames — just the terminal. CI fails the build if any of that sneaks in.
 - **Different font:** any [Nerd Font](https://nerdfonts.com) works — the icons
   need one, the family doesn't matter.
 - **Fewer plugins:** trim the `plugins=(...)` array in
-  `config/zsh/afterglow.zsh`. Keep `zsh-syntax-highlighting` last.
+  `config/zsh/furnizsh.zsh`. Keep `zsh-syntax-highlighting` last.
 
 Then `./install.sh` again, or `agupdate` to pull and reapply in one go.
 

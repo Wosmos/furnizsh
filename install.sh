@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # ============================================================
-#  afterglow — installer for macOS and Linux
-#  https://github.com/Wosmos/afterglow
+#  furnizsh — installer for macOS and Linux
+#  https://github.com/Wosmos/furnizsh
 #
 #  Safe by design:
 #    * never overwrites your ~/.zshrc — appends one guarded source line
-#    * backs up every file it replaces to ~/.afterglow-backup/<timestamp>/
+#    * backs up every file it replaces to ~/.furnizsh-backup/<timestamp>/
 #    * idempotent — rerun it any time
 #    * --dry-run prints every action and changes nothing
 #
@@ -15,11 +15,11 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-AFTERGLOW_HOME="$HOME/.config/afterglow"
-AFTERGLOW_VERSION="$(cat "$REPO_DIR/VERSION" 2>/dev/null || printf 'dev')"
-BACKUP_DIR="$HOME/.afterglow-backup/$(date +%Y%m%d-%H%M%S)"
-MARKER_START="# >>> afterglow >>>"
-MARKER_END="# <<< afterglow <<<"
+FURNIZSH_HOME="$HOME/.config/furnizsh"
+FURNIZSH_VERSION="$(cat "$REPO_DIR/VERSION" 2>/dev/null || printf 'dev')"
+BACKUP_DIR="$HOME/.furnizsh-backup/$(date +%Y%m%d-%H%M%S)"
+MARKER_START="# >>> furnizsh >>>"
+MARKER_END="# <<< furnizsh <<<"
 
 # ---- defaults ----
 DRY_RUN=0
@@ -85,7 +85,7 @@ confirm() {
 
 usage() {
   cat <<'EOF'
-afterglow installer
+furnizsh installer
 
   ./install.sh [options]
 
@@ -247,7 +247,7 @@ selected_tools() {
 
 # Package names differ per distro. Notably Debian/Ubuntu ship fd as
 # `fd-find` and bat as `batcat` (both collide with unrelated packages),
-# and httpie's binary is `http`. afterglow.zsh aliases around this.
+# and httpie's binary is `http`. furnizsh.zsh aliases around this.
 translate_pkg() {
   local p="$1"
   case "$PKG:$p" in
@@ -386,25 +386,25 @@ install_omz() {
 install_configs() {
   step "Installing config  (theme: $THEME_LABEL)"
 
-  install_file "$REPO_DIR/config/zsh/afterglow.zsh" "$AFTERGLOW_HOME/afterglow.zsh"
-  install_file "$REPO_DIR/config/zsh/functions.zsh" "$AFTERGLOW_HOME/functions.zsh"
+  install_file "$REPO_DIR/config/zsh/furnizsh.zsh" "$FURNIZSH_HOME/furnizsh.zsh"
+  install_file "$REPO_DIR/config/zsh/functions.zsh" "$FURNIZSH_HOME/functions.zsh"
 
   if [ "$INSTALL_EXTRAS" -eq 1 ]; then
-    install_file "$REPO_DIR/config/zsh/extras.zsh" "$AFTERGLOW_HOME/extras.zsh"
+    install_file "$REPO_DIR/config/zsh/extras.zsh" "$FURNIZSH_HOME/extras.zsh"
   else
     skip "extras.zsh skipped (--no-extras)"
-    [ -f "$AFTERGLOW_HOME/extras.zsh" ] && run rm -f "$AFTERGLOW_HOME/extras.zsh"
+    [ -f "$FURNIZSH_HOME/extras.zsh" ] && run rm -f "$FURNIZSH_HOME/extras.zsh"
   fi
 
   # Every theme definition ships, so `theme <name>` can switch later
   # without needing the repo checkout.
-  run mkdir -p "$AFTERGLOW_HOME/themes/lazygit"
+  run mkdir -p "$FURNIZSH_HOME/themes/lazygit"
   local f
   for f in "$REPO_DIR"/config/themes/*.theme; do
-    install_file "$f" "$AFTERGLOW_HOME/themes/$(basename "$f")"
+    install_file "$f" "$FURNIZSH_HOME/themes/$(basename "$f")"
   done
   for f in "$REPO_DIR"/config/themes/lazygit/*.yml; do
-    install_file "$f" "$AFTERGLOW_HOME/themes/lazygit/$(basename "$f")"
+    install_file "$f" "$FURNIZSH_HOME/themes/lazygit/$(basename "$f")"
   done
 
   install_theme
@@ -464,9 +464,9 @@ install_theme() {
   # Record the active theme and version so `theme`, `cheatsheet` and
   # `agdoctor` can report them without needing the repo on disk.
   if [ "$DRY_RUN" -eq 0 ]; then
-    mkdir -p "$AFTERGLOW_HOME"
-    printf '%s' "$THEME" > "$AFTERGLOW_HOME/current-theme"
-    printf '%s' "$AFTERGLOW_VERSION" > "$AFTERGLOW_HOME/VERSION"
+    mkdir -p "$FURNIZSH_HOME"
+    printf '%s' "$THEME" > "$FURNIZSH_HOME/current-theme"
+    printf '%s' "$FURNIZSH_VERSION" > "$FURNIZSH_HOME/VERSION"
   fi
 }
 
@@ -498,16 +498,16 @@ wire_zshrc() {
   cat >>"$zshrc" <<EOF
 
 $MARKER_START
-# Managed by afterglow — https://github.com/Wosmos/afterglow
-# Everything below the marker is loaded from ~/.config/afterglow/.
+# Managed by furnizsh — https://github.com/Wosmos/furnizsh
+# Everything below the marker is loaded from ~/.config/furnizsh/.
 # Remove this block (or run ./uninstall.sh) to opt out.
-[ -f "\$HOME/.config/afterglow/afterglow.zsh" ] && source "\$HOME/.config/afterglow/afterglow.zsh"
+[ -f "\$HOME/.config/furnizsh/furnizsh.zsh" ] && source "\$HOME/.config/furnizsh/furnizsh.zsh"
 $MARKER_END
 EOF
 
   ok "source block appended"
-  warn "afterglow initializes Starship, which must run last. Keep any prompt-related"
-  warn "config you add later ABOVE the afterglow block."
+  warn "furnizsh initializes Starship, which must run last. Keep any prompt-related"
+  warn "config you add later ABOVE the furnizsh block."
 }
 
 # ------------------------------------------------------------
@@ -603,9 +603,9 @@ install_claude_extras() {
 # main
 # ------------------------------------------------------------
 main() {
-  printf "\n%s%s  afterglow%s %s%s%s  %sa neon terminal, in one command%s\n" \
-    "$C_BOLD" "$C_BLUE" "$C_RESET" "$C_GRAY" "$AFTERGLOW_VERSION" "$C_RESET" "$C_GRAY" "$C_RESET"
-  printf "  %shttps://github.com/Wosmos/afterglow%s\n" "$C_GRAY" "$C_RESET"
+  printf "\n%s%s  furnizsh%s %s%s%s  %sa neon terminal, in one command%s\n" \
+    "$C_BOLD" "$C_BLUE" "$C_RESET" "$C_GRAY" "$FURNIZSH_VERSION" "$C_RESET" "$C_GRAY" "$C_RESET"
+  printf "  %shttps://github.com/Wosmos/furnizsh%s\n" "$C_GRAY" "$C_RESET"
 
   [ "$DRY_RUN" -eq 1 ] && printf "\n  %s%sDRY RUN — nothing will be changed.%s\n" "$C_BOLD" "$C_ORANGE" "$C_RESET"
 

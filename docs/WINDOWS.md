@@ -64,13 +64,13 @@ sudo apt install -y x11-apps && xeyes
 
 If a pair of googly eyes appears on your Windows desktop, GUI apps work.
 
-### 3. Install afterglow
+### 3. Install furnizsh
 
 Inside WSL:
 
 ```bash
-git clone https://github.com/Wosmos/afterglow.git
-cd afterglow
+git clone https://github.com/Wosmos/furnizsh.git
+cd furnizsh
 ./install.sh
 ```
 
@@ -112,8 +112,8 @@ winget install Microsoft.WindowsTerminal
 ### 3. Run the installer
 
 ```powershell
-git clone https://github.com/Wosmos/afterglow.git
-cd afterglow
+git clone https://github.com/Wosmos/furnizsh.git
+cd furnizsh
 .\install.ps1 -DryRun    # see what it would do
 .\install.ps1
 ```
@@ -156,14 +156,14 @@ The installer:
   admin rights needed
 - writes the PowerShell profile with all the aliases and helper commands
 - adds the colour schemes to Windows Terminal's `settings.json`
-- backs up anything it replaces to `~\.afterglow-backup\<timestamp>\`
+- backs up anything it replaces to `~\.furnizsh-backup\<timestamp>\`
 
 ### 4. Point Windows Terminal at the theme
 
 `ctrl+,` → your PowerShell profile → Appearance:
 
 - **Color scheme:** `Catppuccin Mocha` (matches the prompt exactly) or
-  `Afterglow Neon` (closer to the Ghostty look)
+  `Furnizsh Neon` (closer to the Ghostty look)
 - **Font face:** `JetBrainsMono Nerd Font Mono`
 
 ### 5. Verify
@@ -216,7 +216,7 @@ gone: no `ESC ESC` for sudo, no `x` extract command, no `copypath`, no
 `dirhistory`. The `git` plugin's aliases are the biggest loss — if you want
 them, [posh-git](https://github.com/dahlbyk/posh-git) covers some ground.
 
-**All 24 afterglow commands work**, ported to PowerShell — `cheatsheet`,
+**All 24 furnizsh commands work**, ported to PowerShell — `cheatsheet`,
 `agdoctor`, `theme`, `agupdate`, `mkcd`, `up`, `serve`, `ports`, `killport`,
 `fkill`, `fe`, `bak`, `sizeof`, `gprune`, `paths`, `reload`, plus the eight
 extras (`weather`, `cheat`, `qr`, `gitignore`, `note`, `timer`, `sysinfo`,

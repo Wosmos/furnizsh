@@ -1,6 +1,6 @@
 # Changelog
 
-Notable changes to afterglow. Format loosely follows
+Notable changes to furnizsh. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [1.0.0] — 2026-08-12
@@ -49,18 +49,18 @@ First public release.
 ### Safety
 
 - The installer never overwrites `~/.zshrc`; it appends one marked `source` line
-- Everything replaced is backed up to `~/.afterglow-backup/<timestamp>/`
+- Everything replaced is backed up to `~/.furnizsh-backup/<timestamp>/`
 - Idempotent, and `./uninstall.sh` restores the original byte-for-byte
 - `--dry-run` prints every action and changes nothing
 - Login-shell changes, git pager replacement and profile overwrites all prompt
 
 ### Distribution
 
-- `curl -fsSL https://wosmos.github.io/afterglow/install | sh` — no clone, ~50 KB
-- Homebrew tap: `brew tap wosmos/tap && brew install afterglow`
-- npm: `npm i -g afterglow-terminal` (63 KB published)
-- PowerShell Gallery: `Install-Module afterglow`
-- An `afterglow` command wrapping install / uninstall / doctor / theme / version
+- `curl -fsSL https://wosmos.github.io/furnizsh/install | sh` — no clone, ~50 KB
+- Homebrew tap: `brew tap wosmos/tap && brew install furnizsh`
+- npm: `npm i -g furnizsh` (63 KB published)
+- PowerShell Gallery: `Install-Module furnizsh`
+- An `furnizsh` command wrapping install / uninstall / doctor / theme / version
 - Tag-triggered release workflow with build provenance attestation
 
 ### CI

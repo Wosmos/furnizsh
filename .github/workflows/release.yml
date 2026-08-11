@@ -95,13 +95,13 @@ jobs:
             echo '### Install'
             echo ''
             echo '```bash'
-            echo 'curl -fsSL https://wosmos.github.io/afterglow/install | sh'
+            echo 'curl -fsSL https://wosmos.github.io/furnizsh/install | sh'
             echo '# or'
-            echo 'brew tap wosmos/tap && brew install afterglow'
+            echo 'brew tap wosmos/tap && brew install furnizsh'
             echo '```'
             echo ''
             echo '```powershell'
-            echo 'Install-Module afterglow -Scope CurrentUser'
+            echo 'Install-Module furnizsh -Scope CurrentUser'
             echo '```'
             echo ''
             echo "\`sha256\`: \`${{ steps.hash.outputs.sha256 }}\`"
@@ -113,7 +113,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "${{ needs.verify.outputs.tag }}" \
-            --title "afterglow ${{ needs.verify.outputs.version }}" \
+            --title "furnizsh ${{ needs.verify.outputs.version }}" \
             --notes-file notes.md \
             --verify-tag
 
@@ -149,18 +149,18 @@ jobs:
           sed -e "s|/v[0-9][0-9.]*\.tar\.gz|/v${VERSION}.tar.gz|" \
               -e "s|REPLACE_WITH_SHA256|${SHA}|" \
               -e "s|sha256 \"[a-f0-9]\{64\}\"|sha256 \"${SHA}\"|" \
-              packaging/homebrew/afterglow.rb > afterglow.rb
+              packaging/homebrew/furnizsh.rb > furnizsh.rb
 
           git clone "https://x-access-token:${TAP_TOKEN}@github.com/Wosmos/homebrew-tap.git" tap
           mkdir -p tap/Formula
-          cp afterglow.rb tap/Formula/afterglow.rb
+          cp furnizsh.rb tap/Formula/furnizsh.rb
 
           cd tap
           git config user.name  "Wosmos"
           git config user.email "m.wasifmalik17@gmail.com"
-          git add Formula/afterglow.rb
+          git add Formula/furnizsh.rb
           git diff --staged --quiet && { echo "formula already current"; exit 0; }
-          git commit -m "afterglow ${VERSION}"
+          git commit -m "furnizsh ${VERSION}"
           git push
 
   # ------------------------------------------------------------
@@ -190,7 +190,7 @@ jobs:
           cp README.md LICENSE dist/npm/
           cd dist/npm
           npm version "$VERSION" --no-git-tag-version --allow-same-version
-          node bin/afterglow.js help   # smoke test before publishing
+          node bin/furnizsh.js help   # smoke test before publishing
 
       - name: Publish
         env:
@@ -217,20 +217,20 @@ jobs:
         shell: pwsh
         run: |
           $version = "${{ needs.verify.outputs.version }}"
-          New-Item -ItemType Directory -Force -Path dist/afterglow/payload | Out-Null
-          Copy-Item packaging/powershell/* dist/afterglow/ -Recurse
-          Copy-Item config, extras -Destination dist/afterglow/payload -Recurse
+          New-Item -ItemType Directory -Force -Path dist/furnizsh/payload | Out-Null
+          Copy-Item packaging/powershell/* dist/furnizsh/ -Recurse
+          Copy-Item config, extras -Destination dist/furnizsh/payload -Recurse
           Copy-Item install.ps1, uninstall.ps1, doctor.ps1, VERSION, LICENSE, README.md `
-                    -Destination dist/afterglow/payload
+                    -Destination dist/furnizsh/payload
 
           # Keep the manifest version in lockstep with VERSION.
-          $psd1 = 'dist/afterglow/afterglow.psd1'
+          $psd1 = 'dist/furnizsh/furnizsh.psd1'
           (Get-Content $psd1 -Raw) -replace "ModuleVersion\s*=\s*'[^']*'", "ModuleVersion     = '$version'" |
             Set-Content $psd1 -Encoding UTF8
 
           Test-ModuleManifest $psd1
-          Import-Module (Resolve-Path 'dist/afterglow/afterglow.psd1') -Force
-          Get-AfterglowVersion
+          Import-Module (Resolve-Path 'dist/furnizsh/furnizsh.psd1') -Force
+          Get-FurnizshVersion
 
       - name: Publish
         shell: pwsh
@@ -242,4 +242,4 @@ jobs:
             Write-Host "Create an API key at powershellgallery.com and add it as PSGALLERY_KEY."
             exit 0
           }
-          Publish-Module -Path dist/afterglow -NuGetApiKey $env:PSGALLERY_KEY -Verbose
+          Publish-Module -Path dist/furnizsh -NuGetApiKey $env:PSGALLERY_KEY -Verbose

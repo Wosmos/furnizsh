@@ -1,15 +1,15 @@
 <#
-    afterglow — PowerShell module
+    furnizsh — PowerShell module
 
     A thin wrapper over the payload scripts, so the Gallery install gives
     you real cmdlets rather than a folder of loose files.
 
-        Install-Module afterglow -Scope CurrentUser
-        Install-Afterglow -DryRun
-        Install-Afterglow -Theme gruvbox -Tools extended
+        Install-Module furnizsh -Scope CurrentUser
+        Install-Furnizsh -DryRun
+        Install-Furnizsh -Theme gruvbox -Tools extended
 
     Importing this module changes nothing. Setting up your shell only
-    happens when you call Install-Afterglow yourself.
+    happens when you call Install-Furnizsh yourself.
 #>
 
 Set-StrictMode -Version Latest
@@ -23,7 +23,7 @@ function Get-PayloadScript {
 
     $path = Join-Path $script:PayloadRoot $Name
     if (-not (Test-Path $path)) {
-        throw "afterglow: missing payload file '$Name'. The module looks incomplete - try reinstalling it."
+        throw "furnizsh: missing payload file '$Name'. The module looks incomplete - try reinstalling it."
     }
     return $path
 }
@@ -36,18 +36,18 @@ function Invoke-PayloadScript {
     )
 
     $script = Get-PayloadScript $Name
-    $env:AFTERGLOW_SHARE = $script:PayloadRoot
+    $env:FURNIZSH_SHARE = $script:PayloadRoot
     & $script @Parameters
 }
 
-function Install-Afterglow {
+function Install-Furnizsh {
     <#
     .SYNOPSIS
         Set up the terminal: tools, PowerShell profile, theme and Windows Terminal schemes.
 
     .DESCRIPTION
-        Backs up anything it replaces to ~/.afterglow-backup/<timestamp>/, is
-        idempotent, and can be reversed with Uninstall-Afterglow.
+        Backs up anything it replaces to ~/.furnizsh-backup/<timestamp>/, is
+        idempotent, and can be reversed with Uninstall-Furnizsh.
 
     .PARAMETER Theme
         neon (default), catppuccin, gruvbox or tokyonight.
@@ -59,10 +59,10 @@ function Install-Afterglow {
         Print every action without changing anything. Run this first.
 
     .EXAMPLE
-        Install-Afterglow -DryRun
+        Install-Furnizsh -DryRun
 
     .EXAMPLE
-        Install-Afterglow -Theme gruvbox -Tools extended
+        Install-Furnizsh -Theme gruvbox -Tools extended
     #>
     [CmdletBinding()]
     param(
@@ -86,19 +86,19 @@ function Install-Afterglow {
     Invoke-PayloadScript -Name 'install.ps1' -Parameters $params
 }
 
-function Uninstall-Afterglow {
+function Uninstall-Furnizsh {
     <#
     .SYNOPSIS
-        Remove afterglow and optionally restore your previous config.
+        Remove furnizsh and optionally restore your previous config.
 
     .PARAMETER Restore
         Also restore the profile and configs from the most recent backup.
 
     .EXAMPLE
-        Uninstall-Afterglow -DryRun
+        Uninstall-Furnizsh -DryRun
 
     .EXAMPLE
-        Uninstall-Afterglow -Restore
+        Uninstall-Furnizsh -Restore
     #>
     [CmdletBinding()]
     param(
@@ -116,13 +116,13 @@ function Uninstall-Afterglow {
     Invoke-PayloadScript -Name 'uninstall.ps1' -Parameters $params
 }
 
-function Test-Afterglow {
+function Test-Furnizsh {
     <#
     .SYNOPSIS
         Health-check every part of the setup. Exits non-zero on failure, so it works in CI.
 
     .EXAMPLE
-        Test-Afterglow
+        Test-Furnizsh
     #>
     [CmdletBinding()]
     param([switch]$Quiet)
@@ -132,16 +132,16 @@ function Test-Afterglow {
     Invoke-PayloadScript -Name 'doctor.ps1' -Parameters $params
 }
 
-function Set-AfterglowTheme {
+function Set-FurnizshTheme {
     <#
     .SYNOPSIS
-        List afterglow themes, or switch to one.
+        List furnizsh themes, or switch to one.
 
     .EXAMPLE
-        Set-AfterglowTheme            # list them
+        Set-FurnizshTheme            # list them
 
     .EXAMPLE
-        Set-AfterglowTheme gruvbox    # switch
+        Set-FurnizshTheme gruvbox    # switch
     #>
     [CmdletBinding()]
     param(
@@ -152,7 +152,7 @@ function Set-AfterglowTheme {
     $themesDir = Join-Path $script:PayloadRoot 'config\themes'
 
     if (-not $Name) {
-        Write-Host "`nThemes  (Set-AfterglowTheme <name> to switch)`n"
+        Write-Host "`nThemes  (Set-FurnizshTheme <name> to switch)`n"
         foreach ($f in Get-ChildItem $themesDir -Filter *.theme | Sort-Object Name) {
             $label = (Select-String -Path $f.FullName -Pattern '^THEME_LABEL="(.*)"').Matches[0].Groups[1].Value
             Write-Host ("  {0,-12} {1}" -f $f.BaseName, $label)
@@ -168,7 +168,7 @@ function Set-AfterglowTheme {
     }
 }
 
-function Get-AfterglowVersion {
+function Get-FurnizshVersion {
     <#
     .SYNOPSIS
         Show the packaged version and, if set up, the installed one.
@@ -180,11 +180,11 @@ function Get-AfterglowVersion {
     $versionFile = Join-Path $script:PayloadRoot 'VERSION'
     if (Test-Path $versionFile) { $packaged = (Get-Content $versionFile -Raw).Trim() }
 
-    $installedFile = Join-Path $HOME '.config\afterglow\VERSION'
+    $installedFile = Join-Path $HOME '.config\furnizsh\VERSION'
     $installed = if (Test-Path $installedFile) {
         (Get-Content $installedFile -Raw).Trim()
     } else {
-        'not installed - run Install-Afterglow'
+        'not installed - run Install-Furnizsh'
     }
 
     [PSCustomObject]@{
@@ -194,10 +194,10 @@ function Get-AfterglowVersion {
     }
 }
 
-# `afterglow` as a familiar entry point for anyone arriving from the docs.
-Set-Alias -Name afterglow -Value Install-Afterglow
+# `furnizsh` as a familiar entry point for anyone arriving from the docs.
+Set-Alias -Name furnizsh -Value Install-Furnizsh
 
 Export-ModuleMember `
-    -Function Install-Afterglow, Uninstall-Afterglow, Test-Afterglow,
-              Set-AfterglowTheme, Get-AfterglowVersion `
-    -Alias afterglow
+    -Function Install-Furnizsh, Uninstall-Furnizsh, Test-Furnizsh,
+              Set-FurnizshTheme, Get-FurnizshVersion `
+    -Alias furnizsh

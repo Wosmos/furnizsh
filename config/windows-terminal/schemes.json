@@ -1,6 +1,6 @@
 {
   "_comment": [
-    "afterglow — Windows Terminal colour schemes.",
+    "furnizsh — Windows Terminal colour schemes.",
     "",
     "Ghostty has no Windows build, so its bundled 'Neon' theme can't be used",
     "directly here. Two options are provided:",
@@ -8,7 +8,7 @@
     "  Catppuccin Mocha  — the exact palette the Starship prompt, lazygit theme",
     "                      and cheatsheet colours use. Pick this one if you want",
     "                      everything to match perfectly.",
-    "  Afterglow Neon    — a neon-leaning scheme written for this repo. It is NOT",
+    "  Furnizsh Neon    — a neon-leaning scheme written for this repo. It is NOT",
     "                      a port of Ghostty's Neon theme (those values aren't",
     "                      published in a portable format) — it's an approximation",
     "                      of the same near-black-plus-glowing-accents feel.",
@@ -44,7 +44,7 @@
       "brightWhite": "#A6ADC8"
     },
     {
-      "name": "Afterglow Neon",
+      "name": "Furnizsh Neon",
       "background": "#0B0B12",
       "foreground": "#D6DEEB",
       "cursorColor": "#00F5D4",
