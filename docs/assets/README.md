@@ -1,7 +1,7 @@
 # Site assets
 
-Everything here except the two SVGs is derived from `mascot.png`, which is the
-artwork itself.
+Everything here except the two SVGs is derived from `mascot.png`, which is a
+cropped and resized copy of [`brand/mascot-original.png`](../../brand/mascot-original.png).
 
 | File | What |
 |---|---|
