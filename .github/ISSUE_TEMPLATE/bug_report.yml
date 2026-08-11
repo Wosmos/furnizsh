@@ -1,0 +1,59 @@
+name: Bug report
+description: Something in the setup doesn't work
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. The `doctor` output below usually identifies the
+        problem on its own, so please include it.
+
+  - type: textarea
+    id: doctor
+    attributes:
+      label: doctor output
+      description: "`./doctor.sh` on macOS/Linux, `.\\doctor.ps1` on Windows"
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you ran, what you expected, what you got instead.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - macOS
+        - Linux
+        - Windows (WSL2)
+        - Windows (native PowerShell)
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: OS version and distro
+      placeholder: "macOS 15.2 / Ubuntu 24.04 / Windows 11 23H2"
+    validations:
+      required: true
+
+  - type: input
+    id: theme
+    attributes:
+      label: Theme and tool set
+      placeholder: "neon, --tools extended"
+
+  - type: textarea
+    id: install
+    attributes:
+      label: Install output
+      description: For install problems, the output of `./install.sh --dry-run`.
+      render: shell

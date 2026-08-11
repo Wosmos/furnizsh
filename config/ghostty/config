@@ -1,0 +1,51 @@
+# afterglow — Ghostty config
+# Reference: https://ghostty.org/docs/config/reference
+#
+# Installed to ~/.config/ghostty/config (macOS and Linux alike).
+# Ghostty reloads on save — cmd+, opens this file.
+
+theme = Neon
+
+font-family = JetBrainsMono Nerd Font Mono
+font-size = 14
+
+window-padding-x = 10
+window-padding-y = 10
+
+cursor-style = block
+cursor-style-blink = true
+
+# No custom-shader — plain default rendering, no glow or blur.
+#
+# Both a bloom-glow shader and a full CRT scanline/warp shader were tried
+# on this setup and reverted: bloom blurs text by design (it blends
+# neighbouring bright pixels together) and the CRT shader cost enough GPU
+# to make scrolling stutter. If you want to experiment anyway, see the
+# "Optional: shader effects" section in docs/SETUP.md.
+
+# Ghostty's default shell-integration title feature shows the running
+# command name, not the folder. Disabled here — zsh sets its own title
+# (current directory) via a precmd hook in afterglow.zsh instead, so both
+# tabs and windows always show which folder you're in.
+shell-integration-features = no-title,cursor,no-sudo,no-ssh-env,no-ssh-terminfo,path
+
+# Theme names occasionally get re-cased between Ghostty releases. Run
+#   ghostty +list-themes
+# to confirm "Neon" is still exact on your version. Other built-in
+# neon/retro options if you want to switch:
+#   Synthwave · Cyberpunk · Retro (pure green phosphor) · Retro Legends
+#
+# Catppuccin Mocha is also bundled, if you'd rather have the terminal
+# match the Starship prompt exactly:
+#   theme = catppuccin-mocha
+
+# Default keybinds already cover the basics (no overrides needed):
+#   cmd+n          new window
+#   cmd+t          new tab
+#   cmd+w          close tab (closes window if it's the last tab)
+#   cmd+shift+w    close window
+#   cmd+shift+]/[  next / previous tab
+#   cmd+d          split right
+#   cmd+shift+d    split down
+#   cmd+1..cmd+9   jump to tab N
+# Full list: `cheatsheet --comp`, or https://ghostty.org/docs/config/keybind

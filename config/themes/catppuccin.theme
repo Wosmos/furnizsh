@@ -1,0 +1,14 @@
+# afterglow theme — catppuccin
+#
+# Catppuccin Mocha everywhere: terminal, prompt, lazygit and the helper command
+# output all use the same palette. The most cohesive of the four.
+
+THEME_ID="catppuccin"
+THEME_LABEL="Catppuccin Mocha"
+THEME_BLURB="Soft pastels on deep plum. Everything matches exactly."
+
+GHOSTTY_THEME="Catppuccin Mocha"
+STARSHIP_PRESET="catppuccin-powerline"
+LAZYGIT_PALETTE="catppuccin"
+
+ACCENT="#CBA6F7"

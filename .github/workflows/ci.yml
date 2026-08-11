@@ -1,0 +1,332 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ------------------------------------------------------------
+  # Static analysis — the fast gate. Everything else is slower,
+  # so this runs first and the rest only if it passes.
+  # ------------------------------------------------------------
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Lint bash scripts
+        run: shellcheck --severity=warning install.sh uninstall.sh doctor.sh
+
+      # The zsh files use zsh-only syntax that shellcheck can't parse,
+      # so they get zsh's own parser instead.
+      - name: Install zsh
+        run: sudo apt-get install -y zsh
+
+      - name: Parse zsh config
+        run: |
+          for f in config/zsh/*.zsh; do
+            echo "checking $f"
+            zsh -n "$f"
+          done
+
+  psscriptanalyzer:
+    name: PSScriptAnalyzer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: Install-Module PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
+
+      - name: Analyse
+        shell: pwsh
+        run: |
+          $results = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error,Warning `
+            -ExcludeRule PSAvoidUsingWriteHost,PSUseShouldProcessForStateChangingFunctions,PSAvoidUsingInvokeExpression
+          if ($results) {
+            $results | Format-Table -AutoSize
+            throw "$($results.Count) PSScriptAnalyzer finding(s)"
+          }
+          Write-Host "PSScriptAnalyzer clean"
+
+      - name: Parse every script
+        shell: pwsh
+        run: |
+          $errors = $null
+          foreach ($f in Get-ChildItem -Recurse -Filter *.ps1) {
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              $f.FullName, [ref]$null, [ref]$errors) | Out-Null
+            if ($errors) { throw "$($f.Name): $($errors[0].Message)" }
+          }
+          Write-Host "all .ps1 files parse"
+
+  # ------------------------------------------------------------
+  # Config validity — catches a broken YAML/JSON/TOML theme before
+  # anyone installs it.
+  # ------------------------------------------------------------
+  configs:
+    name: config files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate YAML, JSON and TOML
+        run: |
+          python3 - <<'PY'
+          import json, sys, pathlib, tomllib
+          ok = True
+
+          for f in pathlib.Path('config').rglob('*.json'):
+              try:
+                  json.loads(f.read_text())
+                  print(f"OK   {f}")
+              except Exception as e:
+                  print(f"FAIL {f}: {e}"); ok = False
+
+          for f in pathlib.Path('config').rglob('*.toml'):
+              try:
+                  tomllib.loads(f.read_text())
+                  print(f"OK   {f}")
+              except Exception as e:
+                  print(f"FAIL {f}: {e}"); ok = False
+
+          sys.exit(0 if ok else 1)
+          PY
+
+      - name: Validate lazygit themes
+        run: |
+          pip install --quiet pyyaml
+          python3 - <<'PY'
+          import yaml, sys, pathlib
+          ok = True
+          for f in pathlib.Path('config/themes/lazygit').glob('*.yml'):
+              try:
+                  data = yaml.safe_load(f.read_text())
+                  assert 'gui' in data and 'theme' in data['gui'], "missing gui.theme"
+                  print(f"OK   {f}")
+              except Exception as e:
+                  print(f"FAIL {f}: {e}"); ok = False
+          sys.exit(0 if ok else 1)
+          PY
+
+      - name: Every theme defines the required keys
+        run: |
+          fail=0
+          for f in config/themes/*.theme; do
+            for key in THEME_ID THEME_LABEL THEME_BLURB GHOSTTY_THEME STARSHIP_PRESET LAZYGIT_PALETTE; do
+              grep -q "^${key}=" "$f" || { echo "FAIL $f missing $key"; fail=1; }
+            done
+            # the palette it names must actually exist
+            palette=$(sed -n 's/^LAZYGIT_PALETTE="\(.*\)"/\1/p' "$f")
+            test -f "config/themes/lazygit/${palette}.yml" \
+              || { echo "FAIL $f references missing palette ${palette}.yml"; fail=1; }
+            echo "OK   $f"
+          done
+          exit $fail
+
+  # ------------------------------------------------------------
+  # Nothing environment-specific may ever reach this repo.
+  # ------------------------------------------------------------
+  secrets:
+    name: no secrets or personal data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan for secrets and machine-specific paths
+        run: |
+          fail=0
+          # Absolute home paths would only ever be someone's machine.
+          if grep -rnE '/(Users|home)/[a-z]' --include='*.sh' --include='*.zsh' \
+               --include='*.ps1' --include='*.toml' --include='*.yml' . ; then
+            echo "FAIL: absolute home path found — use \$HOME"; fail=1
+          fi
+          # Credential shapes.
+          if grep -rnE 'gh[pousr]_[A-Za-z0-9]{16,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----' \
+               --exclude-dir=.git . ; then
+            echo "FAIL: credential-shaped string found"; fail=1
+          fi
+          # Telemetry endpoints and .env files.
+          if grep -rniE 'OTEL_EXPORTER|\.env\b' --include='*.sh' --include='*.zsh' --include='*.ps1' . ; then
+            echo "FAIL: telemetry or .env reference found"; fail=1
+          fi
+          [ $fail -eq 0 ] && echo "clean"
+          exit $fail
+
+  # ------------------------------------------------------------
+  # The real test: install into a clean container and verify.
+  # ------------------------------------------------------------
+  install:
+    name: install on ${{ matrix.distro }}
+    needs: [shellcheck, configs]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: ubuntu
+            image: ubuntu:24.04
+            bootstrap: apt-get update && apt-get install -y sudo curl git zsh ca-certificates
+          - distro: fedora
+            image: fedora:41
+            bootstrap: dnf install -y sudo curl git zsh
+          - distro: arch
+            image: archlinux:latest
+            bootstrap: pacman -Sy --noconfirm sudo curl git zsh
+
+    container:
+      image: ${{ matrix.image }}
+      options: --user root
+
+    steps:
+      - name: Bootstrap the container
+        run: ${{ matrix.bootstrap }}
+
+      - uses: actions/checkout@v4
+
+      - name: Dry run changes nothing
+        run: |
+          cp "$HOME/.zshrc" /tmp/zshrc.before 2>/dev/null || touch /tmp/zshrc.before
+          ./install.sh --dry-run --tools core
+          cp "$HOME/.zshrc" /tmp/zshrc.after 2>/dev/null || touch /tmp/zshrc.after
+          diff /tmp/zshrc.before /tmp/zshrc.after && echo "dry run left .zshrc untouched"
+          test ! -d "$HOME/.config/afterglow" && echo "dry run created nothing"
+
+      - name: Install
+        run: ./install.sh --yes --no-font --no-claude --no-chsh --tools core
+
+      - name: The shell config loads without error
+        run: zsh -c 'source "$HOME/.config/afterglow/afterglow.zsh" && echo "afterglow.zsh sourced OK"'
+
+      - name: Commands are defined
+        run: |
+          zsh -c '
+            source "$HOME/.config/afterglow/afterglow.zsh"
+            missing=0
+            for fn in cheatsheet agdoctor theme agupdate mkcd up serve ports killport \
+                      fkill fe bak sizeof gclean paths reload \
+                      weather cheat qr gitignore note timer sysinfo dockerclean; do
+              if typeset -f $fn >/dev/null 2>&1 || alias $fn >/dev/null 2>&1; then
+                echo "  OK   $fn"
+              else
+                echo "  MISS $fn"; missing=1
+              fi
+            done
+            exit $missing
+          '
+
+      - name: cheatsheet renders
+        run: zsh -c 'source "$HOME/.config/afterglow/afterglow.zsh"; cheatsheet | head -5; cheatsheet --comp | head -5'
+
+      - name: Themes are installed and switchable
+        run: |
+          zsh -c '
+            source "$HOME/.config/afterglow/afterglow.zsh"
+            theme
+            for t in catppuccin gruvbox tokyonight neon; do
+              theme $t >/dev/null || exit 1
+              got=$(cat "$HOME/.config/afterglow/current-theme")
+              [ "$got" = "$t" ] || { echo "expected $t, got $got"; exit 1; }
+              echo "  OK   switched to $t"
+            done
+          '
+
+      - name: Rerun is idempotent
+        run: |
+          sha_before=$(sha256sum "$HOME/.zshrc" | cut -d' ' -f1)
+          ./install.sh --yes --no-font --no-claude --no-chsh --tools core
+          sha_after=$(sha256sum "$HOME/.zshrc" | cut -d' ' -f1)
+          [ "$sha_before" = "$sha_after" ] || { echo ".zshrc changed on rerun"; exit 1; }
+          [ "$(grep -c 'afterglow.zsh' "$HOME/.zshrc")" = "1" ] || { echo "duplicate source line"; exit 1; }
+          echo "idempotent"
+
+      - name: Uninstall restores the original .zshrc
+        run: |
+          ./uninstall.sh --yes
+          grep -q 'afterglow' "$HOME/.zshrc" && { echo "block still present"; exit 1; }
+          test ! -d "$HOME/.config/afterglow" || { echo "config dir still present"; exit 1; }
+          echo "clean uninstall"
+
+  # ------------------------------------------------------------
+  # The Pages site must stay self-contained and well-formed.
+  # ------------------------------------------------------------
+  site:
+    name: pages site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: HTML is well-formed and self-contained
+        run: |
+          python3 - <<'PY'
+          import html.parser, pathlib, re, sys
+
+          src = pathlib.Path('docs/index.html').read_text()
+          VOID = {'area','base','br','col','embed','hr','img','input',
+                  'link','meta','source','track','wbr'}
+
+          class P(html.parser.HTMLParser):
+              def __init__(s):
+                  super().__init__(convert_charrefs=True); s.stack=[]; s.errs=[]
+              def handle_starttag(s, t, a):
+                  if t not in VOID: s.stack.append((t, s.getpos()))
+              def handle_endtag(s, t):
+                  if not s.stack: s.errs.append(f"stray </{t}> at {s.getpos()}"); return
+                  top, pos = s.stack.pop()
+                  if top != t:
+                      s.errs.append(f"</{t}> at {s.getpos()} closes <{top}> opened at {pos}")
+
+          p = P(); p.feed(src)
+          ok = True
+          if p.stack: print("unclosed:", [t for t,_ in p.stack]); ok = False
+          if p.errs:  print("mismatched:", p.errs); ok = False
+
+          # A strict CSP applies wherever this is embedded — no external requests.
+          external = re.findall(r'(?:src|href)="(https?://[^"]+)"', src)
+          allowed = ('https://github.com/', 'https://wosmos.github.io/',
+                     'https://ghostty.org', 'https://starship.rs',
+                     'https://ohmyz.sh', 'https://catppuccin.com',
+                     'https://nerdfonts.com')
+          for url in external:
+              if not url.startswith(allowed):
+                  print(f"unexpected external reference: {url}"); ok = False
+
+          if '<script src=' in src or '<link rel="stylesheet"' in src:
+              print("external script or stylesheet — the page must stay self-contained")
+              ok = False
+
+          print("site OK" if ok else "site FAILED")
+          sys.exit(0 if ok else 1)
+          PY
+
+      - name: Both themes define every token they use
+        run: |
+          python3 - <<'PY'
+          import re, pathlib, sys
+          src = pathlib.Path('docs/index.html').read_text()
+          css = src.split('<style>')[1].split('</style>')[0]
+
+          used = set(re.findall(r'var\(--([a-z0-9-]+)', css))
+          root = css.split(':root {')[1].split('}')[0]
+          defined = set(re.findall(r'--([a-z0-9-]+)\s*:', root))
+
+          missing = used - defined
+          if missing:
+              print("tokens used but not defined on bare :root:", sorted(missing))
+              sys.exit(1)
+          print(f"all {len(used)} tokens defined on :root")
+          PY

@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest a tool, command or theme
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of addition
+      options:
+        - A helper command
+        - A tool for the extended/all set
+        - A theme
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What it does
+      description: And what you currently do instead.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints
+      description: These apply to everything in the repo — see CONTRIBUTING.md.
+      options:
+        - label: It works on macOS, Linux and Windows, or the gaps are stated
+        - label: It's optional, behind a flag, or genuinely needed by everyone
+        - label: It doesn't require anything environment-specific

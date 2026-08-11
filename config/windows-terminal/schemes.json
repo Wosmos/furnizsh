@@ -1,0 +1,82 @@
+{
+  "_comment": [
+    "afterglow — Windows Terminal colour schemes.",
+    "",
+    "Ghostty has no Windows build, so its bundled 'Neon' theme can't be used",
+    "directly here. Two options are provided:",
+    "",
+    "  Catppuccin Mocha  — the exact palette the Starship prompt, lazygit theme",
+    "                      and cheatsheet colours use. Pick this one if you want",
+    "                      everything to match perfectly.",
+    "  Afterglow Neon    — a neon-leaning scheme written for this repo. It is NOT",
+    "                      a port of Ghostty's Neon theme (those values aren't",
+    "                      published in a portable format) — it's an approximation",
+    "                      of the same near-black-plus-glowing-accents feel.",
+    "",
+    "To install by hand: open Windows Terminal, ctrl+, then 'Open JSON file',",
+    "and paste these two objects into the top-level \"schemes\": [ ... ] array.",
+    "Then set \"colorScheme\" on your PowerShell profile to whichever you want.",
+    "install.ps1 does this for you."
+  ],
+
+  "schemes": [
+    {
+      "name": "Catppuccin Mocha",
+      "background": "#1E1E2E",
+      "foreground": "#CDD6F4",
+      "cursorColor": "#F5E0DC",
+      "selectionBackground": "#585B70",
+      "black": "#45475A",
+      "red": "#F38BA8",
+      "green": "#A6E3A1",
+      "yellow": "#F9E2AF",
+      "blue": "#89B4FA",
+      "purple": "#F5C2E7",
+      "cyan": "#94E2D5",
+      "white": "#BAC2DE",
+      "brightBlack": "#585B70",
+      "brightRed": "#F38BA8",
+      "brightGreen": "#A6E3A1",
+      "brightYellow": "#F9E2AF",
+      "brightBlue": "#89B4FA",
+      "brightPurple": "#F5C2E7",
+      "brightCyan": "#94E2D5",
+      "brightWhite": "#A6ADC8"
+    },
+    {
+      "name": "Afterglow Neon",
+      "background": "#0B0B12",
+      "foreground": "#D6DEEB",
+      "cursorColor": "#00F5D4",
+      "selectionBackground": "#2A2A3C",
+      "black": "#1C1C2A",
+      "red": "#FF4D6D",
+      "green": "#39FF88",
+      "yellow": "#FFD166",
+      "blue": "#4CC9F0",
+      "purple": "#C77DFF",
+      "cyan": "#00F5D4",
+      "white": "#C6CCD8",
+      "brightBlack": "#4A4A63",
+      "brightRed": "#FF7A94",
+      "brightGreen": "#6BFFA8",
+      "brightYellow": "#FFE29A",
+      "brightBlue": "#7FDCFF",
+      "brightPurple": "#DDA0FF",
+      "brightCyan": "#5DFFE6",
+      "brightWhite": "#F2F4F8"
+    }
+  ],
+
+  "_profileExample": {
+    "_comment": "Recommended settings for your PowerShell profile entry in Windows Terminal.",
+    "colorScheme": "Catppuccin Mocha",
+    "font": {
+      "face": "JetBrainsMono Nerd Font Mono",
+      "size": 12
+    },
+    "cursorShape": "filledBox",
+    "padding": "10",
+    "useAcrylic": false
+  }
+}

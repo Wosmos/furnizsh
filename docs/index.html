@@ -1,0 +1,1426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>afterglow — a neon terminal, in one command</title>
+<meta name="description" content="Ghostty + zsh + Starship, themed and installed in one command. macOS, Linux and Windows.">
+<meta name="color-scheme" content="dark light">
+
+<meta property="og:title" content="afterglow — a neon terminal, in one command">
+<meta property="og:description" content="Ghostty + zsh + Starship, themed and installed in one command.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://wosmos.github.io/afterglow/">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230B0B12'/%3E%3Ctext x='50' y='72' font-family='monospace' font-size='62' font-weight='700' fill='%2300F5D4' text-anchor='middle'%3E%E2%9D%AF%3C/text%3E%3C/svg%3E">
+
+<style>
+/* ============================================================
+   afterglow — design tokens
+
+   Dark-first: the subject is a near-black terminal, so :root
+   carries the dark palette and light is the override. Every
+   value here is a real colour from the repo's own configs.
+   ============================================================ */
+:root {
+  --ground:      #0A0A11;
+  --surface:     #12121C;
+  --surface-2:   #191926;
+  --surface-3:   #20202F;
+  --line:        #272738;
+  --line-soft:   #1C1C29;
+
+  --ink:         #E2E7F3;
+  --ink-dim:     #99A2BE;
+  --ink-faint:   #6E7389;
+
+  --cyan:        #00F5D4;
+  --mauve:       #C77DFF;
+  --peach:       #FAB387;
+  --green:       #A6E3A1;
+  --yellow:      #F9E2AF;
+  --blue:        #89B4FA;
+  --pink:        #F5C2E7;
+
+  --accent:      var(--cyan);
+  --accent-ink:  #04121A;
+  --glow:        0 0 14px rgba(0, 245, 212, .32);
+  --glow-soft:   0 0 26px rgba(0, 245, 212, .10);
+  --shadow:      0 22px 50px -26px rgba(0, 0, 0, .85);
+  --tile-hover:  var(--surface-2);
+
+  --chrome-red:    #FF5F57;
+  --chrome-yellow: #FEBC2E;
+  --chrome-green:  #28C840;
+
+  --mono: "JetBrains Mono", "JetBrainsMono Nerd Font Mono", ui-monospace,
+          SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+
+  --measure: 66ch;
+  --wide: 1140px;
+  --r-sm: 7px;
+  --r:    12px;
+  --r-lg: 16px;
+  --gap:  12px;
+
+  --fs-xs:   .75rem;
+  --fs-sm:   .8125rem;
+  --fs-base: 1rem;
+  --fs-lg:   1.0625rem;
+  --fs-xl:   1.3125rem;
+  --fs-2xl:  1.75rem;
+  --fs-hero: clamp(2.75rem, 11vw, 5.75rem);
+
+  /* Per-element reveal delay. JS overrides this inline to stagger a group;
+     the default keeps unstaggered elements valid on their own. */
+  --d: 0ms;
+}
+
+/* Light theme. Same hues, re-weighted for a pale ground — the neon
+   accents are illegible at full saturation on white, so they shift
+   darker and less saturated rather than being swapped for other hues.
+   Every value here clears 4.5:1 against the light ground. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --ground:    #F4F4F8;
+    --surface:   #FFFFFF;
+    --surface-2: #EDEDF4;
+    --surface-3: #E3E3EE;
+    --line:      #D7D7E3;
+    --line-soft: #E6E6EF;
+
+    --ink:       #15152A;
+    --ink-dim:   #4C5271;
+    --ink-faint: #656B87;
+
+    --cyan:      #00786C;
+    --mauve:     #7B3FBF;
+    --peach:     #A2551A;
+    --green:     #337733;
+    --yellow:    #7E6000;
+    --blue:      #2A5FC7;
+    --pink:      #A83C86;
+
+    --accent-ink: #FFFFFF;
+    --glow:      0 0 0 rgba(0,0,0,0);
+    --glow-soft: 0 0 0 rgba(0,0,0,0);
+    --shadow:    0 18px 40px -28px rgba(20, 20, 50, .45);
+    --tile-hover: #FFFFFF;
+  }
+}
+
+:root[data-theme="light"] {
+  --ground:    #F4F4F8;
+  --surface:   #FFFFFF;
+  --surface-2: #EDEDF4;
+  --surface-3: #E3E3EE;
+  --line:      #D7D7E3;
+  --line-soft: #E6E6EF;
+
+  --ink:       #15152A;
+  --ink-dim:   #4C5271;
+  --ink-faint: #656B87;
+
+  --cyan:      #00786C;
+  --mauve:     #7B3FBF;
+  --peach:     #A2551A;
+  --green:     #337733;
+  --yellow:    #7E6000;
+  --blue:      #2A5FC7;
+  --pink:      #A83C86;
+
+  --accent-ink: #FFFFFF;
+  --glow:      0 0 0 rgba(0,0,0,0);
+  --glow-soft: 0 0 0 rgba(0,0,0,0);
+  --shadow:    0 18px 40px -28px rgba(20, 20, 50, .45);
+  --tile-hover: #FFFFFF;
+}
+
+/* ============================================================
+   base
+   ============================================================ */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Faint grid: the ground the phosphor sits on. Fades out down the page. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: .55;
+  mask-image: radial-gradient(ellipse 85% 50% at 50% 0%, #000 0%, transparent 78%);
+}
+
+.topbar, main, footer { position: relative; z-index: 1; }
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+code, kbd, pre { font-family: var(--mono); }
+code { font-size: .92em; }
+
+.wrap { width: min(100% - 2rem, var(--wide)); margin-inline: auto; }
+.prose { max-width: var(--measure); }
+
+h1, h2, h3, h4 { font-family: var(--mono); text-wrap: balance; margin: 0; }
+p { margin: 0 0 .9rem; }
+p:last-child { margin-bottom: 0; }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 .5rem;
+}
+.lede { font-size: var(--fs-lg); color: var(--ink-dim); }
+
+/* ============================================================
+   top bar
+   ============================================================ */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--ground) 82%, transparent);
+  border-bottom: 1px solid var(--line-soft);
+}
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-block: .7rem;
+}
+.brand {
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -.04em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.brand em { color: var(--accent); font-style: normal; }
+.brand .caret { color: var(--accent); margin-right: .35rem; text-shadow: var(--glow); }
+
+.topnav { display: flex; gap: 1.1rem; margin-left: auto; }
+.topnav a {
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  color: var(--ink-dim);
+  text-decoration: none;
+}
+.topnav a:hover { color: var(--accent); }
+
+/* theme switch — labelled, three explicit states, no guessing */
+.theme-switch {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  flex: none;
+}
+.theme-switch button {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  padding: .3rem .62rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-faint);
+  cursor: pointer;
+  line-height: 1.4;
+  transition: color .15s, background .15s;
+}
+.theme-switch button:hover { color: var(--ink); }
+.theme-switch button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+/* ============================================================
+   sections
+   ============================================================ */
+section { padding-block: clamp(3rem, 7vw, 5rem); }
+section + section { border-top: 1px solid var(--line-soft); }
+
+.section-head { margin-bottom: 1.6rem; max-width: var(--measure); }
+/* Sections are introduced the way you'd invoke them — as a prompt line.
+   ❯ is the actual character this setup's Starship prompt uses. */
+.section-head h2 {
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  display: flex;
+  align-items: baseline;
+  gap: .55rem;
+}
+.section-head h2::before {
+  content: "❯";
+  color: var(--accent);
+  font-size: .8em;
+  text-shadow: var(--glow);
+  flex: none;
+}
+.section-head p { margin-top: .55rem; }
+
+/* ============================================================
+   hero
+   ============================================================ */
+.hero { padding-block: clamp(2.5rem, 7vw, 4.5rem) clamp(2.5rem, 7vw, 4rem); }
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: center;
+}
+
+.hero h1 {
+  font-size: var(--fs-hero);
+  font-weight: 800;
+  letter-spacing: -.055em;
+  line-height: .9;
+  margin-bottom: .5rem;
+}
+/* The one loud use of the accent: the name glows, the way phosphor
+   lingers after the beam has passed. Everything else stays quiet. */
+.hero h1 .glow { color: var(--accent); text-shadow: var(--glow), var(--glow-soft); }
+
+.hero .tagline {
+  font-family: var(--mono);
+  font-size: clamp(.95rem, 2.2vw, 1.15rem);
+  color: var(--ink-dim);
+  margin-bottom: 1.1rem;
+}
+.hero .blurb { max-width: 46ch; color: var(--ink-dim); margin-bottom: 1.5rem; }
+
+.badges { display: flex; flex-wrap: wrap; gap: .4rem; }
+.badge {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  padding: .26rem .6rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-dim);
+  background: var(--surface);
+}
+.badge b { font-weight: 600; color: var(--green); }
+.badge.warn b { color: var(--yellow); }
+
+/* ============================================================
+   terminal window
+   ============================================================ */
+.term {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+  box-shadow: var(--shadow), var(--glow-soft);
+}
+.term-bar {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .62rem .8rem;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.dot.r { background: var(--chrome-red); }
+.dot.y { background: var(--chrome-yellow); }
+.dot.g { background: var(--chrome-green); }
+.term-title { margin-left: auto; font-family: var(--mono); font-size: var(--fs-xs); color: var(--ink-faint); }
+
+.term-body {
+  padding: 1rem 1.05rem 1.15rem;
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  line-height: 1.85;
+  overflow-x: auto;
+}
+.term-body .line { display: flex; gap: .5rem; align-items: flex-start; }
+.term-body .p { color: var(--accent); flex: none; }
+.term-body .cmd { color: var(--ink); word-break: break-all; }
+.term-body .out { color: var(--ink-faint); padding-left: 1.2rem; }
+.term-body .ok { color: var(--green); }
+.term-body .warnline { color: var(--peach); padding-left: 1.2rem; }
+
+/* Types the final command out on load, then hands over to the cursor. */
+.typed {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  animation: type 1s steps(12, end) .4s both;
+}
+@keyframes type { from { width: 0; } to { width: 12ch; } }
+
+/* Block cursor, blinking — matching cursor-style = block and
+   cursor-style-blink = true in the Ghostty config this ships. */
+.cursor {
+  display: inline-block;
+  width: .56em;
+  height: 1.02em;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  box-shadow: var(--glow);
+  animation: blink 1.06s steps(1, end) 1.45s infinite;
+  opacity: 0;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+.term-actions { display: flex; gap: .45rem; padding: 0 1.05rem 1.05rem; }
+
+/* ============================================================
+   buttons
+   ============================================================ */
+.btn {
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  padding: .48rem .85rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+.btn.primary:hover { filter: brightness(1.12); color: var(--accent-ink); }
+.btn[data-copied="1"] { color: var(--green); border-color: var(--green); }
+.cta-row { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+
+/* ============================================================
+   bento grid
+   Tiles are styled as terminal split panes — each carries a
+   small pane header, the way a tmux or Ghostty split does.
+   ============================================================ */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--gap);
+}
+.tile {
+  grid-column: span 2;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color .18s, background .18s, transform .18s;
+}
+.tile:hover { border-color: var(--line); background: var(--tile-hover); transform: translateY(-2px); }
+.tile.flat:hover { transform: none; }
+
+.tile.w1 { grid-column: span 1; }
+.tile.w3 { grid-column: span 3; }
+.tile.w4 { grid-column: span 4; }
+.tile.w6 { grid-column: span 6; }
+.tile.h2 { grid-row: span 2; }
+
+.pane-bar {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .45rem .8rem;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line-soft);
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  color: var(--ink-faint);
+  letter-spacing: .06em;
+  flex: none;
+}
+.pane-bar::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: var(--glow);
+  flex: none;
+}
+.pane-bar .right { margin-left: auto; color: var(--ink-faint); opacity: .75; }
+
+.pane-body { padding: 1rem 1.05rem 1.15rem; flex: 1; display: flex; flex-direction: column; }
+.pane-body h3 {
+  font-size: var(--fs-base);
+  font-weight: 700;
+  margin-bottom: .35rem;
+  letter-spacing: -.01em;
+}
+.pane-body p { font-size: var(--fs-sm); color: var(--ink-dim); }
+.pane-body .big {
+  font-family: var(--mono);
+  font-size: clamp(1.6rem, 4vw, 2.3rem);
+  font-weight: 800;
+  letter-spacing: -.04em;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: .3rem;
+}
+.pane-body .big.plain { color: var(--ink); }
+
+/* ============================================================
+   in-tile widgets
+   ============================================================ */
+
+/* before → after, so the tools explain themselves */
+.swap { font-family: var(--mono); font-size: var(--fs-sm); line-height: 1.75; margin-top: auto; padding-top: .8rem; }
+.swap .row { display: flex; align-items: baseline; gap: .5rem; }
+.swap .k { color: var(--ink-faint); width: 3.2rem; flex: none; font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .08em; }
+.swap .old { color: var(--ink-faint); text-decoration: line-through; text-decoration-thickness: 1px; }
+.swap .new { color: var(--accent); }
+
+/* the Starship prompt, drawn in CSS so it needs no special font */
+.prompt-demo {
+  display: flex;
+  align-items: stretch;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: .9rem;
+  flex-wrap: wrap;
+}
+.seg { padding: .3rem .7rem; color: #11111B; font-weight: 600; white-space: nowrap; }
+.seg.s1 { background: #CBA6F7; }
+.seg.s2 { background: #89B4FA; }
+.seg.s3 { background: #A6E3A1; }
+.seg.s4 { background: #F9E2AF; }
+.seg.tail { background: var(--surface-3); color: var(--ink-dim); font-weight: 400; flex: 1; min-width: 4rem; }
+
+/* colour palette, real hex values from the shipped configs */
+.palette { display: flex; flex-wrap: wrap; gap: 1px; border-radius: 6px; overflow: hidden; margin-top: .9rem; }
+.sw { flex: 1 1 74px; padding: .6rem .55rem .7rem; font-family: var(--mono); font-size: 10px; line-height: 1.45; color: #1E1E2E; }
+.sw b { display: block; font-weight: 700; }
+.sw span { opacity: .7; }
+
+/* nerd-font glyph check — doubles as the instruction */
+.glyphs {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  letter-spacing: .45rem;
+  color: var(--accent);
+  margin: .8rem 0 .55rem;
+  line-height: 1.4;
+}
+
+/* plain key/value list */
+.kv { font-size: var(--fs-sm); margin-top: .9rem; display: grid; gap: .45rem; }
+.kv div { display: flex; gap: .6rem; align-items: baseline; }
+.kv dt, .kv .k {
+  font-family: var(--mono);
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  width: 4.6rem;
+  flex: none;
+}
+.kv .v { color: var(--ink-dim); }
+.kv .v b { color: var(--ink); font-weight: 600; }
+
+/* command tiles */
+.cmd-name { font-family: var(--mono); font-size: var(--fs-sm); color: var(--accent); font-weight: 600; }
+.cmd-name i { color: var(--ink-faint); font-style: normal; font-weight: 400; }
+.cmd-desc { font-size: var(--fs-sm); color: var(--ink-dim); margin-top: .25rem; }
+
+/* numbered steps — a real sequence, so the numbers mean something */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--gap); margin-top: 1.5rem; }
+.step {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 1.15rem 1.2rem;
+}
+.step .n {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  color: var(--accent);
+  letter-spacing: .1em;
+  display: block;
+  margin-bottom: .5rem;
+}
+.step h3 { font-size: var(--fs-base); margin-bottom: .3rem; }
+.step p { font-size: var(--fs-sm); color: var(--ink-dim); }
+.step code {
+  display: inline-block;
+  background: var(--surface-2);
+  border: 1px solid var(--line-soft);
+  border-radius: 5px;
+  padding: .1rem .4rem;
+  color: var(--peach);
+  margin-top: .5rem;
+}
+
+/* status marks */
+.mark { font-family: var(--mono); font-size: var(--fs-xs); color: var(--green); letter-spacing: .04em; }
+.mark.warn { color: var(--peach); }
+
+/* table */
+.table-scroll { overflow-x: auto; margin-top: 1.5rem; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); min-width: 560px; }
+th, td { text-align: left; padding: .7rem .95rem; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+th {
+  font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-faint); font-weight: 500;
+  background: var(--surface-2); border-bottom-color: var(--line);
+}
+tbody tr:last-child td { border-bottom: none; }
+td.tool { font-family: var(--mono); color: var(--accent); white-space: nowrap; }
+td code { color: var(--peach); }
+.yes { color: var(--green); font-family: var(--mono); }
+
+.note {
+  font-size: var(--fs-sm);
+  color: var(--ink-dim);
+  border-left: 2px solid var(--peach);
+  padding-left: 1rem;
+  margin-top: 1.5rem;
+  max-width: var(--measure);
+}
+
+/* ============================================================
+   footer
+   ============================================================ */
+footer { border-top: 1px solid var(--line-soft); padding-block: 2.75rem 3.5rem; font-size: var(--fs-sm); color: var(--ink-dim); }
+.footer-grid { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between; align-items: start; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 1.1rem; }
+.footer-links a { color: var(--ink-dim); text-decoration: none; font-family: var(--mono); font-size: var(--fs-sm); }
+.footer-links a:hover { color: var(--accent); }
+.credits { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: 1.6rem; max-width: 62ch; line-height: 1.7; }
+
+/* ============================================================
+   responsive
+   ============================================================ */
+@media (max-width: 940px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tile, .tile.w1, .tile.w3, .tile.w4, .tile.w6 { grid-column: span 1; }
+  .tile.w4, .tile.w6 { grid-column: span 2; }
+  .tile.h2 { grid-row: span 1; }
+  .topnav { display: none; }
+}
+@media (max-width: 560px) {
+  .bento { grid-template-columns: minmax(0, 1fr); }
+  .tile, .tile.w1, .tile.w3, .tile.w4, .tile.w6 { grid-column: span 1; }
+  .term-body { font-size: var(--fs-xs); }
+  section { padding-block: 2.75rem; }
+  .theme-switch button { padding: .3rem .5rem; }
+}
+
+/* ============================================================
+   scroll reveal
+   One effect, applied consistently: content rises into place as
+   it enters the viewport, staggered within each group. Anything
+   not yet observed stays visible by default, so the page still
+   reads fully with JavaScript disabled.
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .5s cubic-bezier(.22,.61,.36,1),
+              transform .5s cubic-bezier(.22,.61,.36,1);
+  transition-delay: var(--d, 0ms);
+}
+.reveal.shown { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+  .typed { width: auto !important; }
+  .cursor { opacity: 1; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================ -->
+<div class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="#top"><span class="caret">❯</span>after<em>glow</em></a>
+    <nav class="topnav" aria-label="Sections">
+      <a href="#themes">themes</a>
+      <a href="#what">what you get</a>
+      <a href="#safe">safety</a>
+      <a href="#commands">commands</a>
+      <a href="#install">install</a>
+    </nav>
+    <div class="theme-switch" role="group" aria-label="Colour theme">
+      <button type="button" data-theme-set="auto"  aria-pressed="true">Auto</button>
+      <button type="button" data-theme-set="light" aria-pressed="false">Light</button>
+      <button type="button" data-theme-set="dark"  aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</div>
+
+<main id="top">
+
+<!-- ============================================================ -->
+<header class="wrap hero">
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow">macOS · Linux · Windows</p>
+      <h1>after<span class="glow">glow</span></h1>
+      <p class="tagline">a neon terminal, in one command</p>
+      <p class="blurb">
+        One script sets up your whole terminal: the <b>Ghostty</b> Neon theme, a
+        <b>Starship</b> prompt, and faster replacements for the commands you already
+        type. It won't touch the rest of your config.
+      </p>
+      <div class="badges">
+        <span class="badge">macOS <b>full</b></span>
+        <span class="badge">Linux <b>full</b></span>
+        <span class="badge warn">Windows <b>PowerShell / WSL2</b></span>
+        <span class="badge">MIT</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="term">
+        <div class="term-bar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="term-title">~/afterglow</span>
+        </div>
+        <div class="term-body">
+          <div class="line"><span class="p">❯</span><span class="cmd">git clone https://github.com/Wosmos/afterglow.git</span></div>
+          <div class="line"><span class="p">❯</span><span class="cmd">cd afterglow</span></div>
+          <div class="line"><span class="p">❯</span><span class="cmd"><span class="typed">./install.sh</span><span class="cursor"></span></span></div>
+        </div>
+        <div class="term-actions">
+          <button class="btn" id="copy" type="button" data-clip="git clone https://github.com/Wosmos/afterglow.git&#10;cd afterglow&#10;./install.sh">Copy all three</button>
+          <a class="btn" href="https://github.com/Wosmos/afterglow">GitHub</a>
+        </div>
+      </div>
+      <div class="cta-row">
+        <a class="btn primary" href="https://github.com/Wosmos/afterglow/blob/main/docs/SETUP.md">Read the guide</a>
+        <a class="btn" href="#what">See what you get</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<section class="wrap" id="how">
+  <div class="section-head">
+    <h2>how it works</h2>
+    <p class="lede">Three steps. About five minutes, most of it waiting for downloads.</p>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <span class="n">STEP 01</span>
+      <h3>Clone it</h3>
+      <p>Grab the repo. Nothing is installed yet.</p>
+      <code>git clone …/afterglow.git</code>
+    </div>
+    <div class="step">
+      <span class="n">STEP 02</span>
+      <h3>Preview, then run</h3>
+      <p>See every action first with <code style="margin:0">--dry-run</code>, which changes nothing. Then run it for real.</p>
+      <code>./install.sh --dry-run</code>
+    </div>
+    <div class="step">
+      <span class="n">STEP 03</span>
+      <h3>Open a new terminal</h3>
+      <p>Then <code style="margin:0">agdoctor</code> confirms every piece works, and <code style="margin:0">chs</code> shows you what you can now do.</p>
+      <code>agdoctor</code>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="wrap" id="themes">
+  <div class="section-head">
+    <h2>four looks, one command</h2>
+    <p class="lede">
+      <code>theme gruvbox</code> switches Ghostty, Starship and lazygit together.
+      Set individually they drift apart within a week — this is why they're one command.
+    </p>
+  </div>
+
+  <div class="bento">
+    <div class="tile w3 flat">
+      <div class="pane-bar">neon<span class="right">default</span></div>
+      <div class="pane-body">
+        <div class="prompt-demo" aria-label="Neon theme prompt preview">
+          <span class="seg" style="background:#00F5D4">&nbsp;~&nbsp;</span>
+          <span class="seg" style="background:#C77DFF">projects</span>
+          <span class="seg" style="background:#A6E3A1">main</span>
+          <span class="seg tail" style="background:#0B0B12;color:#00F5D4">❯ _</span>
+        </div>
+        <h3 style="margin-top:.9rem">Near-black with glowing accents</h3>
+        <p>The default. Highest contrast of the four — colours pop hard against an almost-black ground.</p>
+      </div>
+    </div>
+
+    <div class="tile w3 flat">
+      <div class="pane-bar">catppuccin<span class="right">theme catppuccin</span></div>
+      <div class="pane-body">
+        <div class="prompt-demo" aria-label="Catppuccin theme prompt preview">
+          <span class="seg" style="background:#CBA6F7">&nbsp;~&nbsp;</span>
+          <span class="seg" style="background:#89B4FA">projects</span>
+          <span class="seg" style="background:#A6E3A1">main</span>
+          <span class="seg tail" style="background:#1E1E2E;color:#CDD6F4">❯ _</span>
+        </div>
+        <h3 style="margin-top:.9rem">Soft pastels on deep plum</h3>
+        <p>The most cohesive — terminal, prompt, lazygit and every script share one palette exactly.</p>
+      </div>
+    </div>
+
+    <div class="tile w3 flat">
+      <div class="pane-bar">gruvbox<span class="right">theme gruvbox</span></div>
+      <div class="pane-body">
+        <div class="prompt-demo" aria-label="Gruvbox theme prompt preview">
+          <span class="seg" style="background:#FE8019">&nbsp;~&nbsp;</span>
+          <span class="seg" style="background:#FABD2F">projects</span>
+          <span class="seg" style="background:#83A598">main</span>
+          <span class="seg tail" style="background:#282828;color:#EBDBB2">❯ _</span>
+        </div>
+        <h3 style="margin-top:.9rem">Warm retro earth tones</h3>
+        <p>Lowest contrast, easiest on the eyes. The one to pick if neon feels like too much at 11pm.</p>
+      </div>
+    </div>
+
+    <div class="tile w3 flat">
+      <div class="pane-bar">tokyonight<span class="right">theme tokyonight</span></div>
+      <div class="pane-body">
+        <div class="prompt-demo" aria-label="Tokyo Night theme prompt preview">
+          <span class="seg" style="background:#7AA2F7">&nbsp;~&nbsp;</span>
+          <span class="seg" style="background:#BB9AF7">projects</span>
+          <span class="seg" style="background:#7DCFFF">main</span>
+          <span class="seg tail" style="background:#1A1B26;color:#C0CAF5">❯ _</span>
+        </div>
+        <h3 style="margin-top:.9rem">Cool blues and violets</h3>
+        <p>The middle ground — calmer than Neon, more contrast than Gruvbox.</p>
+      </div>
+    </div>
+
+    <div class="tile w6 flat">
+      <div class="pane-bar">how<span class="right">theme</span></div>
+      <div class="pane-body">
+        <div class="term" style="box-shadow:none">
+          <div class="term-body" style="padding:.8rem .9rem">
+            <div class="line"><span class="p">❯</span><span class="cmd">theme</span></div>
+            <div class="out">neon        Neon              Near-black with glowing accents. The default.</div>
+            <div class="out">catppuccin  Catppuccin Mocha  Soft pastels on deep plum.</div>
+            <div class="out">gruvbox     Gruvbox Dark      Warm retro earth tones.</div>
+            <div class="out">tokyonight  Tokyo Night       Cool blues and violets.</div>
+            <div class="line"><span class="p">❯</span><span class="cmd">theme gruvbox</span></div>
+            <div class="out ok">ghostty, starship and lazygit all switched</div>
+          </div>
+        </div>
+        <p style="margin-top:.9rem">
+          Pick one at install time with <code>--theme gruvbox</code>, or switch any time
+          afterwards. It verifies the theme exists on your Ghostty build before writing
+          anything, rather than leaving you with a broken config.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="wrap" id="what">
+  <div class="section-head">
+    <h2>what you get</h2>
+    <p class="lede">A terminal that looks deliberate, and commands that do more with less typing.</p>
+  </div>
+
+  <div class="bento">
+
+    <!-- the prompt, drawn -->
+    <div class="tile w4 flat">
+      <div class="pane-bar">prompt<span class="right">starship</span></div>
+      <div class="pane-body">
+        <h3>A prompt that tells you where you are</h3>
+        <p>Directory, git branch, and whether you have uncommitted changes — colour-coded, always in the same place. The Catppuccin Powerline preset, unmodified.</p>
+        <div class="prompt-demo" aria-label="Example prompt: home directory, projects/afterglow, main branch, modified">
+          <span class="seg s1">&nbsp;~&nbsp;</span>
+          <span class="seg s2">projects/afterglow</span>
+          <span class="seg s3">⎇ main</span>
+          <span class="seg s4">!2</span>
+          <span class="seg tail">❯ _</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- theme -->
+    <div class="tile flat">
+      <div class="pane-bar">terminal<span class="right">ghostty</span></div>
+      <div class="pane-body">
+        <h3>Ghostty, Neon theme</h3>
+        <p>Near-black ground, glowing accents. Fast, GPU-accelerated, no config language to learn.</p>
+        <div class="kv">
+          <div><span class="k">font</span><span class="v">JetBrains Mono NF</span></div>
+          <div><span class="k">cursor</span><span class="v">block, blinking</span></div>
+          <div><span class="k">title</span><span class="v">current folder</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- palette -->
+    <div class="tile w3 flat">
+      <div class="pane-bar">palette<span class="right">catppuccin mocha</span></div>
+      <div class="pane-body">
+        <h3>One palette, everywhere</h3>
+        <p>The prompt, lazygit, and every script in the repo use these exact values — so nothing clashes.</p>
+        <div class="palette">
+          <div class="sw" style="background:#FAB387"><b>peach</b><span>FAB387</span></div>
+          <div class="sw" style="background:#F9E2AF"><b>yellow</b><span>F9E2AF</span></div>
+          <div class="sw" style="background:#A6E3A1"><b>green</b><span>A6E3A1</span></div>
+          <div class="sw" style="background:#94E2D5"><b>teal</b><span>94E2D5</span></div>
+          <div class="sw" style="background:#89B4FA"><b>blue</b><span>89B4FA</span></div>
+          <div class="sw" style="background:#CBA6F7"><b>mauve</b><span>CBA6F7</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- font check -->
+    <div class="tile w3 flat">
+      <div class="pane-bar">font<span class="right">nerd font</span></div>
+      <div class="pane-body">
+        <h3>Icons that actually render</h3>
+        <div class="glyphs" aria-hidden="true">      </div>
+        <p>
+          Those should be a folder, git branch, and language logos. <b>If you see empty
+          boxes, you don't have a Nerd Font yet</b> — the installer fixes that.
+        </p>
+      </div>
+    </div>
+
+    <!-- plugin count -->
+    <div class="tile flat">
+      <div class="pane-bar">shell<span class="right">oh my zsh</span></div>
+      <div class="pane-body">
+        <div class="big">17</div>
+        <h3>plugins, pre-wired</h3>
+        <p>Ghost-text suggestions from your history, live valid/invalid command colouring, <code>ESC ESC</code> to add sudo, <code>x</code> to extract any archive.</p>
+      </div>
+    </div>
+
+    <!-- commands count -->
+    <div class="tile flat">
+      <div class="pane-bar">extras<span class="right">afterglow</span></div>
+      <div class="pane-body">
+        <div class="big">24</div>
+        <h3>helper commands</h3>
+        <p>Written for this setup, and ported to PowerShell too. <a href="#commands">See all of them ↓</a></p>
+      </div>
+    </div>
+
+    <!-- no shaders -->
+    <div class="tile flat">
+      <div class="pane-bar">rendering<span class="right">no shader</span></div>
+      <div class="pane-body">
+        <h3>Sharp text, on purpose</h3>
+        <p>A bloom shader and a CRT shader were both tried and dropped. Bloom blurs text by design; the CRT one made scrolling stutter. The look holds up without them.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="wrap" id="tools">
+  <div class="section-head">
+    <h2>the tools</h2>
+    <p class="lede">Each one replaces something you already type. Same muscle memory, better output.</p>
+  </div>
+
+  <div class="bento">
+    <div class="tile">
+      <div class="pane-bar">listing<span class="right">eza</span></div>
+      <div class="pane-body">
+        <h3>See more at a glance</h3>
+        <p>File-type icons, git status per file, and a tree view built in.</p>
+        <div class="swap">
+          <div class="row"><span class="k">was</span><span class="old">ls -la</span></div>
+          <div class="row"><span class="k">now</span><span class="new">ll</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tile">
+      <div class="pane-bar">reading<span class="right">bat</span></div>
+      <div class="pane-body">
+        <h3>Readable file dumps</h3>
+        <p>Syntax highlighting and line numbers, for any language.</p>
+        <div class="swap">
+          <div class="row"><span class="k">was</span><span class="old">cat main.ts</span></div>
+          <div class="row"><span class="k">now</span><span class="new">cat main.ts</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tile">
+      <div class="pane-bar">searching<span class="right">fd</span></div>
+      <div class="pane-body">
+        <h3>Find files without the manual</h3>
+        <p>Sane defaults, respects .gitignore, and much faster.</p>
+        <div class="swap">
+          <div class="row"><span class="k">was</span><span class="old">find . -name "*.ts"</span></div>
+          <div class="row"><span class="k">now</span><span class="new">fd -e ts</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tile">
+      <div class="pane-bar">navigating<span class="right">zoxide</span></div>
+      <div class="pane-body">
+        <h3>Jump, don't traverse</h3>
+        <p>Learns the folders you visit. Type any fragment of the name.</p>
+        <div class="swap">
+          <div class="row"><span class="k">was</span><span class="old">cd ~/work/api/src</span></div>
+          <div class="row"><span class="k">now</span><span class="new">z src</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tile">
+      <div class="pane-bar">recalling<span class="right">fzf</span></div>
+      <div class="pane-body">
+        <h3>Fuzzy-search anything</h3>
+        <p>History, files, folders — all live-filtered as you type.</p>
+        <div class="swap">
+          <div class="row"><span class="k">was</span><span class="old">↑ ↑ ↑ ↑ ↑</span></div>
+          <div class="row"><span class="k">now</span><span class="new">ctrl+r</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tile">
+      <div class="pane-bar">diffing<span class="right">delta</span></div>
+      <div class="pane-body">
+        <h3>Diffs you can actually read</h3>
+        <p>Syntax-highlighted, word-level changes, jump between files. Automatic.</p>
+        <div class="swap">
+          <div class="row"><span class="k">was</span><span class="old">git diff</span></div>
+          <div class="row"><span class="k">now</span><span class="new">git diff</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tile w6">
+      <div class="pane-bar">git<span class="right">lazygit</span></div>
+      <div class="pane-body">
+        <h3>A full git interface, one keystroke away</h3>
+        <p>
+          Stage individual lines, write commits, browse history, resolve rebases — without
+          memorising flags. <code>space</code> stages, <code>c</code> commits, <code>P</code>
+          pushes, <code>?</code> lists every key. Themed to match the prompt.
+        </p>
+        <div class="swap">
+          <div class="row"><span class="k">was</span><span class="old">git add -p && git commit && git push</span></div>
+          <div class="row"><span class="k">now</span><span class="new">lg</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="wrap" id="safe">
+  <div class="section-head">
+    <h2>it won't wreck your setup</h2>
+    <p class="lede">Your shell config is load-bearing. An installer that clobbers it costs you an afternoon — so this one is built not to.</p>
+  </div>
+
+  <div class="bento">
+    <div class="tile w3 flat">
+      <div class="pane-bar">preview<span class="right">--dry-run</span></div>
+      <div class="pane-body">
+        <h3>Read it before you trust it</h3>
+        <p>Prints every action it would take, and changes absolutely nothing. Run this first.</p>
+        <div class="term" style="margin-top:.9rem;box-shadow:none">
+          <div class="term-body" style="padding:.75rem .85rem">
+            <div class="line"><span class="p">❯</span><span class="cmd">./install.sh --dry-run</span></div>
+            <div class="out">[dry-run] cp config/ghostty/config ~/.config/…</div>
+            <div class="out">[dry-run] append source block to ~/.zshrc</div>
+            <div class="warnline">nothing was changed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tile w3 flat">
+      <div class="pane-bar">your config<span class="right">append-only</span></div>
+      <div class="pane-body">
+        <h3>Your <code>.zshrc</code> survives</h3>
+        <p>The setup lives in its own file. All that's added to your <code>.zshrc</code> is one marked line — your PATH exports, work tooling and aliases are never read or moved.</p>
+        <div class="term" style="margin-top:.9rem;box-shadow:none">
+          <div class="term-body" style="padding:.75rem .85rem">
+            <div class="out" style="padding:0"># your existing config, untouched</div>
+            <div class="out" style="padding:0;color:var(--green)"># &gt;&gt;&gt; afterglow &gt;&gt;&gt;</div>
+            <div class="cmd">source ~/.config/afterglow/afterglow.zsh</div>
+            <div class="out" style="padding:0;color:var(--green)"># &lt;&lt;&lt; afterglow &lt;&lt;&lt;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tile flat">
+      <div class="pane-bar">backups</div>
+      <div class="pane-body">
+        <span class="mark">[ automatic ]</span>
+        <h3 style="margin-top:.5rem">Everything replaced is kept</h3>
+        <p>Copies of every file it overwrites land in a timestamped folder before anything is written.</p>
+      </div>
+    </div>
+
+    <div class="tile flat">
+      <div class="pane-bar">rerunning</div>
+      <div class="pane-body">
+        <span class="mark">[ idempotent ]</span>
+        <h3 style="margin-top:.5rem">Safe to run twice</h3>
+        <p>It compares against what's already installed and only changes what actually drifted.</p>
+      </div>
+    </div>
+
+    <div class="tile flat">
+      <div class="pane-bar">leaving</div>
+      <div class="pane-body">
+        <span class="mark">[ reversible ]</span>
+        <h3 style="margin-top:.5rem">Clean uninstall</h3>
+        <p><code>./uninstall.sh</code> strips the block and restores your originals — tested to come back byte-for-byte.</p>
+      </div>
+    </div>
+
+    <div class="tile w6 flat">
+      <div class="pane-bar">consent<span class="right">asks first</span></div>
+      <div class="pane-body">
+        <h3>Nothing irreversible happens quietly</h3>
+        <p>
+          Changing your login shell, replacing a git pager you already configured, overwriting
+          a profile you wrote by hand — each one stops and asks. Pass <code>--yes</code> only
+          if you want them all approved up front.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="wrap" id="commands">
+  <div class="section-head">
+    <h2>the commands</h2>
+    <p class="lede">Twenty-four helpers, in zsh and PowerShell alike — same names, same behaviour on every platform.</p>
+  </div>
+
+  <div class="bento">
+    <div class="tile w3">
+      <div class="pane-bar">reference<span class="right">start here</span></div>
+      <div class="pane-body">
+        <div class="cmd-name">cheatsheet <i>/ chs</i></div>
+        <p class="cmd-desc">Forgot what you installed? This prints the whole reference in your terminal — every plugin, tool, command and keybind. <code>--comp</code> for the exhaustive version.</p>
+      </div>
+    </div>
+    <div class="tile w3">
+      <div class="pane-bar">diagnostics<span class="right">if something breaks</span></div>
+      <div class="pane-body">
+        <div class="cmd-name">agdoctor</div>
+        <p class="cmd-desc">Checks every tool, config file, plugin and font, then prints ✓ or ✗ for each — with the exact command to fix anything that's missing.</p>
+      </div>
+    </div>
+
+    <div class="tile w1"><div class="pane-body"><div class="cmd-name">mkcd <i>&lt;dir&gt;</i></div><p class="cmd-desc">Make a folder and go into it.</p></div></div>
+    <div class="tile w1"><div class="pane-body"><div class="cmd-name">up <i>[n]</i></div><p class="cmd-desc">Go up n folders.</p></div></div>
+    <div class="tile w1"><div class="pane-body"><div class="cmd-name">reload</div><p class="cmd-desc">Restart the shell after editing config.</p></div></div>
+    <div class="tile w1"><div class="pane-body"><div class="cmd-name">paths</div><p class="cmd-desc"><code>$PATH</code> one per line, dead entries flagged.</p></div></div>
+    <div class="tile w1"><div class="pane-body"><div class="cmd-name">bak <i>&lt;file&gt;</i></div><p class="cmd-desc">Instant timestamped backup.</p></div></div>
+    <div class="tile w1"><div class="pane-body"><div class="cmd-name">sizeof <i>[dir]</i></div><p class="cmd-desc">What's filling your disk.</p></div></div>
+
+    <div class="tile">
+      <div class="pane-bar">ports</div>
+      <div class="pane-body">
+        <div class="cmd-name">ports <i>·</i> killport <i>&lt;port&gt;</i></div>
+        <p class="cmd-desc">Both halves of "port 3000 is already in use" — see what's holding it, then free it.</p>
+      </div>
+    </div>
+    <div class="tile">
+      <div class="pane-bar">fuzzy</div>
+      <div class="pane-body">
+        <div class="cmd-name">fkill <i>·</i> fe <i>[query]</i></div>
+        <p class="cmd-desc">Pick a process from a list and kill it. Or pick a file, preview it, and open it in your editor.</p>
+      </div>
+    </div>
+    <div class="tile">
+      <div class="pane-bar">sharing</div>
+      <div class="pane-body">
+        <div class="cmd-name">serve <i>[port]</i></div>
+        <p class="cmd-desc">Serves the current folder over HTTP and prints a LAN link, so you can open it on your phone.</p>
+      </div>
+    </div>
+    <div class="tile">
+      <div class="pane-bar">git</div>
+      <div class="pane-body">
+        <div class="cmd-name">gclean</div>
+        <p class="cmd-desc">Deletes branches already merged into main. Lists them and asks before touching anything.</p>
+      </div>
+    </div>
+
+    <div class="tile w1"><div class="pane-body"><div class="cmd-name">theme <i>[name]</i></div><p class="cmd-desc">Switch the whole look.</p></div></div>
+    <div class="tile w1"><div class="pane-body"><div class="cmd-name">agupdate</div><p class="cmd-desc">Pull and reapply.</p></div></div>
+
+    <div class="tile w6 flat">
+      <div class="pane-bar">extras<span class="right">--no-extras to skip</span></div>
+      <div class="pane-body">
+        <h3>Eight more that need the network</h3>
+        <p class="cmd-desc" style="margin-bottom:.7rem">
+          Separable because they call an external service. Nothing private is sent —
+          the queries are command names, city names and language names.
+        </p>
+        <div class="kv" style="gap:.5rem">
+          <div><span class="k">weather</span><span class="v">forecast in the terminal</span></div>
+          <div><span class="k">cheat</span><span class="v">practical examples for any command — <code>cheat tar</code></span></div>
+          <div><span class="k">qr</span><span class="v">QR code in the terminal, for getting a localhost URL onto your phone</span></div>
+          <div><span class="k">gitignore</span><span class="v">fetch a <code>.gitignore</code> — <code>gitignore -w node,macos</code></span></div>
+          <div><span class="k">note</span><span class="v">timestamped scratch notes, stored locally</span></div>
+          <div><span class="k">timer</span><span class="v">countdown, then a desktop notification</span></div>
+          <div><span class="k">sysinfo</span><span class="v">machine summary</span></div>
+          <div><span class="k">dockerclean</span><span class="v">reclaim docker disk space — named volumes are never touched</span></div>
+        </div>
+        <p class="cmd-desc" style="margin-top:.9rem">
+          Every command has a usage line, degrades gracefully when a tool is missing, and is
+          documented with examples in
+          <a href="https://github.com/Wosmos/afterglow/blob/main/docs/COMMANDS.md">COMMANDS.md</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="wrap" id="platforms">
+  <div class="section-head">
+    <h2>platforms</h2>
+    <p class="lede">Same commands everywhere. The terminal is the only thing that differs.</p>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Platform</th><th>Terminal</th><th>Shell</th><th>Tools</th><th>Commands</th><th>Scripts</th></tr></thead>
+      <tbody>
+        <tr><td class="tool">macOS</td><td>Ghostty</td><td>zsh + Oh My Zsh</td><td class="yes">all</td><td class="yes">24</td><td><code>install.sh</code> · <code>uninstall.sh</code> · <code>doctor.sh</code></td></tr>
+        <tr><td class="tool">Linux</td><td>Ghostty</td><td>zsh + Oh My Zsh</td><td class="yes">all</td><td class="yes">24</td><td><code>install.sh</code> · <code>uninstall.sh</code> · <code>doctor.sh</code></td></tr>
+        <tr><td class="tool">Windows + WSL2</td><td>Ghostty</td><td>zsh + Oh My Zsh</td><td class="yes">all</td><td class="yes">24</td><td><code>install.sh</code> · <code>uninstall.sh</code> · <code>doctor.sh</code></td></tr>
+        <tr><td class="tool">Windows native</td><td>Windows Terminal</td><td>PowerShell + PSReadLine</td><td class="yes">all</td><td class="yes">24</td><td><code>install.ps1</code> · <code>uninstall.ps1</code> · <code>doctor.ps1</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note">
+    <b>Ghostty has no native Windows build</b> — it ships for macOS and Linux only. So on
+    Windows you pick: run everything inside <b>WSL2</b> and get the setup exactly as described,
+    or install the <b>PowerShell</b> version, which has the same tools and all 24 commands
+    with Windows Terminal and a matching colour scheme.
+    <a href="https://github.com/Wosmos/afterglow/blob/main/docs/WINDOWS.md">Both routes are written up in full.</a>
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<section class="wrap" id="install">
+  <div class="section-head">
+    <h2>get it</h2>
+    <p class="lede">Free, MIT licensed, no account, no telemetry.</p>
+  </div>
+
+  <div class="bento">
+    <div class="tile w3 flat">
+      <div class="pane-bar">install<span class="right">macOS · Linux · WSL2</span></div>
+      <div class="pane-body">
+        <div class="term" style="box-shadow:none;margin-bottom:.9rem">
+          <div class="term-body" style="padding:.8rem .9rem">
+            <div class="line"><span class="p">❯</span><span class="cmd">git clone https://github.com/Wosmos/afterglow.git</span></div>
+            <div class="line"><span class="p">❯</span><span class="cmd">cd afterglow &amp;&amp; ./install.sh</span></div>
+            <div class="line"><span class="p">❯</span><span class="cmd">agdoctor</span></div>
+            <div class="out ok">All good. Run cheatsheet for the reference.</div>
+          </div>
+        </div>
+        <div class="cta-row" style="margin-top:0">
+          <a class="btn primary" href="https://github.com/Wosmos/afterglow">Clone the repo</a>
+          <button class="btn" id="copy2" type="button" data-clip="git clone https://github.com/Wosmos/afterglow.git&#10;cd afterglow &amp;&amp; ./install.sh">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tile w3 flat">
+      <div class="pane-bar">docs<span class="right">all of it</span></div>
+      <div class="pane-body">
+        <h3>Everything is written down</h3>
+        <p>No "figure it out from the dotfiles" — each part has a page explaining what it does and why.</p>
+        <div class="kv" style="gap:.6rem">
+          <div><span class="k">setup</span><span class="v"><a href="https://github.com/Wosmos/afterglow/blob/main/docs/SETUP.md">Manual step-by-step, if you'd rather not run a script</a></span></div>
+          <div><span class="k">cheat</span><span class="v"><a href="https://github.com/Wosmos/afterglow/blob/main/docs/CHEATSHEET.md">Every plugin, tool and keybind in one page</a></span></div>
+          <div><span class="k">cmds</span><span class="v"><a href="https://github.com/Wosmos/afterglow/blob/main/docs/COMMANDS.md">The 24 commands, with examples</a></span></div>
+          <div><span class="k">linux</span><span class="v"><a href="https://github.com/Wosmos/afterglow/blob/main/docs/LINUX.md">Per-distro package names and gotchas</a></span></div>
+          <div><span class="k">win</span><span class="v"><a href="https://github.com/Wosmos/afterglow/blob/main/docs/WINDOWS.md">WSL2 and PowerShell routes</a></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================ -->
+<footer class="wrap">
+  <div class="footer-grid">
+    <div>
+      <a class="brand" href="#top" style="font-size:1.3rem"><span class="caret">❯</span>after<em>glow</em></a>
+      <p style="margin:.45rem 0 0;color:var(--ink-faint);font-size:var(--fs-sm)">MIT — take it, fork it, make it yours.</p>
+    </div>
+    <nav class="footer-links" aria-label="Documentation">
+      <a href="https://github.com/Wosmos/afterglow">repo</a>
+      <a href="https://github.com/Wosmos/afterglow/blob/main/docs/SETUP.md">setup</a>
+      <a href="https://github.com/Wosmos/afterglow/blob/main/docs/CHEATSHEET.md">cheatsheet</a>
+      <a href="https://github.com/Wosmos/afterglow/blob/main/docs/COMMANDS.md">commands</a>
+      <a href="https://github.com/Wosmos/afterglow/blob/main/docs/LINUX.md">linux</a>
+      <a href="https://github.com/Wosmos/afterglow/blob/main/docs/WINDOWS.md">windows</a>
+    </nav>
+  </div>
+  <p class="credits">
+    Standing on <a href="https://ghostty.org">Ghostty</a>,
+    <a href="https://starship.rs">Starship</a>,
+    <a href="https://ohmyz.sh">Oh My Zsh</a>,
+    <a href="https://catppuccin.com">Catppuccin</a>,
+    <a href="https://nerdfonts.com">Nerd Fonts</a>,
+    and the authors of eza, bat, fd, zoxide, fzf, delta and lazygit.
+    This page is set in JetBrains Mono where you have it installed — which, if you ran
+    the installer, you do.
+  </p>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var buttons = document.querySelectorAll('[data-theme-set]');
+
+  // localStorage throws in some sandboxed frames — never let that break the page.
+  function read()  { try { return localStorage.getItem('afterglow-theme'); } catch (e) { return null; } }
+  function write(v){ try { v ? localStorage.setItem('afterglow-theme', v)
+                            : localStorage.removeItem('afterglow-theme'); } catch (e) {} }
+
+  // "auto" means: remove the stamp and let prefers-color-scheme decide.
+  function apply(mode) {
+    if (mode === 'light' || mode === 'dark') root.setAttribute('data-theme', mode);
+    else root.removeAttribute('data-theme');
+    buttons.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.themeSet === (mode || 'auto')));
+    });
+  }
+
+  apply(read() || 'auto');
+
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var mode = b.dataset.themeSet;
+      write(mode === 'auto' ? null : mode);
+      apply(mode);
+    });
+  });
+
+  // Copy buttons — async clipboard where available, textarea fallback elsewhere.
+  document.querySelectorAll('[data-clip]').forEach(function (btn) {
+    var label = btn.textContent;
+    btn.addEventListener('click', function () {
+      var text = btn.dataset.clip;
+      var done = function () {
+        btn.textContent = 'Copied';
+        btn.dataset.copied = '1';
+        setTimeout(function () { btn.textContent = label; delete btn.dataset.copied; }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallback(text, done); });
+      } else {
+        fallback(text, done);
+      }
+    });
+  });
+
+  function fallback(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:absolute;left:-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    ta.remove();
+  }
+
+  // ----------------------------------------------------------
+  // Scroll reveal. Elements are only hidden once we know we can
+  // reveal them, so no-JS and no-IntersectionObserver browsers
+  // see the finished page rather than a blank one.
+  // ----------------------------------------------------------
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if ('IntersectionObserver' in window && !reduced) {
+    var groups = document.querySelectorAll('.bento, .steps');
+    var targets = [];
+
+    groups.forEach(function (group) {
+      var items = group.children;
+      for (var i = 0; i < items.length; i++) {
+        items[i].classList.add('reveal');
+        // Stagger within the group, capped so long grids don't crawl.
+        items[i].style.setProperty('--d', Math.min(i * 55, 330) + 'ms');
+        targets.push(items[i]);
+      }
+    });
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('shown');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+    targets.forEach(function (t) { io.observe(t); });
+  }
+})();
+</script>
+
+</body>
+</html>

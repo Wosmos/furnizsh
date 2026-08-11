@@ -1,0 +1,56 @@
+# ============================================================
+#  Nothing environment-specific belongs in this repo.
+#  These rules are a safety net, not the primary defence —
+#  the configs here are written to contain no secrets at all.
+# ============================================================
+
+# Secrets and environment
+.env
+.env.*
+*.env
+!*.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+*credentials*
+*secret*
+.netrc
+
+# Local machine state that could leak paths or history
+*_history
+.zsh_history
+.z
+.zcompdump*
+*.local
+*.local.json
+settings.local.json
+
+# Backups produced by the installers
+.afterglow-backup/
+*.bak
+*.orig
+
+# OS noise
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build / scratch
+node_modules/
+dist/
+tmp/
+*.log

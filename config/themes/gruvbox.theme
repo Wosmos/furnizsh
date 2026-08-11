@@ -1,0 +1,14 @@
+# afterglow theme — gruvbox
+#
+# Gruvbox Dark: warm, low-contrast retro palette. Easiest on the eyes for long
+# sessions, and the one to pick if the neon accents feel like too much.
+
+THEME_ID="gruvbox"
+THEME_LABEL="Gruvbox Dark"
+THEME_BLURB="Warm retro earth tones. Low contrast, easy for long sessions."
+
+GHOSTTY_THEME="Gruvbox Dark"
+STARSHIP_PRESET="gruvbox-rainbow"
+LAZYGIT_PALETTE="gruvbox"
+
+ACCENT="#FE8019"

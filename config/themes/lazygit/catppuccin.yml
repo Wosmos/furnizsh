@@ -1,0 +1,32 @@
+# lazygit — Catppuccin Mocha
+# Used by the `neon` and `catppuccin` afterglow themes.
+gui:
+  nerdFontsVersion: "3"
+  showIcons: true
+  theme:
+    activeBorderColor:
+      - "#cba6f7"
+      - bold
+    inactiveBorderColor:
+      - "#6c7086"
+    searchingActiveBorderColor:
+      - "#f9e2af"
+      - bold
+    optionsTextColor:
+      - "#89b4fa"
+    selectedLineBgColor:
+      - "#313244"
+    inactiveViewSelectedLineBgColor:
+      - "#313244"
+    cherryPickedCommitFgColor:
+      - "#1e1e2e"
+    cherryPickedCommitBgColor:
+      - "#f9e2af"
+    markedBaseCommitFgColor:
+      - "#1e1e2e"
+    markedBaseCommitBgColor:
+      - "#fab387"
+    unstagedChangesColor:
+      - "#f38ba8"
+    defaultFgColor:
+      - "#cdd6f4"

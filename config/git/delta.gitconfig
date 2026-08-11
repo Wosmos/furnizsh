@@ -1,0 +1,26 @@
+# git-delta — side-by-side, syntax-highlighted diffs.
+#
+# install.sh applies these with `git config --global` rather than copying
+# this file, so your existing ~/.gitconfig is never rewritten. This copy
+# exists so you can see exactly what gets set, or paste it in by hand.
+#
+# In the delta pager: n / N jump between files, q quits.
+
+[core]
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+
+# Optional extras — not applied by install.sh, uncomment if you want them:
+#
+# [delta]
+# 	side-by-side = true       # two columns instead of unified
+# 	line-numbers = true       # line numbers in the gutter
+# 	syntax-theme = Catppuccin Mocha
+#
+# [merge]
+# 	conflictstyle = zdiff3    # clearer conflict markers

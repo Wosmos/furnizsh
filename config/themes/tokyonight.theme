@@ -1,0 +1,14 @@
+# afterglow theme — tokyonight
+#
+# TokyoNight: cool blues and violets, higher contrast than Gruvbox but calmer
+# than Neon. The middle ground of the four.
+
+THEME_ID="tokyonight"
+THEME_LABEL="Tokyo Night"
+THEME_BLURB="Cool blues and violets. Calm, high legibility."
+
+GHOSTTY_THEME="TokyoNight"
+STARSHIP_PRESET="tokyo-night"
+LAZYGIT_PALETTE="tokyonight"
+
+ACCENT="#7AA2F7"

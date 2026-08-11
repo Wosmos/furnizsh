@@ -1,0 +1,19 @@
+# afterglow theme — neon  (the default)
+#
+# Ghostty's Neon: near-black ground with glowing cyan/magenta/green accents.
+# Paired with the Catppuccin Powerline prompt, which is a deliberate contrast
+# rather than a match — if you want them identical, use the `catppuccin` theme.
+#
+# Theme names are verified against `ghostty +list-themes` and
+# `starship preset --list` by the installer before anything is written.
+
+THEME_ID="neon"
+THEME_LABEL="Neon"
+THEME_BLURB="Near-black with glowing accents. The default."
+
+GHOSTTY_THEME="Neon"
+STARSHIP_PRESET="catppuccin-powerline"
+LAZYGIT_PALETTE="catppuccin"
+
+# Used by the cheatsheet and doctor output so they match the active theme.
+ACCENT="#00F5D4"

@@ -1,0 +1,31 @@
+# lazygit — Gruvbox Dark
+gui:
+  nerdFontsVersion: "3"
+  showIcons: true
+  theme:
+    activeBorderColor:
+      - "#fe8019"
+      - bold
+    inactiveBorderColor:
+      - "#928374"
+    searchingActiveBorderColor:
+      - "#fabd2f"
+      - bold
+    optionsTextColor:
+      - "#83a598"
+    selectedLineBgColor:
+      - "#3c3836"
+    inactiveViewSelectedLineBgColor:
+      - "#3c3836"
+    cherryPickedCommitFgColor:
+      - "#282828"
+    cherryPickedCommitBgColor:
+      - "#fabd2f"
+    markedBaseCommitFgColor:
+      - "#282828"
+    markedBaseCommitBgColor:
+      - "#fe8019"
+    unstagedChangesColor:
+      - "#fb4934"
+    defaultFgColor:
+      - "#ebdbb2"
