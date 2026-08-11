@@ -225,6 +225,18 @@ jobs:
             echo "Create an automation token at npmjs.com and add it as NPM_TOKEN."
             exit 0
           fi
+
+          VERSION="${{ needs.verify.outputs.version }}"
+
+          # Idempotent: npm rejects republishing a version with E403, which would
+          # fail every re-run of an already-shipped release. Re-running is normal
+          # (adding a token that was missing, say), so a version that's already
+          # up is a success, not an error.
+          if npm view "furnizsh@${VERSION}" version >/dev/null 2>&1; then
+            echo "furnizsh@${VERSION} is already on npm — nothing to publish"
+            exit 0
+          fi
+
           cd dist/npm && npm publish --provenance --access public
 
   # ------------------------------------------------------------
@@ -266,4 +278,16 @@ jobs:
             Write-Host "Create an API key at powershellgallery.com and add it as PSGALLERY_KEY."
             exit 0
           }
+
+          $version = "${{ needs.verify.outputs.version }}"
+
+          # Same idempotency rule as npm: the Gallery rejects a duplicate version,
+          # so an already-published one is a success rather than a failure.
+          $existing = Find-Module furnizsh -RequiredVersion $version `
+                        -Repository PSGallery -ErrorAction SilentlyContinue
+          if ($existing) {
+            Write-Host "furnizsh $version is already on the PowerShell Gallery - nothing to publish"
+            exit 0
+          }
+
           Publish-Module -Path dist/furnizsh -NuGetApiKey $env:PSGALLERY_KEY -Verbose
