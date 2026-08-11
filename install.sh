@@ -357,18 +357,26 @@ install_nerd_font_linux() {
 install_omz() {
   step "Oh My Zsh"
 
-  if [ -d "$HOME/.oh-my-zsh" ]; then
-    skip "already installed"
+  # Honour an exported $ZSH rather than assuming ~/.oh-my-zsh. The upstream
+  # installer targets $ZSH, so if the caller has it pointing elsewhere — which
+  # any existing oh-my-zsh user does, since their .zshrc exports it — checking
+  # $HOME/.oh-my-zsh would look in one place while the install went to another,
+  # and the installer would abort on a directory we never examined.
+  local omz_dir="${ZSH:-$HOME/.oh-my-zsh}"
+
+  if [ -d "$omz_dir" ]; then
+    skip "already installed at $(printf '%s' "$omz_dir" | sed "s|$HOME|~|")"
   else
     info "Installing from ohmyzsh/ohmyzsh"
     # RUNZSH=no stops the installer dropping into a new shell and halting
-    # this script; KEEP_ZSHRC=yes stops it rewriting ~/.zshrc.
-    run sh -c "RUNZSH=no KEEP_ZSHRC=yes \
+    # this script; KEEP_ZSHRC=yes stops it rewriting ~/.zshrc. ZSH is passed
+    # explicitly so the target can never drift from the check above.
+    run sh -c "RUNZSH=no KEEP_ZSHRC=yes ZSH='$omz_dir' \
       $(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
     ok "Oh My Zsh installed"
   fi
 
-  local custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+  local custom="${ZSH_CUSTOM:-$omz_dir/custom}"
   local plugin
   for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
     if [ -d "$custom/plugins/$plugin" ]; then
