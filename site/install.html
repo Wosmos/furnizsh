@@ -3,18 +3,119 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Install — furnizsh</title>
-<meta name="description" content="Install furnizsh via curl, Homebrew, npm or the PowerShell Gallery. Flags, tool sets, platform support and FAQ.">
+<title>Install with curl, Homebrew, npm or PowerShell — furnizsh</title>
+<meta name="description" content="Four ways to install furnizsh, none needing a git clone. Flags, tool sets, platform support for macOS, Linux and Windows, and answers to common questions.">
 <meta name="color-scheme" content="dark light">
-<meta property="og:title" content="Install — furnizsh">
-<meta property="og:description" content="curl, Homebrew, npm or PowerShell Gallery. No clone required.">
+<meta property="og:title" content="Install with curl, Homebrew, npm or PowerShell — furnizsh">
+<meta property="og:description" content="Four ways to install furnizsh, none needing a git clone. Flags, tool sets, platform support for macOS, Linux and Windows, and answers to common questions.">
 <meta property="og:image" content="https://wosmos.github.io/furnizsh/assets/img/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://wosmos.github.io/furnizsh/install.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#0F0E13" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F7F5F3" media="(prefers-color-scheme: light)">
+<meta property="og:site_name" content="furnizsh">
+<meta property="og:locale" content="en">
+<meta name="twitter:image:alt" content="furnizsh — a cartoon anglerfish mascot beside the install command">
 <link rel="icon" href="assets/icons/favicon.ico" sizes="any">
 <link rel="icon" href="assets/icons/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <link rel="stylesheet" href="css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "furnizsh",
+      "item": "https://wosmos.github.io/furnizsh/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Install",
+      "item": "https://wosmos.github.io/furnizsh/install.html"
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does this work with fish shell?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. furnizsh targets zsh on macOS and Linux, and PowerShell on Windows. The mascot is a deep-sea anglerfish, not an endorsement of the Friendly Interactive Shell. Most of the config is Oh My Zsh plugins and zsh functions, which have no fish equivalent."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will it break my existing .zshrc?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. It appends one marker-guarded source line and writes the actual config to ~/.config/furnizsh/. Your PATH exports, work tooling and aliases are never read, moved or rewritten. Everything it does replace is backed up to ~/.furnizsh-backup/<timestamp>/ first, and furnizsh uninstall restores it \u2014 verified byte-for-byte in CI."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "I already have my own dotfiles. Can I take just the bits I want?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, and that's a reasonable way to use it. SETUP.md is the manual version of everything the installer does, step by step, so you can lift the Ghostty config, the Starship preset or just the helper functions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is it called furnizsh?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It's \"furnish\" with zsh spliced into the middle \u2014 you pronounce it the same. To furnish is to fit out a space so it's worth living in, which is what the tool does to a bare shell."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I have to use Ghostty?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The shell config, tools, prompt and all 24 commands work in any terminal \u2014 you just lose the specific theme. Alacritty, Kitty, WezTerm and even Terminal.app all work; set the font to JetBrainsMono Nerd Font Mono and pick a dark theme."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why are the icons all boxes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Nerd Font isn't active. Check it installed, then set your terminal's font to JetBrainsMono Nerd Font Mono exactly \u2014 plain \"JetBrains Mono\" is a different, icon-free font. agdoctor checks this for you."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Something's broken. Where do I start?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Run agdoctor. It checks every tool, config file, plugin and font and prints the exact fix command for anything missing. Include its output if you open an issue."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it safe to run twice?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes \u2014 it's idempotent. It compares against what's already installed and only changes what actually drifted. Rerunning is also how you apply an update."
+      }
+    }
+  ]
+}
+</script>
+
 </head>
 
 <body>
@@ -41,7 +142,7 @@
 <section class="wrap">
   <div class="section-head">
     <p class="eyebrow">four ways, no clone</p>
-    <h2>install</h2>
+    <h1>install</h1>
     <p class="lede">The whole payload is about 50 KB. Nothing needs a repo left on disk.</p>
   </div>
 

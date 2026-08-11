@@ -35,8 +35,8 @@ jobs:
           # It runs before we know anything about the machine, including
           # whether bash exists — so dash is the honest check.
           sudo apt-get update && sudo apt-get install -y dash
-          dash -n docs/install
-          shellcheck --shell=sh --severity=warning docs/install
+          dash -n site/install
+          shellcheck --shell=sh --severity=warning site/install
 
       # The zsh files use zsh-only syntax that shellcheck can't parse,
       # so they get zsh's own parser instead.

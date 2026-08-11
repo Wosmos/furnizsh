@@ -1,0 +1,10 @@
+# furnizsh — https://github.com/Wosmos/furnizsh
+
+User-agent: *
+Allow: /
+
+# The bootstrap installer is a shell script, not a page. Crawling it is
+# harmless but pointless, and it shouldn't appear in results.
+Disallow: /install$
+
+Sitemap: https://wosmos.github.io/furnizsh/sitemap.xml

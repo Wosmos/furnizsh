@@ -214,10 +214,12 @@ section { padding-block: clamp(3rem, 7vw, 5.5rem); }
 section + section { border-top: 1px solid var(--line-soft); }
 
 .section-head { margin-bottom: 2rem; max-width: var(--measure); }
+.section-head h1,
 .section-head h2 {
   font-size: var(--fs-2xl); font-weight: 700;
   display: flex; align-items: baseline; gap: .55rem;
 }
+.section-head h1::before,
 .section-head h2::before { content: "❯"; color: var(--accent); font-size: .75em; flex: none; }
 .section-head p { margin-top: .6rem; }
 
