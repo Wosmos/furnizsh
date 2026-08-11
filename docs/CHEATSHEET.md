@@ -89,7 +89,7 @@ The default:
 | `fe [query]` | fzf-pick a file with a preview, open in `$EDITOR` |
 | `bak <file>` | timestamped backup copy |
 | `sizeof [dir]` | biggest items in a directory |
-| `gclean` | delete branches already merged into the default branch |
+| `gprune` | delete branches already merged into the default branch |
 | `paths` | `$PATH` one per line, dupes and dead entries flagged |
 | `reload` | restart the shell in place |
 

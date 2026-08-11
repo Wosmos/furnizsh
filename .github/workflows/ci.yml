@@ -55,13 +55,34 @@ jobs:
       - name: Analyse
         shell: pwsh
         run: |
+          # PSReviewUnusedParameter fires on every script-scope param read inside
+          # a nested function, which is how all of these installers are written.
+          # PSUseBOMForUnicodeEncodedFile is handled by the BOM check below, which
+          # is stricter — it verifies the bytes rather than trusting the linter.
           $results = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error,Warning `
-            -ExcludeRule PSAvoidUsingWriteHost,PSUseShouldProcessForStateChangingFunctions,PSAvoidUsingInvokeExpression
+            -ExcludeRule PSAvoidUsingWriteHost,PSUseShouldProcessForStateChangingFunctions,`
+                         PSAvoidUsingInvokeExpression,PSReviewUnusedParameter,`
+                         PSUseBOMForUnicodeEncodedFile
           if ($results) {
             $results | Format-Table -AutoSize
             throw "$($results.Count) PSScriptAnalyzer finding(s)"
           }
           Write-Host "PSScriptAnalyzer clean"
+
+      - name: Non-ASCII scripts carry a UTF-8 BOM
+        shell: pwsh
+        run: |
+          # Windows PowerShell 5.1 reads a BOM-less file as ANSI, which mangles
+          # every non-ASCII character. Any script containing one needs the BOM.
+          $bad = @()
+          foreach ($f in Get-ChildItem -Recurse -Filter *.ps1) {
+            $bytes = [System.IO.File]::ReadAllBytes($f.FullName)
+            $hasBom = $bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF
+            $nonAscii = $bytes | Where-Object { $_ -gt 127 } | Select-Object -First 1
+            if ($nonAscii -and -not $hasBom) { $bad += $f.Name }
+          }
+          if ($bad) { throw "missing UTF-8 BOM: $($bad -join ', ')" }
+          Write-Host "BOM check clean"
 
       - name: Parse every script
         shell: pwsh
@@ -160,9 +181,16 @@ jobs:
                --exclude-dir=.git . ; then
             echo "FAIL: credential-shaped string found"; fail=1
           fi
-          # Telemetry endpoints and .env files.
-          if grep -rniE 'OTEL_EXPORTER|\.env\b' --include='*.sh' --include='*.zsh' --include='*.ps1' . ; then
-            echo "FAIL: telemetry or .env reference found"; fail=1
+          # Telemetry endpoints. Deliberately narrow: cc-alert.env is a config
+          # file this repo ships by name, not a dotenv full of secrets, so match
+          # dotenv-style secret loading rather than the substring ".env".
+          if grep -rniE 'OTEL_EXPORTER|OTEL_METRICS|source .*/\.env["\x27 ]*$' \
+               --include='*.sh' --include='*.zsh' --include='*.ps1' . ; then
+            echo "FAIL: telemetry or dotenv-secret reference found"; fail=1
+          fi
+          # A committed .env file is always wrong, whatever its contents.
+          if find . -path ./.git -prune -o -name '.env' -print -o -name '.env.*' -print | grep . ; then
+            echo "FAIL: committed .env file"; fail=1
           fi
           [ $fail -eq 0 ] && echo "clean"
           exit $fail
@@ -218,7 +246,7 @@ jobs:
             source "$HOME/.config/afterglow/afterglow.zsh"
             missing=0
             for fn in cheatsheet agdoctor theme agupdate mkcd up serve ports killport \
-                      fkill fe bak sizeof gclean paths reload \
+                      fkill fe bak sizeof gprune paths reload \
                       weather cheat qr gitignore note timer sysinfo dockerclean; do
               if typeset -f $fn >/dev/null 2>&1 || alias $fn >/dev/null 2>&1; then
                 echo "  OK   $fn"

@@ -33,7 +33,7 @@ First public release.
 24 helpers, in both zsh and PowerShell:
 
 - **Core** — `cheatsheet`/`chs`, `agdoctor`, `theme`, `agupdate`, `mkcd`, `up`,
-  `serve`, `ports`, `killport`, `fkill`, `fe`, `bak`, `sizeof`, `gclean`,
+  `serve`, `ports`, `killport`, `fkill`, `fe`, `bak`, `sizeof`, `gprune`,
   `paths`, `reload`
 - **Extras** (need network, skip with `--no-extras`) — `weather`, `cheat`, `qr`,
   `gitignore`, `note`, `timer`, `sysinfo`, `dockerclean`

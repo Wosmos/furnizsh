@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 #  afterglow — PowerShell profile
 #  https://github.com/Wosmos/afterglow
 #
@@ -160,7 +160,7 @@ function cheatsheet {
     Write-Host "  $($c.Yellow)serve$($c.Reset) [port]  static server here        $($c.Yellow)ports$($c.Reset)           what's listening"
     Write-Host "  $($c.Yellow)killport$($c.Reset) <p>  free a port               $($c.Yellow)fkill$($c.Reset)           fzf-pick + kill a process"
     Write-Host "  $($c.Yellow)fe$($c.Reset) [query]    fzf-pick + edit a file    $($c.Yellow)bak$($c.Reset) <file>      timestamped backup"
-    Write-Host "  $($c.Yellow)sizeof$($c.Reset) [dir]  what's eating the disk    $($c.Yellow)gclean$($c.Reset)          prune merged branches"
+    Write-Host "  $($c.Yellow)sizeof$($c.Reset) [dir]  what's eating the disk    $($c.Yellow)gprune$($c.Reset)          prune merged branches"
     Write-Host "  $($c.Yellow)paths$($c.Reset)         `$env:PATH, one per line   $($c.Yellow)reload$($c.Reset)          restart PowerShell"
     Write-Host "  $($c.Yellow)agdoctor$($c.Reset)      health-check the setup"
     Write-Host ""
@@ -402,12 +402,12 @@ function sizeof {
     } | Sort-Object Bytes -Descending | Select-Object -First 20 Size, Name | Format-Table -AutoSize
 }
 
-function gclean {
+function gprune {
     <#  .SYNOPSIS  Delete local branches already merged into the default branch.  #>
     $c = $script:AGColors
 
     git rev-parse --is-inside-work-tree 2>$null | Out-Null
-    if ($LASTEXITCODE -ne 0) { Write-Error "gclean: not inside a git repository"; return }
+    if ($LASTEXITCODE -ne 0) { Write-Error "gprune: not inside a git repository"; return }
 
     $default = (git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>$null) -replace '^origin/', ''
     if (-not $default) {
@@ -416,7 +416,7 @@ function gclean {
             if ($LASTEXITCODE -eq 0) { $default = $candidate; break }
         }
     }
-    if (-not $default) { Write-Error "gclean: could not determine the default branch"; return }
+    if (-not $default) { Write-Error "gprune: could not determine the default branch"; return }
 
     $protected = @($default, 'main', 'master', 'develop', 'trunk')
     $stale = git branch --merged $default --format='%(refname:short)' |

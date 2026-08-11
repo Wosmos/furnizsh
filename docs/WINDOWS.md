@@ -218,7 +218,7 @@ them, [posh-git](https://github.com/dahlbyk/posh-git) covers some ground.
 
 **All 24 afterglow commands work**, ported to PowerShell — `cheatsheet`,
 `agdoctor`, `theme`, `agupdate`, `mkcd`, `up`, `serve`, `ports`, `killport`,
-`fkill`, `fe`, `bak`, `sizeof`, `gclean`, `paths`, `reload`, plus the eight
+`fkill`, `fe`, `bak`, `sizeof`, `gprune`, `paths`, `reload`, plus the eight
 extras (`weather`, `cheat`, `qr`, `gitignore`, `note`, `timer`, `sysinfo`,
 `dockerclean`).
 

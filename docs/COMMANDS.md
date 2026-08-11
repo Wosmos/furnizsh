@@ -20,7 +20,7 @@ the same behaviour.
 | [`fe`](#fe-query) | fzf-pick and edit a file |
 | [`bak`](#bak-file) | timestamped backup |
 | [`sizeof`](#sizeof-dir) | what's eating the disk |
-| [`gclean`](#gclean) | prune merged branches |
+| [`gprune`](#gprune) | prune merged branches |
 | [`paths`](#paths) | `$PATH`, readably |
 | [`reload`](#reload) | restart the shell |
 
@@ -245,12 +245,12 @@ The fast answer to "why is my disk full".
 
 ---
 
-## `gclean`
+## `gprune`
 
 Delete local branches that are already merged into the default branch.
 
 ```bash
-gclean
+gprune
 ```
 
 It works out the default branch from `origin/HEAD`, falling back to whichever of

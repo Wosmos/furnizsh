@@ -535,10 +535,10 @@ sizeof() {
 #  Git
 # ============================================================
 
-# gclean — delete local branches already merged into the default branch
-gclean() {
+# gprune — delete local branches already merged into the default branch
+gprune() {
   git rev-parse --is-inside-work-tree >/dev/null 2>&1 || {
-    print -u2 "gclean: not inside a git repository"; return 1
+    print -u2 "gprune: not inside a git repository"; return 1
   }
 
   local default
@@ -550,7 +550,7 @@ gclean() {
       default=""
     done
   fi
-  [[ -z "$default" ]] && { print -u2 "gclean: could not determine the default branch"; return 1 }
+  [[ -z "$default" ]] && { print -u2 "gprune: could not determine the default branch"; return 1 }
 
   local -a stale
   stale=(${(f)"$(git branch --merged "$default" --format='%(refname:short)' \

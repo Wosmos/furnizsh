@@ -184,9 +184,26 @@ command -v btop  >/dev/null 2>&1 && alias top='btop'
 command -v tldr  >/dev/null 2>&1 && alias help='tldr'
 
 # ------------------------------------------------------------
+# Oh My Zsh's plugins define aliases, and zsh refuses to define a
+# function whose name is already an alias — it's a parse error that
+# aborts the rest of the file, silently taking every command after
+# it with it. (The git plugin's `gprune` cost us exactly that.)
+# Clear any collision before the definitions are parsed. This has to
+# live here, not in functions.zsh, so it runs in an earlier parse unit.
+# ------------------------------------------------------------
+for _afterglow_name in \
+  cheatsheet chs agdoctor doctor theme agupdate mkcd up serve ports \
+  killport fkill fe bak sizeof gprune paths reload \
+  weather cheat qr gitignore note timer sysinfo dockerclean
+do
+  unalias "$_afterglow_name" 2>/dev/null
+done
+unset _afterglow_name
+
+# ------------------------------------------------------------
 # Helper commands — cheatsheet/chs, agdoctor, theme, agupdate,
 # mkcd, up, serve, ports, killport, fkill, fe, bak, sizeof,
-# gclean, paths, reload.  Full reference: docs/COMMANDS.md
+# gprune, paths, reload.  Full reference: docs/COMMANDS.md
 # ------------------------------------------------------------
 [[ -f "$AFTERGLOW_DIR/functions.zsh" ]] && source "$AFTERGLOW_DIR/functions.zsh"
 

@@ -152,7 +152,7 @@ fkill              fzf-pick a process and kill it
 fe [query]         fzf-pick a file with a preview, open in $EDITOR
 bak <file>         timestamped backup copy
 sizeof [dir]       what's eating the disk
-gclean             delete branches already merged into main
+gprune             delete branches already merged into main
 paths              $PATH one per line, dupes and dead entries flagged
 reload             restart the shell in place
 ```

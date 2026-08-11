@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
     afterglow — installer for Windows / PowerShell.
@@ -247,7 +247,12 @@ function Install-NerdFont {
     try {
         $installedFonts = Get-ChildItem "$env:LOCALAPPDATA\Microsoft\Windows\Fonts", "$env:WINDIR\Fonts" `
                             -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name
-    } catch { }
+    } catch {
+        # Either font directory can be missing or unreadable on a locked-down
+        # machine. That only means we can't prove the font is present, so fall
+        # through and install it — the install is idempotent either way.
+        Write-Verbose "Could not enumerate font directories: $($_.Exception.Message)"
+    }
 
     if ($installedFonts -match 'JetBrainsMono.*Nerd') {
         Write-Skip "already installed"
