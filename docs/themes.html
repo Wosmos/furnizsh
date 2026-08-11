@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Themes — furnizsh</title>
+<meta name="description" content="Four matched themes for furnizsh: neon, catppuccin, gruvbox and tokyonight. One command switches Ghostty, Starship and lazygit together.">
+<meta name="color-scheme" content="dark light">
+<meta property="og:title" content="Themes — furnizsh">
+<meta property="og:description" content="Four matched themes. One command switches Ghostty, Starship and lazygit together.">
+<meta property="og:image" content="https://wosmos.github.io/furnizsh/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" href="assets/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="index.html"><img src="assets/icon-64.png" alt="" width="26" height="26">furnizsh</a>
+    <nav class="topnav" aria-label="Sections">
+      <a href="themes.html" aria-current="page">themes</a>
+      <a href="commands.html">commands</a>
+      <a href="install.html">install</a>
+      <a href="https://github.com/Wosmos/furnizsh">github</a>
+    </nav>
+    <div class="theme-switch" role="group" aria-label="Colour theme">
+      <button type="button" data-theme-set="auto"  aria-pressed="true">Auto</button>
+      <button type="button" data-theme-set="light" aria-pressed="false">Light</button>
+      <button type="button" data-theme-set="dark"  aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<section class="wrap">
+  <div class="section-head">
+    <p class="eyebrow">four looks</p>
+    <h2>one command switches everything</h2>
+    <p class="lede">
+      Ghostty, Starship and lazygit are themed together. Set individually they
+      drift apart within a week — which is why this is one command rather than three.
+    </p>
+  </div>
+
+  <div class="term" style="max-width:640px">
+    <div class="term-body">
+      <div class="line"><span class="p">❯</span><span class="cmd">theme</span></div>
+      <div class="out">● neon        Neon              near-black with bright accents</div>
+      <div class="out">○ catppuccin  Catppuccin Mocha  soft pastels on deep plum</div>
+      <div class="out">○ gruvbox     Gruvbox Dark      warm retro earth tones</div>
+      <div class="out">○ tokyonight  Tokyo Night       cool blues and violets</div>
+      <div class="line"><span class="p">❯</span><span class="cmd">theme gruvbox</span></div>
+      <div class="out ok">ghostty, starship and lazygit all switched</div>
+    </div>
+  </div>
+
+  <p class="note">
+    Before writing anything it checks the theme actually exists on your Ghostty
+    build — names occasionally get re-cased between releases — and leaves your
+    config alone rather than writing a broken value.
+  </p>
+</section>
+
+<section class="wrap">
+  <div class="section-head"><h2>the four</h2></div>
+
+  <div class="grid">
+
+    <div class="card">
+      <span class="mark">[ default ]</span>
+      <h3>neon</h3>
+      <p>Highest contrast of the four. Colours land hard against an almost-black ground.</p>
+      <div class="prompt-demo" aria-label="neon prompt preview">
+        <span class="seg" style="background:#94E2D5">&nbsp;~&nbsp;</span>
+        <span class="seg" style="background:#CBA6F7">projects</span>
+        <span class="seg" style="background:#A6E3A1">main</span>
+        <span class="seg tail">❯ _</span>
+      </div>
+      <div class="chips" aria-hidden="true">
+        <span class="chip" style="background:#94E2D5"></span>
+        <span class="chip" style="background:#CBA6F7"></span>
+        <span class="chip" style="background:#A6E3A1"></span>
+        <span class="chip" style="background:#F9E2AF"></span>
+      </div>
+      <p style="margin-top:1rem"><code>Ghostty Neon</code> · <code>catppuccin-powerline</code></p>
+    </div>
+
+    <div class="card">
+      <h3>catppuccin</h3>
+      <p>The most cohesive — terminal, prompt, lazygit and every script share one palette exactly.</p>
+      <div class="prompt-demo" aria-label="catppuccin prompt preview">
+        <span class="seg" style="background:#CBA6F7">&nbsp;~&nbsp;</span>
+        <span class="seg" style="background:#89B4FA">projects</span>
+        <span class="seg" style="background:#A6E3A1">main</span>
+        <span class="seg tail">❯ _</span>
+      </div>
+      <div class="chips" aria-hidden="true">
+        <span class="chip" style="background:#CBA6F7"></span>
+        <span class="chip" style="background:#89B4FA"></span>
+        <span class="chip" style="background:#A6E3A1"></span>
+        <span class="chip" style="background:#F5C2E7"></span>
+      </div>
+      <p style="margin-top:1rem"><code>Catppuccin Mocha</code> · <code>catppuccin-powerline</code></p>
+    </div>
+
+    <div class="card">
+      <h3>gruvbox</h3>
+      <p>Lowest contrast, easiest on the eyes. The one to pick when neon is too much at 11pm.</p>
+      <div class="prompt-demo" aria-label="gruvbox prompt preview">
+        <span class="seg" style="background:#FE8019">&nbsp;~&nbsp;</span>
+        <span class="seg" style="background:#FABD2F">projects</span>
+        <span class="seg" style="background:#83A598">main</span>
+        <span class="seg tail">❯ _</span>
+      </div>
+      <div class="chips" aria-hidden="true">
+        <span class="chip" style="background:#FE8019"></span>
+        <span class="chip" style="background:#FABD2F"></span>
+        <span class="chip" style="background:#83A598"></span>
+        <span class="chip" style="background:#B8BB26"></span>
+      </div>
+      <p style="margin-top:1rem"><code>Gruvbox Dark</code> · <code>gruvbox-rainbow</code></p>
+    </div>
+
+    <div class="card">
+      <h3>tokyonight</h3>
+      <p>The middle ground — calmer than neon, more contrast than gruvbox.</p>
+      <div class="prompt-demo" aria-label="tokyonight prompt preview">
+        <span class="seg" style="background:#7AA2F7">&nbsp;~&nbsp;</span>
+        <span class="seg" style="background:#BB9AF7">projects</span>
+        <span class="seg" style="background:#7DCFFF">main</span>
+        <span class="seg tail">❯ _</span>
+      </div>
+      <div class="chips" aria-hidden="true">
+        <span class="chip" style="background:#7AA2F7"></span>
+        <span class="chip" style="background:#BB9AF7"></span>
+        <span class="chip" style="background:#7DCFFF"></span>
+        <span class="chip" style="background:#9ECE6A"></span>
+      </div>
+      <p style="margin-top:1rem"><code>TokyoNight</code> · <code>tokyo-night</code></p>
+    </div>
+
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="section-head">
+    <h2>picking one</h2>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Theme</th><th>Ghostty</th><th>Starship preset</th><th>lazygit</th></tr></thead>
+      <tbody>
+        <tr><td class="k">neon</td><td><code>Neon</code></td><td><code>catppuccin-powerline</code></td><td>Catppuccin Mocha</td></tr>
+        <tr><td class="k">catppuccin</td><td><code>Catppuccin Mocha</code></td><td><code>catppuccin-powerline</code></td><td>Catppuccin Mocha</td></tr>
+        <tr><td class="k">gruvbox</td><td><code>Gruvbox Dark</code></td><td><code>gruvbox-rainbow</code></td><td>Gruvbox Dark</td></tr>
+        <tr><td class="k">tokyonight</td><td><code>TokyoNight</code></td><td><code>tokyo-night</code></td><td>Tokyo Night</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="lede prose" style="margin-top:2rem">
+    Set one at install time with <code>--theme gruvbox</code>, or switch whenever you
+    like. Adding your own is four files —
+    <a href="https://github.com/Wosmos/furnizsh/blob/main/CONTRIBUTING.md#adding-a-theme">see CONTRIBUTING</a>.
+  </p>
+
+  <div class="cta-row">
+    <a class="btn primary" href="install.html">Install</a>
+    <a class="btn" href="commands.html">All 24 commands</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <div class="footer-grid">
+    <div>
+      <a class="brand" href="index.html" style="font-size:1.2rem"><img src="assets/icon-64.png" alt="" width="24" height="24">furnizsh</a>
+      <p style="margin:.5rem 0 0;color:var(--ink-faint);font-size:var(--fs-sm)">MIT — take it, fork it, make it yours.</p>
+    </div>
+    <nav class="footer-links" aria-label="Documentation">
+      <a href="https://github.com/Wosmos/furnizsh">repo</a>
+      <a href="themes.html">themes</a>
+      <a href="commands.html">commands</a>
+      <a href="install.html">install</a>
+      <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/SETUP.md">manual setup</a>
+      <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/CHEATSHEET.md">cheatsheet</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

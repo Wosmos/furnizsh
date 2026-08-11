@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commands — furnizsh</title>
+<meta name="description" content="The 24 helper commands furnizsh adds, in zsh and PowerShell alike — cheatsheet, agdoctor, theme, mkcd, serve, ports, killport, fkill and more.">
+<meta name="color-scheme" content="dark light">
+<meta property="og:title" content="Commands — furnizsh">
+<meta property="og:description" content="24 helper commands, in zsh and PowerShell alike.">
+<meta property="og:image" content="https://wosmos.github.io/furnizsh/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" href="assets/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="index.html"><img src="assets/icon-64.png" alt="" width="26" height="26">furnizsh</a>
+    <nav class="topnav" aria-label="Sections">
+      <a href="themes.html">themes</a>
+      <a href="commands.html" aria-current="page">commands</a>
+      <a href="install.html">install</a>
+      <a href="https://github.com/Wosmos/furnizsh">github</a>
+    </nav>
+    <div class="theme-switch" role="group" aria-label="Colour theme">
+      <button type="button" data-theme-set="auto"  aria-pressed="true">Auto</button>
+      <button type="button" data-theme-set="light" aria-pressed="false">Light</button>
+      <button type="button" data-theme-set="dark"  aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<section class="wrap">
+  <div class="section-head">
+    <p class="eyebrow">24 commands</p>
+    <h2>the ones you'll use every day</h2>
+    <p class="lede">
+      Same names and same behaviour in zsh and PowerShell. Every one prints a usage
+      line on bad input and degrades gracefully when a tool is missing.
+    </p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <span class="mark">[ start here ]</span>
+      <h3><code>cheatsheet</code> / <code>chs</code></h3>
+      <p>
+        Forgot what you installed? Prints the whole reference in your terminal —
+        every plugin, tool, command and keybind. <code>--comp</code> for the
+        exhaustive version.
+      </p>
+    </div>
+    <div class="card">
+      <span class="mark">[ when something breaks ]</span>
+      <h3><code>agdoctor</code></h3>
+      <p>
+        Checks every tool, config file, plugin and font, then prints ✓ or ✗ for each
+        — with the exact command to fix anything missing.
+      </p>
+    </div>
+    <div class="card">
+      <span class="mark">[ the look ]</span>
+      <h3><code>theme</code> <span class="muted">[name]</span></h3>
+      <p>
+        Lists the four themes, or switches Ghostty, Starship and lazygit together
+        in one go.
+      </p>
+    </div>
+    <div class="card">
+      <span class="mark">[ staying current ]</span>
+      <h3><code>agupdate</code></h3>
+      <p>
+        Pulls the latest furnizsh and reapplies it. Set <code>FURNIZSH_REPO</code>
+        if your checkout isn't in the default place.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="section-head">
+    <h2>core</h2>
+    <p>Always installed.</p>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td class="k">mkcd &lt;dir&gt;</td><td>Create a directory, including parents, and cd into it.</td></tr>
+        <tr><td class="k">up [n]</td><td>Go up n directory levels. <code>up 3</code> beats <code>cd ../../..</code></td></tr>
+        <tr><td class="k">serve [port]</td><td>Static HTTP server rooted here. Prints the LAN URL so you can open it on your phone.</td></tr>
+        <tr><td class="k">ports</td><td>Everything currently listening, with port, PID and process name.</td></tr>
+        <tr><td class="k">killport &lt;port&gt;</td><td>Kill whatever is holding a port — the other half of "port 3000 is already in use".</td></tr>
+        <tr><td class="k">fkill</td><td>Fuzzy-pick one or more processes from an fzf list and kill them.</td></tr>
+        <tr><td class="k">fe [query]</td><td>Fuzzy-pick a file with a syntax-highlighted preview, open it in <code>$EDITOR</code>.</td></tr>
+        <tr><td class="k">bak &lt;file&gt;</td><td>Timestamped backup copy alongside the original. A five-second undo.</td></tr>
+        <tr><td class="k">sizeof [dir]</td><td>The 20 biggest items in a directory, largest first. Why your disk is full.</td></tr>
+        <tr><td class="k">gprune</td><td>Delete local branches already merged into the default branch. Lists them and asks first.</td></tr>
+        <tr><td class="k">paths</td><td><code>$PATH</code> one entry per line, with duplicates and dead directories flagged.</td></tr>
+        <tr><td class="k">reload</td><td>Restart the shell in place after editing config.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note">
+    <code>gprune</code> is deliberately not called <code>gclean</code> — Oh My Zsh's
+    git plugin already defines that as <code>git clean</code>, and shadowing it
+    would silently replace a destructive command with an unrelated one.
+  </p>
+</section>
+
+<section class="wrap">
+  <div class="section-head">
+    <h2>extras</h2>
+    <p>
+      These call an external service, which is why they're separable — install with
+      <code>--no-extras</code> to leave them out. Nothing private is sent: the
+      queries are command names, city names and language names.
+      <code>note</code> writes locally only.
+    </p>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td class="k">weather [city]</td><td>Forecast in the terminal. No argument geolocates by IP.</td></tr>
+        <tr><td class="k">cheat &lt;cmd&gt;</td><td>Practical examples for any CLI tool — <code>cheat tar</code>, <code>cheat git/rebase</code>.</td></tr>
+        <tr><td class="k">qr &lt;text&gt;</td><td>Renders a QR code in the terminal. Handy for getting a <code>serve</code> URL onto your phone.</td></tr>
+        <tr><td class="k">gitignore &lt;langs&gt;</td><td>Fetch a <code>.gitignore</code>. <code>-w</code> writes the file instead of printing.</td></tr>
+        <tr><td class="k">note [text]</td><td>Timestamped scratch notes in one local file. <code>-l</code> lists the last 20.</td></tr>
+        <tr><td class="k">timer &lt;mins&gt;</td><td>Counts down in place, then fires a desktop notification.</td></tr>
+        <tr><td class="k">sysinfo</td><td>OS, CPU, memory, uptime, disk, shell, terminal and the active theme.</td></tr>
+        <tr><td class="k">dockerclean</td><td>Reclaim docker disk space. Named volumes are never touched — your data is safe.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="section-head">
+    <h2>what the tools give you</h2>
+    <p>Beyond the commands above, the installed tools replace things you already type.</p>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Tool</th><th>Replaces</th><th>You type</th></tr></thead>
+      <tbody>
+        <tr><td class="k">eza</td><td class="was">ls</td><td><code>ls</code>, <code>ll</code>, <code>lt</code> — icons, git status, tree view</td></tr>
+        <tr><td class="k">bat</td><td class="was">cat</td><td><code>cat file.ts</code> — syntax highlighted, line numbers</td></tr>
+        <tr><td class="k">fd</td><td class="was">find</td><td><code>fd -e ts</code>, <code>fd -t d</code> — saner defaults, much faster</td></tr>
+        <tr><td class="k">zoxide</td><td class="was">cd</td><td><code>z proj</code> — jumps to the directory you actually use</td></tr>
+        <tr><td class="k">fzf</td><td class="was">ctrl+r</td><td><code>ctrl+r</code> history, <code>ctrl+t</code> files, <code>alt+c</code> cd</td></tr>
+        <tr><td class="k">delta</td><td class="was">git pager</td><td>automatic on <code>git diff</code> — syntax-highlighted, navigable</td></tr>
+        <tr><td class="k">lazygit</td><td class="was">git CLI</td><td><code>lg</code> — stage, commit, push, rebase, all in a TUI</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="lede prose" style="margin-top:2rem">
+    Plus Oh My Zsh with 17 plugins — ghost-text suggestions from history, live
+    valid/invalid command colouring, <code>ESC ESC</code> to prepend sudo,
+    <code>x anything.tar.gz</code> to extract. Full list in the
+    <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/CHEATSHEET.md">cheatsheet</a>.
+  </p>
+
+  <div class="cta-row">
+    <a class="btn primary" href="install.html">Install</a>
+    <a class="btn" href="https://github.com/Wosmos/furnizsh/blob/main/docs/COMMANDS.md">Full reference with examples</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <div class="footer-grid">
+    <div>
+      <a class="brand" href="index.html" style="font-size:1.2rem"><img src="assets/icon-64.png" alt="" width="24" height="24">furnizsh</a>
+      <p style="margin:.5rem 0 0;color:var(--ink-faint);font-size:var(--fs-sm)">MIT — take it, fork it, make it yours.</p>
+    </div>
+    <nav class="footer-links" aria-label="Documentation">
+      <a href="https://github.com/Wosmos/furnizsh">repo</a>
+      <a href="themes.html">themes</a>
+      <a href="commands.html">commands</a>
+      <a href="install.html">install</a>
+      <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/SETUP.md">manual setup</a>
+      <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/CHEATSHEET.md">cheatsheet</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

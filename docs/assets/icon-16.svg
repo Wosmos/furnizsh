@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"
+     role="img" aria-label="furnizsh">
+  <!--
+    furnizsh — the 16px variant.
+
+    icon.svg is the real mark and holds up from 32px upward. At 16 the glasses,
+    lids and teeth all land on sub-pixel boundaries and collapse into a smudge,
+    so this is a deliberately cruder drawing of the same character: head, two
+    big eyes, one mouth line, the lure. Nothing else survives at that size and
+    everything here does.
+
+    It only ever occupies the 16x16 slot inside favicon.ico.
+  -->
+  <!-- head, filling more of the frame than the full mark does -->
+  <ellipse cx="34" cy="36" rx="26" ry="23" fill="#5B5D75"
+           stroke="#1E1E2E" stroke-width="4"/>
+
+  <!-- eyes: oversized on purpose. two pale blobs are the most legible
+       "this is a face" signal at tiny sizes -->
+  <circle cx="24" cy="32" r="7.5" fill="#CDD6F4"/>
+  <circle cx="45" cy="32" r="7.5" fill="#CDD6F4"/>
+  <circle cx="25" cy="33.5" r="4"  fill="#1E1E2E"/>
+  <circle cx="46" cy="33.5" r="4"  fill="#1E1E2E"/>
+
+  <!-- one thick mouth line instead of individual teeth -->
+  <path d="M20 47 H48" stroke="#1E1E2E" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- lure: the single most distinctive pixel cluster in the mark, so it gets
+       proportionally larger here than in icon.svg -->
+  <path d="M36 14 C 36 6, 26 4, 20 8" stroke="#1E1E2E" stroke-width="4.5"
+        fill="none" stroke-linecap="round"/>
+  <circle cx="15" cy="10" r="8" fill="#94E2D5" stroke="#1E1E2E" stroke-width="4"/>
+</svg>

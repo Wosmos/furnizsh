@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"
+     role="img" aria-label="furnizsh">
+  <!--
+    furnizsh icon mark — the anglerfish head only.
+
+    Hand-authored rather than traced from the illustration: the hero has ~28k
+    colours and soft shading, which turns to mush below about 48px. This is
+    built from flat shapes sized so every feature still reads at 16x16.
+
+    The lure colour is the only thing that changes per theme:
+      neon #94E2D5 · catppuccin #CBA6F7 · gruvbox #FE8019 · tokyonight #7AA2F7
+  -->
+  <defs>
+    <style>
+      .ink    { fill: #1E1E2E; }
+      .body   { fill: #5B5D75; }
+      .jaw    { fill: #6E7089; }
+      .pale   { fill: #CDD6F4; }
+      .lure   { fill: #94E2D5; }
+      .stroke { stroke: #1E1E2E; stroke-width: 2.4; stroke-linecap: round;
+                stroke-linejoin: round; fill: none; }
+    </style>
+  </defs>
+
+  <!-- head: a wide rounded wedge, flatter along the bottom where the jaw sits -->
+  <path class="body" stroke="#1E1E2E" stroke-width="2.6" stroke-linejoin="round"
+        d="M32 12
+           C 46 12, 55 20, 55 31
+           C 55 42, 46 50, 32 50
+           C 18 50, 9 42, 9 31
+           C 9 20, 18 12, 32 12 Z"/>
+
+  <!-- lower jaw, pushed forward: the underbite is what makes it an anglerfish -->
+  <path class="jaw" stroke="#1E1E2E" stroke-width="2.6" stroke-linejoin="round"
+        d="M11 35
+           C 18 47, 46 47, 53 35
+           C 53 45, 44 51, 32 51
+           C 20 51, 11 45, 11 35 Z"/>
+
+  <!-- teeth: three chunky triangles, the fewest that still read as a mouth -->
+  <path class="pale" d="M19 35 L23.5 35 L21.2 41.5 Z"/>
+  <path class="pale" d="M29 35.5 L34 35.5 L31.5 42.5 Z"/>
+  <path class="pale" d="M39.5 35 L44 35 L41.7 41.5 Z"/>
+
+  <!-- eyes: half-lidded. the lid is a solid bar, not a thin line, so it
+       survives downscaling — this is where the whole expression lives -->
+  <circle class="pale" cx="23" cy="26" r="6.4"/>
+  <circle class="pale" cx="41" cy="26" r="6.4"/>
+  <circle class="ink"  cx="23.6" cy="28" r="3.5"/>
+  <circle class="ink"  cx="41.6" cy="28" r="3.5"/>
+  <path class="body" stroke="#1E1E2E" stroke-width="1.6" stroke-linejoin="round"
+        d="M16.2 26 A6.6 6.6 0 0 1 29.4 26 Z"/>
+  <path class="body" stroke="#1E1E2E" stroke-width="1.6" stroke-linejoin="round"
+        d="M34.2 26 A6.6 6.6 0 0 1 47.4 26 Z"/>
+
+  <!-- glasses: one continuous bar across both eyes. drawn as a stroke so it
+       thins gracefully rather than blocking the eyes out at small sizes -->
+  <g class="stroke" stroke-width="2.2">
+    <circle cx="23" cy="27" r="8.4"/>
+    <circle cx="41" cy="27" r="8.4"/>
+    <path d="M31.4 26.4 h1.2"/>
+    <path d="M14.6 25 L9.6 23.2"/>
+    <path d="M49.4 25 L54.4 23.2"/>
+  </g>
+
+  <!-- stalk and lure -->
+  <path class="stroke" stroke-width="3.2" d="M33 12 C 33 5, 25 3, 20 6"/>
+  <circle class="lure" cx="16.5" cy="7.5" r="5.4"
+          stroke="#1E1E2E" stroke-width="2.2"/>
+</svg>

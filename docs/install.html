@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install — furnizsh</title>
+<meta name="description" content="Install furnizsh via curl, Homebrew, npm or the PowerShell Gallery. Flags, tool sets, platform support and FAQ.">
+<meta name="color-scheme" content="dark light">
+<meta property="og:title" content="Install — furnizsh">
+<meta property="og:description" content="curl, Homebrew, npm or PowerShell Gallery. No clone required.">
+<meta property="og:image" content="https://wosmos.github.io/furnizsh/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" href="assets/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="index.html"><img src="assets/icon-64.png" alt="" width="26" height="26">furnizsh</a>
+    <nav class="topnav" aria-label="Sections">
+      <a href="themes.html">themes</a>
+      <a href="commands.html">commands</a>
+      <a href="install.html" aria-current="page">install</a>
+      <a href="https://github.com/Wosmos/furnizsh">github</a>
+    </nav>
+    <div class="theme-switch" role="group" aria-label="Colour theme">
+      <button type="button" data-theme-set="auto"  aria-pressed="true">Auto</button>
+      <button type="button" data-theme-set="light" aria-pressed="false">Light</button>
+      <button type="button" data-theme-set="dark"  aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<section class="wrap">
+  <div class="section-head">
+    <p class="eyebrow">four ways, no clone</p>
+    <h2>install</h2>
+    <p class="lede">The whole payload is about 50 KB. Nothing needs a repo left on disk.</p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <span class="mark">[ anywhere ]</span>
+      <h3>curl</h3>
+      <p>POSIX sh, so it runs before you know anything about the machine.</p>
+      <div class="term" style="margin-top:.9rem;box-shadow:none">
+        <div class="term-body" style="padding:.75rem .85rem">
+          <div class="line"><span class="p">❯</span><span class="cmd">curl -fsSL https://wosmos.github.io/furnizsh/install | sh</span></div>
+        </div>
+      </div>
+      <div class="cta-row" style="margin-top:.8rem">
+        <button class="btn" type="button" data-clip="curl -fsSL https://wosmos.github.io/furnizsh/install | sh">Copy</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="mark">[ macOS · Linux ]</span>
+      <h3>Homebrew</h3>
+      <p>Installs the command; setting up your shell stays an explicit second step.</p>
+      <div class="term" style="margin-top:.9rem;box-shadow:none">
+        <div class="term-body" style="padding:.75rem .85rem">
+          <div class="line"><span class="p">❯</span><span class="cmd">brew tap wosmos/tap</span></div>
+          <div class="line"><span class="p">❯</span><span class="cmd">brew install furnizsh</span></div>
+          <div class="line"><span class="p">❯</span><span class="cmd">furnizsh install</span></div>
+        </div>
+      </div>
+      <div class="cta-row" style="margin-top:.8rem">
+        <button class="btn" type="button" data-clip="brew tap wosmos/tap && brew install furnizsh && furnizsh install">Copy</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="mark">[ anywhere with Node ]</span>
+      <h3>npm</h3>
+      <p>Node is only the delivery mechanism — nothing runs on install.</p>
+      <div class="term" style="margin-top:.9rem;box-shadow:none">
+        <div class="term-body" style="padding:.75rem .85rem">
+          <div class="line"><span class="p">❯</span><span class="cmd">npm i -g furnizsh</span></div>
+          <div class="line"><span class="p">❯</span><span class="cmd">furnizsh install</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="mark">[ Windows ]</span>
+      <h3>PowerShell Gallery</h3>
+      <p>The native Windows channel — real cmdlets, not a folder of loose files.</p>
+      <div class="term" style="margin-top:.9rem;box-shadow:none">
+        <div class="term-body" style="padding:.75rem .85rem">
+          <div class="line"><span class="p">❯</span><span class="cmd">Install-Module furnizsh -Scope CurrentUser</span></div>
+          <div class="line"><span class="p">❯</span><span class="cmd">Install-Furnizsh</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">
+    <b>Run it with <code>--dry-run</code> first.</b> It prints every single action it
+    would take and changes nothing — including the one line it would append to your
+    <code>.zshrc</code>. Read that before you trust it.
+  </p>
+</section>
+
+<section class="wrap">
+  <div class="section-head">
+    <h2>pick what you want</h2>
+    <p>Everything optional sits behind a flag. A plain <code>furnizsh install</code> stays minimal.</p>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Flag</th><th>Default</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td class="k">--theme &lt;name&gt;</td><td><code>neon</code></td><td><code>neon</code> · <code>catppuccin</code> · <code>gruvbox</code> · <code>tokyonight</code></td></tr>
+        <tr><td class="k">--tools &lt;set&gt;</td><td><code>core</code></td><td><code>core</code> · <code>extended</code> · <code>all</code> — see below</td></tr>
+        <tr><td class="k">--dry-run</td><td>off</td><td>print every action, change nothing</td></tr>
+        <tr><td class="k">--yes</td><td>off</td><td>don't prompt — for non-interactive installs</td></tr>
+        <tr><td class="k">--no-font</td><td>off</td><td>skip the JetBrains Mono Nerd Font</td></tr>
+        <tr><td class="k">--no-tmux</td><td>off</td><td>skip the tmux config</td></tr>
+        <tr><td class="k">--no-extras</td><td>off</td><td>skip the network-dependent commands</td></tr>
+        <tr><td class="k">--no-claude</td><td>off</td><td>skip the optional Claude Code extras</td></tr>
+        <tr><td class="k">--no-chsh</td><td>off</td><td>don't change your login shell</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Tool set</th><th>Installs</th></tr></thead>
+      <tbody>
+        <tr><td class="k">core</td><td>starship · fzf · zoxide · eza · bat · fd · git-delta · lazygit</td></tr>
+        <tr><td class="k">extended</td><td>core, plus ripgrep · tmux · jq · direnv · tldr · btop</td></tr>
+        <tr><td class="k">all</td><td>extended, plus atuin · yq · httpie · dust · procs · gh</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="lede prose" style="margin-top:1.5rem">
+    PowerShell takes the same options in its own spelling:
+    <code>-Theme</code>, <code>-Tools</code>, <code>-DryRun</code>, <code>-Yes</code>,
+    <code>-NoFont</code>, <code>-NoExtras</code>, <code>-NoTerminal</code>.
+  </p>
+</section>
+
+<section class="wrap">
+  <div class="section-head"><h2>platforms</h2></div>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Platform</th><th>Terminal</th><th>Shell</th><th>Commands</th><th>Scripts</th></tr></thead>
+      <tbody>
+        <tr><td class="k">macOS</td><td>Ghostty</td><td>zsh + Oh My Zsh</td><td class="yes">24</td><td><code>install.sh</code> · <code>uninstall.sh</code> · <code>doctor.sh</code></td></tr>
+        <tr><td class="k">Linux</td><td>Ghostty</td><td>zsh + Oh My Zsh</td><td class="yes">24</td><td><code>install.sh</code> · <code>uninstall.sh</code> · <code>doctor.sh</code></td></tr>
+        <tr><td class="k">Windows + WSL2</td><td>Ghostty</td><td>zsh + Oh My Zsh</td><td class="yes">24</td><td><code>install.sh</code> · <code>uninstall.sh</code> · <code>doctor.sh</code></td></tr>
+        <tr><td class="k">Windows native</td><td>Windows Terminal</td><td>PowerShell + PSReadLine</td><td class="yes">24</td><td><code>install.ps1</code> · <code>uninstall.ps1</code> · <code>doctor.ps1</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note">
+    <b>Ghostty has no native Windows build</b> — it ships macOS and Linux only. On
+    Windows you get either the full thing through WSL2, or the same tool stack and
+    all 24 commands in PowerShell with Windows Terminal and a matching colour scheme.
+    <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/WINDOWS.md">Both routes are written up.</a>
+  </p>
+</section>
+
+<section class="wrap">
+  <div class="section-head"><h2>questions</h2></div>
+
+  <div class="faq">
+    <details>
+      <summary>Does this work with fish shell?</summary>
+      <p>
+        No. furnizsh targets <b>zsh</b> on macOS and Linux, and <b>PowerShell</b> on
+        Windows. The mascot is a deep-sea anglerfish, not an endorsement of the
+        Friendly Interactive Shell. Most of the config is Oh My Zsh plugins and zsh
+        functions, which have no fish equivalent.
+      </p>
+    </details>
+
+    <details>
+      <summary>Will it break my existing .zshrc?</summary>
+      <p>
+        No. It appends one marker-guarded <code>source</code> line and writes the
+        actual config to <code>~/.config/furnizsh/</code>. Your PATH exports, work
+        tooling and aliases are never read, moved or rewritten. Everything it does
+        replace is backed up to <code>~/.furnizsh-backup/&lt;timestamp&gt;/</code>
+        first, and <code>furnizsh uninstall</code> restores it — verified
+        byte-for-byte in CI.
+      </p>
+    </details>
+
+    <details>
+      <summary>I already have my own dotfiles. Can I take just the bits I want?</summary>
+      <p>
+        Yes, and that's a reasonable way to use it.
+        <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/SETUP.md">SETUP.md</a>
+        is the manual version of everything the installer does, step by step, so you
+        can lift the Ghostty config, the Starship preset or just the helper functions.
+      </p>
+    </details>
+
+    <details>
+      <summary>Why is it called furnizsh?</summary>
+      <p>
+        It's "furnish" with <code>zsh</code> spliced into the middle — you pronounce
+        it the same. To furnish is to fit out a space so it's worth living in, which
+        is what the tool does to a bare shell.
+      </p>
+    </details>
+
+    <details>
+      <summary>Do I have to use Ghostty?</summary>
+      <p>
+        No. The shell config, tools, prompt and all 24 commands work in any terminal
+        — you just lose the specific theme. Alacritty, Kitty, WezTerm and even
+        Terminal.app all work; set the font to
+        <code>JetBrainsMono Nerd Font Mono</code> and pick a dark theme.
+      </p>
+    </details>
+
+    <details>
+      <summary>Why are the icons all boxes?</summary>
+      <p>
+        The Nerd Font isn't active. Check it installed, then set your terminal's font
+        to <code>JetBrainsMono Nerd Font Mono</code> exactly — plain "JetBrains Mono"
+        is a different, icon-free font. <code>agdoctor</code> checks this for you.
+      </p>
+    </details>
+
+    <details>
+      <summary>Something's broken. Where do I start?</summary>
+      <p>
+        Run <code>agdoctor</code>. It checks every tool, config file, plugin and font
+        and prints the exact fix command for anything missing. Include its output if
+        you open an issue.
+      </p>
+    </details>
+
+    <details>
+      <summary>Is it safe to run twice?</summary>
+      <p>
+        Yes — it's idempotent. It compares against what's already installed and only
+        changes what actually drifted. Rerunning is also how you apply an update.
+      </p>
+    </details>
+  </div>
+
+  <div class="cta-row">
+    <a class="btn primary" href="https://github.com/Wosmos/furnizsh">GitHub</a>
+    <a class="btn" href="https://github.com/Wosmos/furnizsh/blob/main/docs/SETUP.md">Manual setup</a>
+    <a class="btn" href="https://github.com/Wosmos/furnizsh/blob/main/docs/LINUX.md">Linux notes</a>
+    <a class="btn" href="https://github.com/Wosmos/furnizsh/blob/main/docs/WINDOWS.md">Windows notes</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <div class="footer-grid">
+    <div>
+      <a class="brand" href="index.html" style="font-size:1.2rem"><img src="assets/icon-64.png" alt="" width="24" height="24">furnizsh</a>
+      <p style="margin:.5rem 0 0;color:var(--ink-faint);font-size:var(--fs-sm)">MIT — take it, fork it, make it yours.</p>
+    </div>
+    <nav class="footer-links" aria-label="Documentation">
+      <a href="https://github.com/Wosmos/furnizsh">repo</a>
+      <a href="themes.html">themes</a>
+      <a href="commands.html">commands</a>
+      <a href="install.html">install</a>
+      <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/SETUP.md">manual setup</a>
+      <a href="https://github.com/Wosmos/furnizsh/blob/main/docs/CHEATSHEET.md">cheatsheet</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

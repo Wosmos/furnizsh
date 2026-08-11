@@ -350,7 +350,8 @@ jobs:
           exit $fail
 
   # ------------------------------------------------------------
-  # The Pages site must stay self-contained and well-formed.
+  # The Pages site: every page well-formed, no external requests,
+  # and no rule depending on a token that isn't on bare :root.
   # ------------------------------------------------------------
   site:
     name: pages site
@@ -358,12 +359,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: HTML is well-formed and self-contained
+      - name: Every page is well-formed
         run: |
           python3 - <<'PY'
-          import html.parser, pathlib, re, sys
+          import html.parser, pathlib, sys
 
-          src = pathlib.Path('docs/index.html').read_text()
+          PAGES = ["index.html", "themes.html", "commands.html", "install.html"]
           VOID = {'area','base','br','col','embed','hr','img','input',
                   'link','meta','source','track','wbr'}
 
@@ -378,43 +379,74 @@ jobs:
                   if top != t:
                       s.errs.append(f"</{t}> at {s.getpos()} closes <{top}> opened at {pos}")
 
-          p = P(); p.feed(src)
           ok = True
-          if p.stack: print("unclosed:", [t for t,_ in p.stack]); ok = False
-          if p.errs:  print("mismatched:", p.errs); ok = False
-
-          # A strict CSP applies wherever this is embedded — no external requests.
-          external = re.findall(r'(?:src|href)="(https?://[^"]+)"', src)
-          allowed = ('https://github.com/', 'https://wosmos.github.io/',
-                     'https://ghostty.org', 'https://starship.rs',
-                     'https://ohmyz.sh', 'https://catppuccin.com',
-                     'https://nerdfonts.com')
-          for url in external:
-              if not url.startswith(allowed):
-                  print(f"unexpected external reference: {url}"); ok = False
-
-          if '<script src=' in src or '<link rel="stylesheet"' in src:
-              print("external script or stylesheet — the page must stay self-contained")
-              ok = False
-
-          print("site OK" if ok else "site FAILED")
+          for f in PAGES:
+              p = P(); p.feed(pathlib.Path("docs")/f and (pathlib.Path("docs")/f).read_text())
+              bad = [t for t, _ in p.stack]
+              if bad or p.errs:
+                  print(f"FAIL {f}: unclosed={bad} errors={p.errs}"); ok = False
+              else:
+                  print(f"OK   {f}")
           sys.exit(0 if ok else 1)
           PY
 
-      - name: Both themes define every token they use
+      - name: No external requests
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+
+          # A strict CSP applies wherever these pages get embedded, and Pages
+          # should not depend on third-party hosts either. Relative src/href are
+          # same-origin and fine; absolute ones must be on the allow-list, and
+          # scripts and stylesheets must never be absolute at all.
+          ALLOWED = ('https://github.com/', 'https://wosmos.github.io/',
+                     'https://ghostty.org', 'https://starship.rs',
+                     'https://ohmyz.sh', 'https://catppuccin.com',
+                     'https://nerdfonts.com')
+          ok = True
+          for f in ["index.html","themes.html","commands.html","install.html"]:
+              src = (pathlib.Path("docs")/f).read_text()
+
+              for url in re.findall(r'(?:src|href)="(https?://[^"]+)"', src):
+                  if not url.startswith(ALLOWED):
+                      print(f"FAIL {f}: unexpected external reference {url}"); ok = False
+
+              for tag in re.findall(r'<(?:script|link)[^>]*>', src):
+                  m = re.search(r'(?:src|href)="(https?://[^"]+)"', tag)
+                  if m:
+                      print(f"FAIL {f}: script/stylesheet loaded from {m.group(1)}"); ok = False
+
+          print("site is self-contained" if ok else "")
+          sys.exit(0 if ok else 1)
+          PY
+
+      - name: Every CSS token is defined on bare :root
         run: |
           python3 - <<'PY'
           import re, pathlib, sys
-          src = pathlib.Path('docs/index.html').read_text()
-          css = src.split('<style>')[1].split('</style>')[0]
+
+          css = pathlib.Path("docs/style.css").read_text()
+          root = css.split(":root {")[1].split("}")[0]
+          defined = set(re.findall(r'--([a-z0-9-]+)\s*:', root))
 
           used = set(re.findall(r'var\(--([a-z0-9-]+)', css))
-          root = css.split(':root {')[1].split('}')[0]
-          defined = set(re.findall(r'--([a-z0-9-]+)\s*:', root))
+          for f in ["index.html","themes.html","commands.html","install.html"]:
+              used |= set(re.findall(r'var\(--([a-z0-9-]+)', (pathlib.Path("docs")/f).read_text()))
 
           missing = used - defined
           if missing:
               print("tokens used but not defined on bare :root:", sorted(missing))
               sys.exit(1)
-          print(f"all {len(used)} tokens defined on :root")
+          print(f"all {len(used)} tokens defined")
           PY
+
+      - name: Brand assets are present
+        run: |
+          cd docs
+          for f in assets/favicon.ico assets/icon-192.png assets/icon-512.png \
+                   assets/apple-touch-icon.png assets/og-image.png \
+                   assets/mascot.png site.webmanifest style.css app.js; do
+            test -f "$f" || { echo "missing $f"; exit 1; }
+          done
+          python3 -c "import json; json.load(open('site.webmanifest'))"
+          echo "assets present, manifest valid"

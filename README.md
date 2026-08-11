@@ -1,8 +1,10 @@
 <div align="center">
 
+<img src="docs/assets/mascot.png" width="180" alt="The furnizsh mascot: a cartoon anglerfish in glasses, giving a thumbs up">
+
 # furnizsh
 
-**A neon terminal — Ghostty + zsh + Starship, in one command.**
+**Fit out your terminal in one command — Ghostty, zsh and Starship.**
 
 Four matched themes, 24 helper commands, and the modern replacements for `ls`,
 `cat`, `find`, `cd`, `diff` and `git` — installed, themed to match, and wired
