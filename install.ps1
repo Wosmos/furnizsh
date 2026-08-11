@@ -143,7 +143,7 @@ function Get-PackageManager {
     return $null
 }
 
-function Install-Tools {
+function Install-ToolSet {
     Write-Step "Installing tools"
 
     $pkgManager = Get-PackageManager
@@ -210,7 +210,7 @@ function Install-Tools {
     }
 }
 
-function Install-Modules {
+function Install-ModuleSet {
     Write-Step "Installing PowerShell modules"
 
     # PSReadLine gives us the equivalent of zsh-autosuggestions +
@@ -333,7 +333,7 @@ function Install-Profile {
     }
 }
 
-function Install-Configs {
+function Install-Config {
     Write-Step "Installing config  (theme: $Theme)"
 
     $agHome = Join-Path $HOME '.config\afterglow'
@@ -462,10 +462,10 @@ Write-Host "`n  $($C.Gray)Ghostty has no Windows build. This installs the PowerS
 Write-Host "  $($C.Gray)the setup. For real Ghostty + zsh, see docs\WINDOWS.md (WSL2).$($C.Reset)"
 
 try {
-    Install-Tools
-    Install-Modules
+    Install-ToolSet
+    Install-ModuleSet
     Install-NerdFont
-    Install-Configs
+    Install-Config
     Install-Profile
     Set-GitDelta
     Set-WindowsTerminal

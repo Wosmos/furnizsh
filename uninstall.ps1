@@ -138,7 +138,11 @@ function Restore-Backup {
 function Reset-GitDelta {
     Write-Step "git-delta"
 
-    if ((git config --global core.pager 2>$null) -ne 'delta') {
+    # Assigned first rather than inlined: `2>$null` inside an if condition
+    # trips PSScriptAnalyzer's redirection-operator check, and this reads
+    # better anyway.
+    $currentPager = git config --global core.pager 2>$null
+    if ($currentPager -ne 'delta') {
         Write-Skip "delta isn't the configured pager"
         return
     }
@@ -152,7 +156,7 @@ function Reset-GitDelta {
     Write-Ok "unset"
 }
 
-function Remove-TerminalSchemes {
+function Remove-TerminalScheme {
     if (-not $Schemes) { return }
 
     Write-Step "Windows Terminal colour schemes"
@@ -175,7 +179,7 @@ function Remove-TerminalSchemes {
     Write-Warn "any profile still set to one of those schemes will fall back to its default"
 }
 
-function Remove-Tools {
+function Remove-ToolSet {
     if (-not $Tools) { return }
 
     Write-Step "Uninstalling tools"
@@ -225,8 +229,8 @@ try {
     Remove-AfterglowProfile
     Restore-Backup
     Reset-GitDelta
-    Remove-TerminalSchemes
-    Remove-Tools
+    Remove-TerminalScheme
+    Remove-ToolSet
 
     Write-Step "Done"
     if ($DryRun) {
