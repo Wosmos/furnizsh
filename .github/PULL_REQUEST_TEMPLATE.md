@@ -20,7 +20,7 @@ If it adds a command, all seven places are updated (see CONTRIBUTING.md):
 - [ ] `cheatsheet` output, short and `--comp`, in both shells
 - [ ] `docs/COMMANDS.md`
 - [ ] `docs/CHEATSHEET.md`
-- [ ] `docs/index.html`
+- [ ] `site/commands.html`
 - [ ] the CI "commands are defined" list
 
 ## Anything reviewers should know

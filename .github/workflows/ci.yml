@@ -381,7 +381,7 @@ jobs:
 
           ok = True
           for f in PAGES:
-              p = P(); p.feed(pathlib.Path("docs")/f and (pathlib.Path("docs")/f).read_text())
+              p = P(); p.feed(pathlib.Path("site")/f and (pathlib.Path("site")/f).read_text())
               bad = [t for t, _ in p.stack]
               if bad or p.errs:
                   print(f"FAIL {f}: unclosed={bad} errors={p.errs}"); ok = False
@@ -405,7 +405,7 @@ jobs:
                      'https://nerdfonts.com')
           ok = True
           for f in ["index.html","themes.html","commands.html","install.html"]:
-              src = (pathlib.Path("docs")/f).read_text()
+              src = (pathlib.Path("site")/f).read_text()
 
               for url in re.findall(r'(?:src|href)="(https?://[^"]+)"', src):
                   if not url.startswith(ALLOWED):
@@ -425,13 +425,13 @@ jobs:
           python3 - <<'PY'
           import re, pathlib, sys
 
-          css = pathlib.Path("docs/style.css").read_text()
+          css = pathlib.Path("site/css/style.css").read_text()
           root = css.split(":root {")[1].split("}")[0]
           defined = set(re.findall(r'--([a-z0-9-]+)\s*:', root))
 
           used = set(re.findall(r'var\(--([a-z0-9-]+)', css))
           for f in ["index.html","themes.html","commands.html","install.html"]:
-              used |= set(re.findall(r'var\(--([a-z0-9-]+)', (pathlib.Path("docs")/f).read_text()))
+              used |= set(re.findall(r'var\(--([a-z0-9-]+)', (pathlib.Path("site")/f).read_text()))
 
           missing = used - defined
           if missing:
@@ -442,10 +442,11 @@ jobs:
 
       - name: Brand assets are present
         run: |
-          cd docs
-          for f in assets/favicon.ico assets/icon-192.png assets/icon-512.png \
-                   assets/apple-touch-icon.png assets/og-image.png \
-                   assets/mascot.png site.webmanifest style.css app.js; do
+          cd site
+          for f in assets/icons/favicon.ico assets/icons/icon-192.png \
+                   assets/icons/icon-512.png assets/icons/apple-touch-icon.png \
+                   assets/img/og-image.png assets/img/mascot.png \
+                   site.webmanifest css/style.css js/app.js install; do
             test -f "$f" || { echo "missing $f"; exit 1; }
           done
           python3 -c "import json; json.load(open('site.webmanifest'))"

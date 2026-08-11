@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/mascot.png" width="180" alt="The furnizsh mascot: a cartoon anglerfish in glasses, giving a thumbs up">
+<img src="site/assets/img/mascot.png" width="180" alt="The furnizsh mascot: a cartoon anglerfish in glasses, giving a thumbs up">
 
 # furnizsh
 

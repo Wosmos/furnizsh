@@ -62,7 +62,7 @@ A command touches more places than you'd think. All of them:
 3. `cheatsheet()` — both the short and `--comp` output, in both shells
 4. `docs/COMMANDS.md` — with an example
 5. `docs/CHEATSHEET.md` — the table
-6. `docs/index.html` — the command grid
+6. `site/commands.html` — the command tables
 7. `.github/workflows/ci.yml` — add it to the "commands are defined" list
 
 Print a usage line on bad input, and return non-zero. Every existing command does.

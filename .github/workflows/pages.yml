@@ -1,0 +1,61 @@
+name: Pages
+
+# The website lives in site/, not docs/ — docs/ is the written guides.
+# GitHub's legacy Pages build can only serve from the repo root or /docs, so
+# the site is deployed by this workflow instead, which can publish any path.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never cancel a running deploy — a half-finished one would leave the live
+# site broken. Queue instead.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: build and deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Every referenced asset actually exists
+        run: |
+          # A 404 on a stylesheet is invisible in CI but obvious to a visitor,
+          # so relative references are resolved and checked before publishing.
+          python3 - <<'PY'
+          import pathlib, re, sys
+          site = pathlib.Path("site")
+          ok = True
+          for page in site.glob("*.html"):
+              src = page.read_text()
+              for ref in re.findall(r'(?:src|href)="(?!https?://|#|mailto:)([^"]+)"', src):
+                  target = (site / ref.split("?")[0]).resolve()
+                  if not target.exists():
+                      print(f"FAIL {page.name} -> {ref}"); ok = False
+          print("all relative references resolve" if ok else "")
+          sys.exit(0 if ok else 1)
+          PY
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
