@@ -578,7 +578,11 @@ function agupdate {
     try {
         $latest = (Invoke-RestMethod -TimeoutSec 5 `
             'https://api.github.com/repos/Wosmos/furnizsh/releases/latest').tag_name -replace '^v', ''
-    } catch { }
+    } catch {
+        # Offline or rate-limited: fall through and update without a version
+        # comparison rather than refusing to run.
+        $latest = $null
+    }
 
     if ($latest -and $latest -eq $here) {
         Write-Host "$($c.Gray)furnizsh $here is already the latest.$($c.Reset)"

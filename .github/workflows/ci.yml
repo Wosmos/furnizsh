@@ -338,8 +338,10 @@ jobs:
           grep -q 'furnizsh' "$HOME/.zshrc" && { echo "block still present"; exit 1; }
           test ! -d "$HOME/.config/furnizsh" || { echo "config dir still present"; exit 1; }
           cmp -s /tmp/zshrc.orig "$HOME/.zshrc" || {
-            echo "restored .zshrc differs from the original:"
-            diff /tmp/zshrc.orig "$HOME/.zshrc" || true
+            # These containers have no diffutils, so dump bytes with od instead.
+            echo "restored .zshrc differs from the original"
+            echo "--- expected ---"; od -c /tmp/zshrc.orig
+            echo "--- actual ---";   od -c "$HOME/.zshrc"
             exit 1
           }
           echo "clean uninstall, byte-identical"
