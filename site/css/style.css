@@ -70,6 +70,18 @@
      0 is Auto, which is also the state before JS runs. */
   --theme-i: 0;
 
+  /* Palette of the theme preview currently being drawn. Each .tabpanel sets
+     its own; these are the neon values, so a panel that somehow lost its
+     inline palette still renders as a real theme rather than unstyled. */
+  --t-bg:     #080A0C;
+  --t-fg:     #D6E4E5;
+  --t-dim:    #5C7275;
+  --t-accent: #00F5D4;
+  --t-green:  #A6E3A1;
+  --t-blue:   #61D0FF;
+  --t-yellow: #F9E2AF;
+  --t-red:    #FF6B81;
+
   /* per-element reveal delay; JS overrides it inline to stagger a group */
   --d: 0ms;
 }
@@ -546,3 +558,95 @@ body::before {
 :root[data-theme="dark"] body::before { opacity: .022; }
 /* Everything real sits above the grain. */
 body > * { position: relative; z-index: 1; }
+
+
+/* ------------------------------------------------------------
+   Theme tabs — one full terminal per theme instead of four
+   cramped columns. Each panel sets its own palette as --t-*
+   tokens, so the preview is genuinely in that theme rather
+   than approximating it with a few swatches.
+   ------------------------------------------------------------ */
+.theme-tabs { margin-top: 1.5rem; }
+
+.tablist {
+  display: flex; flex-wrap: wrap; gap: .4rem;
+  margin-bottom: 1.1rem;
+}
+.tab {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .5rem .85rem;
+  font-family: var(--mono); font-size: var(--fs-sm);
+  color: var(--ink-dim); cursor: pointer;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 999px;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.tab:hover { color: var(--ink); }
+.tab .swatch {
+  width: .7rem; height: .7rem; border-radius: 3px; flex: none;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / .25) inset;
+}
+.tab[aria-selected="true"] {
+  color: var(--ink); background: var(--surface-2); border-color: var(--ink-faint);
+}
+.tab-tag {
+  font-size: var(--fs-xs); color: var(--accent);
+  border: 1px solid var(--line); border-radius: 999px; padding: 0 .38rem;
+}
+
+.tabpanel[hidden] { display: none; }
+
+/* ---- the preview itself ---- */
+.theme-shot {
+  border: 1px solid var(--line); border-radius: var(--r);
+  overflow: hidden; box-shadow: var(--shadow);
+  background: var(--t-bg);
+}
+.shot-bar {
+  display: flex; align-items: center; gap: .4rem;
+  padding: .6rem .8rem;
+  background: color-mix(in srgb, var(--t-bg) 80%, #fff 8%);
+  border-bottom: 1px solid color-mix(in srgb, var(--t-bg) 60%, #fff 12%);
+}
+.shot-title {
+  margin-left: auto; font-family: var(--mono); font-size: var(--fs-xs);
+  color: var(--t-dim);
+}
+.shot-body {
+  padding: 1rem 1.1rem 1.2rem;
+  font-family: var(--mono); font-size: var(--fs-sm); line-height: 1.85;
+  color: var(--t-fg); overflow-x: auto;
+}
+.shot-body .ps1 { display: flex; margin-top: .55rem; }
+.shot-body .ps1:first-child { margin-top: 0; }
+.shot-body .seg {
+  padding: .05rem .6rem; font-size: var(--fs-xs); font-weight: 600;
+  white-space: nowrap;
+}
+.shot-body .seg:first-child { border-radius: 4px 0 0 4px; }
+.shot-body .seg:last-child  { border-radius: 0 4px 4px 0; }
+
+.shot-body .row { display: flex; gap: .55rem; white-space: nowrap; }
+.shot-body .ps  { color: var(--t-accent); }
+.shot-body .in  { color: var(--t-fg); }
+.shot-body .out { color: var(--t-dim); padding-left: 0; }
+.shot-body .d   { color: var(--t-blue); }
+.shot-body .f   { color: var(--t-fg); }
+.shot-body .br  { color: var(--t-dim); }
+.shot-body .mod { color: var(--t-yellow); }
+.shot-body .add { color: var(--t-green); }
+.shot-body .cur {
+  width: .55em; background: var(--t-accent); display: inline-block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .shot-body .cur { animation: blink 1.15s steps(1) infinite; }
+}
+@keyframes blink { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } }
+
+.theme-meta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem;
+  margin-top: 1.1rem;
+}
+.theme-meta .chips { margin: 0; }
+.theme-ids  { margin: 0; font-family: var(--mono); font-size: var(--fs-sm); }
+.theme-blurb { margin: 0; color: var(--ink-dim); flex: 1 1 22ch; min-width: 22ch; }

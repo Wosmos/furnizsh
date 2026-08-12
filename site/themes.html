@@ -99,82 +99,149 @@
 <section class="wrap">
   <div class="section-head"><h2>the four</h2></div>
 
-  <div class="grid">
-
-    <div class="card">
-      <span class="mark">[ default ]</span>
-      <h3>neon</h3>
-      <p>Highest contrast of the four. Colours land hard against an almost-black ground.</p>
-      <div class="prompt-demo" aria-label="neon prompt preview">
-        <span class="seg" style="background:#94E2D5">&nbsp;~&nbsp;</span>
-        <span class="seg" style="background:#CBA6F7">projects</span>
-        <span class="seg" style="background:#A6E3A1">main</span>
-        <span class="seg tail">❯ _</span>
-      </div>
-      <div class="chips" aria-hidden="true">
-        <span class="chip" style="background:#94E2D5"></span>
-        <span class="chip" style="background:#CBA6F7"></span>
-        <span class="chip" style="background:#A6E3A1"></span>
-        <span class="chip" style="background:#F9E2AF"></span>
-      </div>
-      <p style="margin-top:1rem"><code>Ghostty Neon</code> · <code>catppuccin-powerline</code></p>
+  <div class="theme-tabs">
+    <div class="tablist" role="tablist" aria-label="Themes">
+      <button type="button" class="tab" role="tab" id="tab-neon"
+              aria-controls="panel-neon" aria-selected="true"
+              tabindex="0">
+        <span class="swatch" style="background:#00F5D4" aria-hidden="true"></span>neon<span class="tab-tag">default</span>
+      </button>
+      <button type="button" class="tab" role="tab" id="tab-catppuccin"
+              aria-controls="panel-catppuccin" aria-selected="false"
+              tabindex="-1">
+        <span class="swatch" style="background:#CBA6F7" aria-hidden="true"></span>catppuccin
+      </button>
+      <button type="button" class="tab" role="tab" id="tab-gruvbox"
+              aria-controls="panel-gruvbox" aria-selected="false"
+              tabindex="-1">
+        <span class="swatch" style="background:#FE8019" aria-hidden="true"></span>gruvbox
+      </button>
+      <button type="button" class="tab" role="tab" id="tab-tokyonight"
+              aria-controls="panel-tokyonight" aria-selected="false"
+              tabindex="-1">
+        <span class="swatch" style="background:#7AA2F7" aria-hidden="true"></span>tokyonight
+      </button>
     </div>
 
-    <div class="card">
-      <h3>catppuccin</h3>
-      <p>The most cohesive — terminal, prompt, lazygit and every script share one palette exactly.</p>
-      <div class="prompt-demo" aria-label="catppuccin prompt preview">
-        <span class="seg" style="background:#CBA6F7">&nbsp;~&nbsp;</span>
-        <span class="seg" style="background:#89B4FA">projects</span>
-        <span class="seg" style="background:#A6E3A1">main</span>
-        <span class="seg tail">❯ _</span>
-      </div>
-      <div class="chips" aria-hidden="true">
-        <span class="chip" style="background:#CBA6F7"></span>
-        <span class="chip" style="background:#89B4FA"></span>
-        <span class="chip" style="background:#A6E3A1"></span>
-        <span class="chip" style="background:#F5C2E7"></span>
-      </div>
-      <p style="margin-top:1rem"><code>Catppuccin Mocha</code> · <code>catppuccin-powerline</code></p>
-    </div>
+      <div class="tabpanel" id="panel-neon" role="tabpanel"
+           aria-labelledby="tab-neon">
+        <div class="theme-shot" style="--t-bg:#080A0C;--t-fg:#D6E4E5;--t-dim:#5C7275;--t-accent:#00F5D4;--t-green:#A6E3A1;--t-blue:#61D0FF;--t-yellow:#F9E2AF;--t-red:#FF6B81">
+          <div class="shot-bar">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="shot-title">Ghostty Neon</span>
+          </div>
+          <div class="shot-body">
+            <div class="ps1"><span class="seg" style="background:#00F5D4;color:#04211E">&nbsp;~&nbsp;</span><span class="seg" style="background:#CBA6F7;color:#241733">projects</span><span class="seg" style="background:#A6E3A1;color:#12240F">main</span></div>
+            <div class="row"><span class="ps">❯</span><span class="in">eza --icons</span></div>
+            <div class="row out"><span class="d">.config</span><span class="d">Documents</span><span class="f">README.md</span><span class="d">projects</span></div>
+            <div class="ps1"><span class="seg" style="background:#00F5D4;color:#04211E">&nbsp;~&nbsp;</span><span class="seg" style="background:#CBA6F7;color:#241733">projects</span><span class="seg" style="background:#A6E3A1;color:#12240F">main</span></div>
+            <div class="row"><span class="ps">❯</span><span class="in">git status -sb</span></div>
+            <div class="row out"><span class="br">## main...origin/main</span></div>
+            <div class="row out"><span class="mod">&nbsp;M</span> config/zsh/functions.zsh</div>
+            <div class="row out"><span class="add">??</span> docs/RELEASING.md</div>
+            <div class="ps1"><span class="seg" style="background:#00F5D4;color:#04211E">&nbsp;~&nbsp;</span><span class="seg" style="background:#CBA6F7;color:#241733">projects</span><span class="seg" style="background:#A6E3A1;color:#12240F">main</span></div>
+            <div class="row"><span class="ps">❯</span><span class="cur">&nbsp;</span></div>
+          </div>
+        </div>
 
-    <div class="card">
-      <h3>gruvbox</h3>
-      <p>Lowest contrast, easiest on the eyes. The one to pick when neon is too much at 11pm.</p>
-      <div class="prompt-demo" aria-label="gruvbox prompt preview">
-        <span class="seg" style="background:#FE8019">&nbsp;~&nbsp;</span>
-        <span class="seg" style="background:#FABD2F">projects</span>
-        <span class="seg" style="background:#83A598">main</span>
-        <span class="seg tail">❯ _</span>
+        <div class="theme-meta">
+          <div class="chips" aria-hidden="true"><span class="chip" style="background:#00F5D4"></span><span class="chip" style="background:#CBA6F7"></span><span class="chip" style="background:#A6E3A1"></span><span class="chip" style="background:#F9E2AF"></span></div>
+          <p class="theme-ids"><code>Ghostty Neon</code> · <code>catppuccin-powerline</code></p>
+          <p class="theme-blurb">Highest contrast of the four. Colours land hard against an almost-black ground.</p>
+        </div>
       </div>
-      <div class="chips" aria-hidden="true">
-        <span class="chip" style="background:#FE8019"></span>
-        <span class="chip" style="background:#FABD2F"></span>
-        <span class="chip" style="background:#83A598"></span>
-        <span class="chip" style="background:#B8BB26"></span>
-      </div>
-      <p style="margin-top:1rem"><code>Gruvbox Dark</code> · <code>gruvbox-rainbow</code></p>
-    </div>
+      <div class="tabpanel" id="panel-catppuccin" role="tabpanel"
+           aria-labelledby="tab-catppuccin" hidden>
+        <div class="theme-shot" style="--t-bg:#1E1E2E;--t-fg:#CDD6F4;--t-dim:#6C7086;--t-accent:#CBA6F7;--t-green:#A6E3A1;--t-blue:#89B4FA;--t-yellow:#F9E2AF;--t-red:#F38BA8">
+          <div class="shot-bar">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="shot-title">Catppuccin Mocha</span>
+          </div>
+          <div class="shot-body">
+            <div class="ps1"><span class="seg" style="background:#CBA6F7;color:#1E1E2E">&nbsp;~&nbsp;</span><span class="seg" style="background:#89B4FA;color:#1E1E2E">projects</span><span class="seg" style="background:#A6E3A1;color:#1E1E2E">main</span></div>
+            <div class="row"><span class="ps">❯</span><span class="in">eza --icons</span></div>
+            <div class="row out"><span class="d">.config</span><span class="d">Documents</span><span class="f">README.md</span><span class="d">projects</span></div>
+            <div class="ps1"><span class="seg" style="background:#CBA6F7;color:#1E1E2E">&nbsp;~&nbsp;</span><span class="seg" style="background:#89B4FA;color:#1E1E2E">projects</span><span class="seg" style="background:#A6E3A1;color:#1E1E2E">main</span></div>
+            <div class="row"><span class="ps">❯</span><span class="in">git status -sb</span></div>
+            <div class="row out"><span class="br">## main...origin/main</span></div>
+            <div class="row out"><span class="mod">&nbsp;M</span> config/zsh/functions.zsh</div>
+            <div class="row out"><span class="add">??</span> docs/RELEASING.md</div>
+            <div class="ps1"><span class="seg" style="background:#CBA6F7;color:#1E1E2E">&nbsp;~&nbsp;</span><span class="seg" style="background:#89B4FA;color:#1E1E2E">projects</span><span class="seg" style="background:#A6E3A1;color:#1E1E2E">main</span></div>
+            <div class="row"><span class="ps">❯</span><span class="cur">&nbsp;</span></div>
+          </div>
+        </div>
 
-    <div class="card">
-      <h3>tokyonight</h3>
-      <p>The middle ground — calmer than neon, more contrast than gruvbox.</p>
-      <div class="prompt-demo" aria-label="tokyonight prompt preview">
-        <span class="seg" style="background:#7AA2F7">&nbsp;~&nbsp;</span>
-        <span class="seg" style="background:#BB9AF7">projects</span>
-        <span class="seg" style="background:#7DCFFF">main</span>
-        <span class="seg tail">❯ _</span>
+        <div class="theme-meta">
+          <div class="chips" aria-hidden="true"><span class="chip" style="background:#CBA6F7"></span><span class="chip" style="background:#89B4FA"></span><span class="chip" style="background:#A6E3A1"></span><span class="chip" style="background:#F5C2E7"></span></div>
+          <p class="theme-ids"><code>Catppuccin Mocha</code> · <code>catppuccin-powerline</code></p>
+          <p class="theme-blurb">The most cohesive — terminal, prompt, lazygit and every script share one palette exactly.</p>
+        </div>
       </div>
-      <div class="chips" aria-hidden="true">
-        <span class="chip" style="background:#7AA2F7"></span>
-        <span class="chip" style="background:#BB9AF7"></span>
-        <span class="chip" style="background:#7DCFFF"></span>
-        <span class="chip" style="background:#9ECE6A"></span>
-      </div>
-      <p style="margin-top:1rem"><code>TokyoNight</code> · <code>tokyo-night</code></p>
-    </div>
+      <div class="tabpanel" id="panel-gruvbox" role="tabpanel"
+           aria-labelledby="tab-gruvbox" hidden>
+        <div class="theme-shot" style="--t-bg:#282828;--t-fg:#EBDBB2;--t-dim:#928374;--t-accent:#FE8019;--t-green:#B8BB26;--t-blue:#83A598;--t-yellow:#FABD2F;--t-red:#FB4934">
+          <div class="shot-bar">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="shot-title">Gruvbox Dark</span>
+          </div>
+          <div class="shot-body">
+            <div class="ps1"><span class="seg" style="background:#FE8019;color:#282828">&nbsp;~&nbsp;</span><span class="seg" style="background:#FABD2F;color:#282828">projects</span><span class="seg" style="background:#83A598;color:#282828">main</span></div>
+            <div class="row"><span class="ps">❯</span><span class="in">eza --icons</span></div>
+            <div class="row out"><span class="d">.config</span><span class="d">Documents</span><span class="f">README.md</span><span class="d">projects</span></div>
+            <div class="ps1"><span class="seg" style="background:#FE8019;color:#282828">&nbsp;~&nbsp;</span><span class="seg" style="background:#FABD2F;color:#282828">projects</span><span class="seg" style="background:#83A598;color:#282828">main</span></div>
+            <div class="row"><span class="ps">❯</span><span class="in">git status -sb</span></div>
+            <div class="row out"><span class="br">## main...origin/main</span></div>
+            <div class="row out"><span class="mod">&nbsp;M</span> config/zsh/functions.zsh</div>
+            <div class="row out"><span class="add">??</span> docs/RELEASING.md</div>
+            <div class="ps1"><span class="seg" style="background:#FE8019;color:#282828">&nbsp;~&nbsp;</span><span class="seg" style="background:#FABD2F;color:#282828">projects</span><span class="seg" style="background:#83A598;color:#282828">main</span></div>
+            <div class="row"><span class="ps">❯</span><span class="cur">&nbsp;</span></div>
+          </div>
+        </div>
 
+        <div class="theme-meta">
+          <div class="chips" aria-hidden="true"><span class="chip" style="background:#FE8019"></span><span class="chip" style="background:#FABD2F"></span><span class="chip" style="background:#83A598"></span><span class="chip" style="background:#B8BB26"></span></div>
+          <p class="theme-ids"><code>Gruvbox Dark</code> · <code>gruvbox-rainbow</code></p>
+          <p class="theme-blurb">Lowest contrast, easiest on the eyes. The one to pick when neon is too much at 11pm.</p>
+        </div>
+      </div>
+      <div class="tabpanel" id="panel-tokyonight" role="tabpanel"
+           aria-labelledby="tab-tokyonight" hidden>
+        <div class="theme-shot" style="--t-bg:#1A1B26;--t-fg:#C0CAF5;--t-dim:#565F89;--t-accent:#7AA2F7;--t-green:#9ECE6A;--t-blue:#7DCFFF;--t-yellow:#E0AF68;--t-red:#F7768E">
+          <div class="shot-bar">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="shot-title">TokyoNight</span>
+          </div>
+          <div class="shot-body">
+            <div class="ps1"><span class="seg" style="background:#7AA2F7;color:#1A1B26">&nbsp;~&nbsp;</span><span class="seg" style="background:#BB9AF7;color:#1A1B26">projects</span><span class="seg" style="background:#7DCFFF;color:#1A1B26">main</span></div>
+            <div class="row"><span class="ps">❯</span><span class="in">eza --icons</span></div>
+            <div class="row out"><span class="d">.config</span><span class="d">Documents</span><span class="f">README.md</span><span class="d">projects</span></div>
+            <div class="ps1"><span class="seg" style="background:#7AA2F7;color:#1A1B26">&nbsp;~&nbsp;</span><span class="seg" style="background:#BB9AF7;color:#1A1B26">projects</span><span class="seg" style="background:#7DCFFF;color:#1A1B26">main</span></div>
+            <div class="row"><span class="ps">❯</span><span class="in">git status -sb</span></div>
+            <div class="row out"><span class="br">## main...origin/main</span></div>
+            <div class="row out"><span class="mod">&nbsp;M</span> config/zsh/functions.zsh</div>
+            <div class="row out"><span class="add">??</span> docs/RELEASING.md</div>
+            <div class="ps1"><span class="seg" style="background:#7AA2F7;color:#1A1B26">&nbsp;~&nbsp;</span><span class="seg" style="background:#BB9AF7;color:#1A1B26">projects</span><span class="seg" style="background:#7DCFFF;color:#1A1B26">main</span></div>
+            <div class="row"><span class="ps">❯</span><span class="cur">&nbsp;</span></div>
+          </div>
+        </div>
+
+        <div class="theme-meta">
+          <div class="chips" aria-hidden="true"><span class="chip" style="background:#7AA2F7"></span><span class="chip" style="background:#BB9AF7"></span><span class="chip" style="background:#7DCFFF"></span><span class="chip" style="background:#9ECE6A"></span></div>
+          <p class="theme-ids"><code>TokyoNight</code> · <code>tokyo-night</code></p>
+          <p class="theme-blurb">The middle ground — calmer than neon, more contrast than gruvbox.</p>
+        </div>
+      </div>
   </div>
+
+  <p class="note">
+    <b>Want something else?</b> Oh My Zsh ships
+    <a href="https://github.com/ohmyzsh/ohmyzsh/wiki/Themes">150+ themes</a> you can
+    drop straight in. furnizsh sets the prompt with Starship rather than an Oh My Zsh
+    theme, so <code>starship preset --list</code> and <code>ghostty +list-themes</code>
+    are the other two places to look — and
+    <a href="https://github.com/Wosmos/furnizsh/blob/main/CONTRIBUTING.md#adding-a-theme">adding your own to furnizsh</a>
+    is four files.
+  </p>
 </section>
 
 <section class="wrap">
