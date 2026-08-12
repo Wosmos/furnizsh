@@ -80,6 +80,7 @@ The default:
 | `agdoctor` | health-check every part of the setup |
 | `theme [name]` | list themes, or switch Ghostty + Starship + lazygit together |
 | `agupdate` | update furnizsh, however you installed it |
+| `furnizsh update` | the same thing, without needing a shell function |
 | `mkcd <dir>` | create a directory and cd into it |
 | `up [n]` | cd up n levels |
 | `serve [port]` | static HTTP server here, prints the LAN URL |

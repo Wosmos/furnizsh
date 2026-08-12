@@ -7,6 +7,10 @@ Notable changes to furnizsh. Format loosely follows
 
 ### Added
 
+- `furnizsh update` — the conventional entry point, matching `brew upgrade` and
+  friends. The update logic now lives in `update.sh`, which both it and
+  `agupdate` run, so there is one implementation rather than two that drift.
+  `--check` reports whether an update exists without installing it.
 - `scripts/bump.sh` — bumps the version across all five files CI cross-checks,
   promotes the `Unreleased` changelog section, and re-runs the consistency
   check. Documented in [docs/RELEASING.md](docs/RELEASING.md).

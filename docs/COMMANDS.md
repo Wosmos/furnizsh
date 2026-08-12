@@ -113,6 +113,14 @@ Update furnizsh to the latest release.
 agupdate
 ```
 
+The same thing is available as `furnizsh update`, which works in any shell —
+`agupdate` is just the zsh-side name for it. Both run the same script.
+
+```bash
+furnizsh update            # update
+furnizsh update --check    # only report whether one is available
+```
+
 It first checks the current release and stops early if you are already on it.
 Otherwise it updates using whichever channel you installed from — `install.sh`
 records that at install time, so this works the same whether you used the

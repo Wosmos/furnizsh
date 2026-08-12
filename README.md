@@ -162,7 +162,7 @@ any archive, and more. Full list in the [cheatsheet](docs/CHEATSHEET.md).
 cheatsheet / chs   the reference card (--comp for everything)
 agdoctor           health-check every part of the setup
 theme [name]       list themes, or switch the whole look
-agupdate           update furnizsh, however you installed it
+agupdate           update furnizsh (or: furnizsh update)
 mkcd <dir>         create a directory and cd into it
 up [n]             cd up n levels
 serve [port]       static HTTP server here, prints the LAN URL

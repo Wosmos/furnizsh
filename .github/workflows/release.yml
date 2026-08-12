@@ -209,7 +209,7 @@ jobs:
           mkdir -p dist/npm
           cp -R packaging/npm/* dist/npm/
           mkdir -p dist/npm/payload
-          cp -R config extras install.sh uninstall.sh doctor.sh VERSION dist/npm/payload/
+          cp -R config extras install.sh uninstall.sh doctor.sh update.sh VERSION dist/npm/payload/
           cp -R install.ps1 uninstall.ps1 doctor.ps1 dist/npm/payload/
           cp README.md LICENSE dist/npm/
           cd dist/npm

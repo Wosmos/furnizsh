@@ -150,73 +150,40 @@ compdef _furnizsh_theme_complete theme 2>/dev/null
 
 # ============================================================
 #  agupdate — update furnizsh, whichever way it was installed
+#
+#  Thin wrapper over update.sh so the logic lives in exactly one place;
+#  `furnizsh update` runs the same script.
 # ============================================================
 agupdate() {
-  local GRAY=$FURNIZSH_C[gray] C=$FURNIZSH_C[reset]
-  local GREEN=$FURNIZSH_C[green] YELLOW=$FURNIZSH_C[yellow] ORANGE=$FURNIZSH_C[orange]
+  local script=""
 
-  local here="$(_furnizsh_version)"
-  local latest=""
-  if command -v curl >/dev/null 2>&1; then
-    latest=$(curl -fsS --max-time 5 \
-      https://api.github.com/repos/Wosmos/furnizsh/releases/latest 2>/dev/null \
-      | sed -n 's/.*"tag_name": *"v\{0,1\}\([^"]*\)".*/\1/p' | head -1)
+  # Resolve update.sh directly, in preference to `furnizsh update`. The
+  # dispatcher on PATH belongs to the *installed* version, and one from before
+  # `update` existed answers "unknown command" — you would have to update
+  # before you could update. update.sh ships beside this file, so it is always
+  # the matching one.
+  if [[ -n "${FURNIZSH_SHARE:-}" && -x "$FURNIZSH_SHARE/update.sh" ]]; then
+    script="$FURNIZSH_SHARE/update.sh"
+  elif [[ -f "$FURNIZSH_DIR/install-source" ]]; then
+    local src=$(sed -n 2p "$FURNIZSH_DIR/install-source")
+    [[ -x "$src/update.sh" ]] && script="$src/update.sh"
   fi
 
-  if [[ -n "$latest" && "$latest" == "$here" ]]; then
-    printf "%sfurnizsh %s is already the latest.%s\n" "$GRAY" "$here" "$C"
-    return 0
-  fi
-  [[ -n "$latest" ]] && printf "%s%s -> %s%s\n\n" "$GRAY" "$here" "$latest" "$C"
-
-  # install.sh records how furnizsh arrived; without that file we can only
-  # guess, and guessing wrong means telling someone to git pull a directory
-  # that was never a checkout.
-  local method="" source=""
-  if [[ -f "$FURNIZSH_DIR/install-source" ]]; then
-    method=$(sed -n 1p "$FURNIZSH_DIR/install-source")
-    source=$(sed -n 2p "$FURNIZSH_DIR/install-source")
+  # Only then the dispatcher, and only if it understands the subcommand.
+  if [[ -z "$script" ]] && command -v furnizsh >/dev/null 2>&1; then
+    if command furnizsh help 2>/dev/null | grep -q '^  update'; then
+      command furnizsh update "$@"
+      return $?
+    fi
   fi
 
-  case "$method" in
-    brew)
-      printf "%sInstalled via Homebrew.%s\n" "$GRAY" "$C"
-      brew update && brew upgrade furnizsh && furnizsh install --yes
-      ;;
-    npm)
-      printf "%sInstalled via npm.%s\n" "$GRAY" "$C"
-      npm install -g furnizsh && furnizsh install --yes
-      ;;
-    curl)
-      printf "%sInstalled via the bootstrap script.%s\n" "$GRAY" "$C"
-      curl -fsSL https://wosmos.github.io/furnizsh/install | sh -s -- --yes
-      ;;
-    git)
-      printf "%sInstalled from a checkout at %s.%s\n" "$GRAY" "$source" "$C"
-      if [[ ! -d "$source/.git" ]]; then
-        print -u2 "agupdate: $source is no longer a checkout — reinstall to fix"
-        return 1
-      fi
-      git -C "$source" pull --ff-only || { print -u2 "agupdate: pull failed"; return 1 }
-      "$source/install.sh" --yes || return 1
-      ;;
-    *)
-      printf "%sCan't tell how furnizsh was installed.%s Update it the way you got it:\n" "$ORANGE" "$C"
-      printf "  %sbrew upgrade furnizsh%s\n" "$YELLOW" "$C"
-      printf "  %snpm install -g furnizsh%s\n" "$YELLOW" "$C"
-      printf "  %scurl -fsSL https://wosmos.github.io/furnizsh/install | sh%s\n" "$YELLOW" "$C"
-      printf "  %sUpdate-Module furnizsh%s   (PowerShell)\n" "$YELLOW" "$C"
-      return 1
-      ;;
-  esac
-  # $status is a zsh synonym for $?, so this local must not be called that.
-  local rc=$?
-  if (( rc != 0 )); then
-    print -u2 "agupdate: update failed (exit $rc)"
-    return $rc
+  if [[ -z "$script" ]]; then
+    print -u2 "agupdate: can't find update.sh — reinstall furnizsh, or update"
+    print -u2 "          the way you installed it (brew / npm / the bootstrap)."
+    return 1
   fi
 
-  printf "\n%s✓%s updated — run %sreload%s\n" "$GREEN" "$C" "$YELLOW" "$C"
+  "$script" "$@"
 }
 
 # ============================================================

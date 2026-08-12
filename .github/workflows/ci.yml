@@ -28,7 +28,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y shellcheck
 
       - name: Lint bash scripts
-        run: shellcheck --severity=warning install.sh uninstall.sh doctor.sh bin/furnizsh scripts/*.sh
+        run: shellcheck --severity=warning install.sh uninstall.sh doctor.sh update.sh bin/furnizsh scripts/*.sh
 
       - name: The bootstrap must be POSIX sh, not bash
         run: |
@@ -297,7 +297,7 @@ jobs:
         run: |
           # Simulate what Homebrew does: payload in share/, command in bin/.
           mkdir -p /tmp/pkg/share/furnizsh /tmp/pkg/bin
-          cp -R config extras install.sh uninstall.sh doctor.sh VERSION /tmp/pkg/share/furnizsh/
+          cp -R config extras install.sh uninstall.sh doctor.sh update.sh VERSION /tmp/pkg/share/furnizsh/
           cp bin/furnizsh /tmp/pkg/bin/
           export FURNIZSH_SHARE=/tmp/pkg/share/furnizsh
           /tmp/pkg/bin/furnizsh version | grep -q "$(cat VERSION)"

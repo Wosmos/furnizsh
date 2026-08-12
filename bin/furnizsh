@@ -74,6 +74,7 @@ Commands:
   install      set up the terminal        (flags: furnizsh install --help)
   uninstall    remove it, restore backups
   doctor       health-check every part of the setup
+  update       update to the latest release (--check to only look)
   theme [name] list themes, or switch to one
   version      show installed and latest version
   help         this message
@@ -82,6 +83,7 @@ Examples:
   furnizsh install --theme gruvbox --tools extended
   furnizsh install --dry-run
   furnizsh theme catppuccin
+  furnizsh update --check
   furnizsh doctor
 
 Docs: https://wosmos.github.io/furnizsh
@@ -148,6 +150,7 @@ main() {
     install)          exec "$SHARE/install.sh" "$@" ;;
     uninstall|remove) exec "$SHARE/uninstall.sh" "$@" ;;
     doctor|check)     exec "$SHARE/doctor.sh" "$@" ;;
+    update|upgrade)   exec "$SHARE/update.sh" "$@" ;;
     theme)            cmd_theme "$@" ;;
     version|--version|-v) cmd_version ;;
     help|--help|-h)   usage ;;

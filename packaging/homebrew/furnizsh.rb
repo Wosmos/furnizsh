@@ -29,7 +29,7 @@ class Furnizsh < Formula
   def install
     # The payload: configs, themes, and the scripts the dispatcher calls.
     pkgshare.install "config", "extras", "install.sh", "uninstall.sh",
-                     "doctor.sh", "VERSION"
+                     "doctor.sh", "update.sh", "VERSION"
 
     # The dispatcher itself lives in libexec, and bin/furnizsh becomes a
     # wrapper that hands it FURNIZSH_SHARE. Without this the script has to
