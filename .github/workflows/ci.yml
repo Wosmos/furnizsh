@@ -243,11 +243,16 @@ jobs:
 
       - name: Dry run changes nothing
         run: |
-          cp "$HOME/.zshrc" /tmp/zshrc.before 2>/dev/null || touch /tmp/zshrc.before
+          # No diffutils in the Fedora/Arch images — and `diff a b && echo ok`
+          # silently passes when diff is missing, because a failure inside an
+          # && list does not trip `sh -e`. Hash instead.
+          before=$(sha256sum "$HOME/.zshrc" | cut -d' ' -f1)
           ./install.sh --dry-run --tools core
-          cp "$HOME/.zshrc" /tmp/zshrc.after 2>/dev/null || touch /tmp/zshrc.after
-          diff /tmp/zshrc.before /tmp/zshrc.after && echo "dry run left .zshrc untouched"
-          test ! -d "$HOME/.config/furnizsh" && echo "dry run created nothing"
+          after=$(sha256sum "$HOME/.zshrc" | cut -d' ' -f1)
+          [ "$before" = "$after" ] || { echo "dry run modified .zshrc"; exit 1; }
+          echo "dry run left .zshrc untouched"
+          test ! -d "$HOME/.config/furnizsh" || { echo "dry run created the config dir"; exit 1; }
+          echo "dry run created nothing"
 
       - name: Install
         run: ./install.sh --yes --no-font --no-claude --no-chsh --tools core
@@ -337,8 +342,9 @@ jobs:
           ./uninstall.sh --yes
           grep -q 'furnizsh' "$HOME/.zshrc" && { echo "block still present"; exit 1; }
           test ! -d "$HOME/.config/furnizsh" || { echo "config dir still present"; exit 1; }
-          cmp -s /tmp/zshrc.orig "$HOME/.zshrc" || {
-            # These containers have no diffutils, so dump bytes with od instead.
+          orig=$(sha256sum /tmp/zshrc.orig | cut -d' ' -f1)
+          now=$(sha256sum "$HOME/.zshrc" | cut -d' ' -f1)
+          [ "$orig" = "$now" ] || {
             echo "restored .zshrc differs from the original"
             echo "--- expected ---"; od -c /tmp/zshrc.orig
             echo "--- actual ---";   od -c "$HOME/.zshrc"
