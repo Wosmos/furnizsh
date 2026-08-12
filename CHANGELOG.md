@@ -9,7 +9,7 @@ Notable changes to furnizsh. Format loosely follows
 
 - `furnizsh update` — the conventional entry point, matching `brew upgrade` and
   friends. The update logic now lives in `update.sh`, which both it and
-  `agupdate` run, so there is one implementation rather than two that drift.
+  `fzupdate` run, so there is one implementation rather than two that drift.
   `--check` reports whether an update exists without installing it.
 - `scripts/bump.sh` — bumps the version across all five files CI cross-checks,
   promotes the `Unreleased` changelog section, and re-runs the consistency
@@ -21,14 +21,18 @@ Notable changes to furnizsh. Format loosely follows
 
 ### Changed
 
-- `agupdate` updates by whichever channel you installed from — the bootstrap
+- `agdoctor` and `agupdate` are now `fzdoctor` and `fzupdate`. The `ag` prefix
+  predates the furnizsh name. **The old names still work** — they are aliases
+  and will not be removed, so nothing breaks for 1.0.0 installs or for scripts
+  calling them. CI asserts both resolve.
+- `fzupdate` updates by whichever channel you installed from — the bootstrap
   script, Homebrew, npm, the PowerShell Gallery or a git checkout — instead of
   assuming a git checkout and failing for everyone else. It also checks the
   current release first and stops early if you are already on it.
 
 ### Fixed
 
-- `agupdate` reported success even when the update had failed.
+- `fzupdate` reported success even when the update had failed.
 - Uninstall left behind the blank line the installer wrote above its block, so
   a full cycle did not restore `.zshrc` byte-for-byte as documented. CI now
   asserts byte-equality instead of only grepping the marker away.

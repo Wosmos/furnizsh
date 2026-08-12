@@ -8,9 +8,9 @@ the same behaviour.
 | | |
 |---|---|
 | [`cheatsheet` / `chs`](#cheatsheet--chs) | the reference card |
-| [`agdoctor`](#agdoctor) | health-check the setup |
+| [`fzdoctor`](#fzdoctor) | health-check the setup |
 | [`theme`](#theme-name) | switch the whole look |
-| [`agupdate`](#agupdate) | update furnizsh |
+| [`fzupdate`](#fzupdate) | update furnizsh |
 | [`mkcd`](#mkcd-dir) | create a directory and enter it |
 | [`up`](#up-n) | cd up N levels |
 | [`serve`](#serve-port) | static HTTP server here |
@@ -54,14 +54,18 @@ The written version of the full output is [CHEATSHEET.md](CHEATSHEET.md).
 
 ---
 
-## `agdoctor`
+> **The old `ag*` names still work.** `agdoctor` and `agupdate` shipped in
+> 1.0.0, before the project was called furnizsh. They are aliases for `fzdoctor`
+> and `fzupdate` now — undocumented, but they will not be removed.
+
+## `fzdoctor`
 
 Checks every part of the setup — tools on `$PATH`, the login shell, Oh My Zsh
 and its plugins, every config file, git's pager, the Nerd Font — and prints a
 ✓/✗ line for each with the fix command for anything missing.
 
 ```bash
-agdoctor
+fzdoctor
 ```
 
 Also available before the shell config is installed, as `./doctor.sh` in the
@@ -71,7 +75,7 @@ repo. That version exits non-zero on failure, so it works in CI:
 ./doctor.sh --quiet && echo "setup intact"
 ```
 
-`doctor` is aliased to `agdoctor` unless something else on your system already
+`doctor` is aliased to `fzdoctor` unless something else on your system already
 owns that name.
 
 ---
@@ -105,16 +109,16 @@ you at the matching Windows Terminal scheme.
 
 ---
 
-## `agupdate`
+## `fzupdate`
 
 Update furnizsh to the latest release.
 
 ```bash
-agupdate
+fzupdate
 ```
 
 The same thing is available as `furnizsh update`, which works in any shell —
-`agupdate` is just the zsh-side name for it. Both run the same script.
+`fzupdate` is just the zsh-side name for it. Both run the same script.
 
 ```bash
 furnizsh update            # update
@@ -126,7 +130,7 @@ Otherwise it updates using whichever channel you installed from — `install.sh`
 records that at install time, so this works the same whether you used the
 bootstrap script, Homebrew, npm or a git checkout:
 
-| Installed via | What `agupdate` runs |
+| Installed via | What `fzupdate` runs |
 |---|---|
 | bootstrap script | re-runs the installer from the site |
 | Homebrew | `brew update && brew upgrade furnizsh` |

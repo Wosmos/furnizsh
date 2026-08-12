@@ -162,7 +162,7 @@ function cheatsheet {
     Write-Host "  $($c.Yellow)fe$($c.Reset) [query]    fzf-pick + edit a file    $($c.Yellow)bak$($c.Reset) <file>      timestamped backup"
     Write-Host "  $($c.Yellow)sizeof$($c.Reset) [dir]  what's eating the disk    $($c.Yellow)gprune$($c.Reset)          prune merged branches"
     Write-Host "  $($c.Yellow)paths$($c.Reset)         `$env:PATH, one per line   $($c.Yellow)reload$($c.Reset)          restart PowerShell"
-    Write-Host "  $($c.Yellow)agdoctor$($c.Reset)      health-check the setup"
+    Write-Host "  $($c.Yellow)fzdoctor$($c.Reset)      health-check the setup"
     Write-Host ""
 
     if ($Full) {
@@ -188,7 +188,12 @@ function cheatsheet {
 }
 Set-Alias chs cheatsheet
 
-function agdoctor {
+# The ag* prefix predates the furnizsh name. It shipped in 1.0.0, so it keeps
+# working - undocumented, but never removed.
+Set-Alias agdoctor fzdoctor
+Set-Alias agupdate fzupdate
+
+function fzdoctor {
     <#
     .SYNOPSIS
       Health-check every part of the furnizsh setup.
@@ -569,7 +574,7 @@ function theme {
     Write-Host ""
 }
 
-function agupdate {
+function fzupdate {
     <#  .SYNOPSIS  Update furnizsh, whichever way it was installed.  #>
     $c = $script:AGColors
 
@@ -605,17 +610,17 @@ function agupdate {
         'psgallery' {
             Write-Host "$($c.Gray)Installed from the PowerShell Gallery.$($c.Reset)"
             Update-Module furnizsh -Force
-            if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { Write-Error 'agupdate: update failed'; return }
+            if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { Write-Error 'fzupdate: update failed'; return }
         }
         'git' {
             Write-Host "$($c.Gray)Installed from a checkout at $source.$($c.Reset)"
             if (-not (Test-Path (Join-Path $source '.git'))) {
-                Write-Error "agupdate: $source is no longer a checkout - reinstall to fix"; return
+                Write-Error "fzupdate: $source is no longer a checkout - reinstall to fix"; return
             }
             git -C $source pull --ff-only
-            if ($LASTEXITCODE -ne 0) { Write-Error 'agupdate: pull failed'; return }
+            if ($LASTEXITCODE -ne 0) { Write-Error 'fzupdate: pull failed'; return }
             & (Join-Path $source 'install.ps1') -Yes
-            if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { Write-Error 'agupdate: install failed'; return }
+            if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { Write-Error 'fzupdate: install failed'; return }
         }
         default {
             Write-Host "$($c.Orange)Can't tell how furnizsh was installed.$($c.Reset) Update it the way you got it:"

@@ -92,6 +92,6 @@ once so CI's consistency check passes.
 
 ## Reporting a bug
 
-Include the output of `./doctor.sh` (or `agdoctor`), your OS and shell, and the
+Include the output of `./doctor.sh` (or `fzdoctor`), your OS and shell, and the
 tool versions involved. `./install.sh --dry-run` output helps for install
 problems.

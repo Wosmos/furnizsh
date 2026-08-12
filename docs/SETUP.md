@@ -319,7 +319,7 @@ Entirely optional and entirely separate from the terminal setup.
 
 ## Verification
 
-Run `./doctor.sh` (or `agdoctor` once the shell config is loaded) — it checks
+Run `./doctor.sh` (or `fzdoctor` once the shell config is loaded) — it checks
 every item below automatically and tells you the fix command for anything
 missing.
 
@@ -337,7 +337,7 @@ Or by hand:
 - [ ] `git diff` in any repo shows delta's colourised diff
 - [ ] `lg` opens lazygit, themed, with icons rendering
 - [ ] `cheatsheet` prints the short reference, `cheatsheet --comp` the full one
-- [ ] `agdoctor` comes back all-green
+- [ ] `fzdoctor` comes back all-green
 
 ---
 

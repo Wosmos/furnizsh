@@ -149,12 +149,12 @@ _furnizsh_theme_complete() {
 compdef _furnizsh_theme_complete theme 2>/dev/null
 
 # ============================================================
-#  agupdate — update furnizsh, whichever way it was installed
+#  fzupdate — update furnizsh, whichever way it was installed
 #
 #  Thin wrapper over update.sh so the logic lives in exactly one place;
 #  `furnizsh update` runs the same script.
 # ============================================================
-agupdate() {
+fzupdate() {
   local script=""
 
   # Resolve update.sh directly, in preference to `furnizsh update`. The
@@ -178,7 +178,7 @@ agupdate() {
   fi
 
   if [[ -z "$script" ]]; then
-    print -u2 "agupdate: can't find update.sh — reinstall furnizsh, or update"
+    print -u2 "fzupdate: can't find update.sh — reinstall furnizsh, or update"
     print -u2 "          the way you installed it (brew / npm / the bootstrap)."
     return 1
   fi
@@ -240,9 +240,9 @@ cheatsheet() {
 
       printf "%s%sfurnizsh commands -- core%s\n" "$B" "$ORANGE" "$D"
       printf "  %scheatsheet%s / %schs%s   this reference (--comp for the full version)\n" "$YELLOW" "$D" "$YELLOW" "$D"
-      printf "  %sagdoctor%s        health-check every part of the setup, with the fix for each failure\n" "$YELLOW" "$D"
+      printf "  %sfzdoctor%s        health-check every part of the setup, with the fix for each failure\n" "$YELLOW" "$D"
       printf "  %stheme%s [name]    list themes, or switch ghostty + starship + lazygit together\n" "$YELLOW" "$D"
-      printf "  %sagupdate%s        update furnizsh, however you installed it\n" "$YELLOW" "$D"
+      printf "  %sfzupdate%s        update furnizsh, however you installed it\n" "$YELLOW" "$D"
       printf "  %smkcd%s <dir>      create a directory and cd into it\n" "$YELLOW" "$D"
       printf "  %sup%s [n]          cd up n levels (default 1)\n" "$YELLOW" "$D"
       printf "  %sserve%s [port]    static HTTP server in the current dir, prints the LAN URL\n" "$YELLOW" "$D"
@@ -300,14 +300,14 @@ cheatsheet() {
       printf "  %slazygit%s     lg                       full git TUI\n\n" "$YELLOW" "$D"
 
       printf "%s%sCommands%s\n" "$B" "$ORANGE" "$D"
-      printf "  %stheme%s [name]  switch the whole look     %sagdoctor%s        health-check the setup\n" "$YELLOW" "$D" "$YELLOW" "$D"
+      printf "  %stheme%s [name]  switch the whole look     %sfzdoctor%s        health-check the setup\n" "$YELLOW" "$D" "$YELLOW" "$D"
       printf "  %smkcd%s <dir>    make + enter a dir        %sup%s [n]          cd up n levels\n" "$YELLOW" "$D" "$YELLOW" "$D"
       printf "  %sserve%s [port]  static server here        %sports%s           what's listening\n" "$YELLOW" "$D" "$YELLOW" "$D"
       printf "  %skillport%s <p>  free a port               %sfkill%s           fzf-pick + kill a process\n" "$YELLOW" "$D" "$YELLOW" "$D"
       printf "  %sfe%s [query]    fzf-pick + edit a file    %sbak%s <file>      timestamped backup\n" "$YELLOW" "$D" "$YELLOW" "$D"
       printf "  %ssizeof%s [dir]  what's eating the disk    %sgclean%s          prune merged branches\n" "$YELLOW" "$D" "$YELLOW" "$D"
       printf "  %spaths%s         \$PATH, one per line       %sreload%s          restart zsh\n" "$YELLOW" "$D" "$YELLOW" "$D"
-      printf "  %sagupdate%s      update furnizsh\n\n" "$YELLOW" "$D"
+      printf "  %sfzupdate%s      update furnizsh\n\n" "$YELLOW" "$D"
 
       printf "%s%sGhostty keybinds%s\n" "$B" "$ORANGE" "$D"
       printf "  cmd+n / cmd+t          new window / tab\n"
@@ -321,11 +321,16 @@ cheatsheet() {
 }
 alias chs='cheatsheet'
 
+# The ag* prefix is left over from the name this project had before furnizsh.
+# It shipped in 1.0.0, so it keeps working — undocumented, but never removed.
+alias agupdate='fzupdate'
+alias agdoctor='fzdoctor'
+
 # ============================================================
-#  agdoctor — health-check the setup
+#  fzdoctor — health-check the setup
 #  Also available standalone as ./doctor.sh in the repo.
 # ============================================================
-agdoctor() {
+fzdoctor() {
   local ok=$FURNIZSH_C[green] bad=$FURNIZSH_C[orange] dim=$FURNIZSH_C[gray]
   local B=$FURNIZSH_C[bold] D=$FURNIZSH_C[reset] BLUE=$FURNIZSH_C[blue]
   local failures=0
@@ -407,7 +412,7 @@ agdoctor() {
   fi
   return $(( failures > 0 ))
 }
-command -v doctor >/dev/null 2>&1 || alias doctor='agdoctor'
+command -v doctor >/dev/null 2>&1 || alias doctor='fzdoctor'
 
 # ============================================================
 #  Navigation

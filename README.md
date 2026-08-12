@@ -57,7 +57,7 @@ See exactly what it would do first — this changes nothing:
 curl -fsSL https://wosmos.github.io/furnizsh/install | sh -s -- --dry-run
 ```
 
-Then open a new terminal and run `agdoctor` to verify, `cheatsheet` for the
+Then open a new terminal and run `fzdoctor` to verify, `cheatsheet` for the
 reference card, or `theme` to try a different look.
 
 **Windows:** `.\install.ps1` instead — see [docs/WINDOWS.md](docs/WINDOWS.md).
@@ -160,9 +160,9 @@ any archive, and more. Full list in the [cheatsheet](docs/CHEATSHEET.md).
 
 ```
 cheatsheet / chs   the reference card (--comp for everything)
-agdoctor           health-check every part of the setup
+fzdoctor           health-check every part of the setup
 theme [name]       list themes, or switch the whole look
-agupdate           update furnizsh (or: furnizsh update)
+fzupdate           update furnizsh (or: furnizsh update)
 mkcd <dir>         create a directory and cd into it
 up [n]             cd up n levels
 serve [port]       static HTTP server here, prints the LAN URL
@@ -246,7 +246,7 @@ hostnames — just the terminal. CI fails the build if any of that sneaks in.
 - **Fewer plugins:** trim the `plugins=(...)` array in
   `config/zsh/furnizsh.zsh`. Keep `zsh-syntax-highlighting` last.
 
-Then `./install.sh` again, or just `agupdate` — it detects how furnizsh was
+Then `./install.sh` again, or just `fzupdate` — it detects how furnizsh was
 installed and runs the right updater.
 
 ---

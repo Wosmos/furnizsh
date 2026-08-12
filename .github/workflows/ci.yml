@@ -265,7 +265,7 @@ jobs:
           zsh -c '
             source "$HOME/.config/furnizsh/furnizsh.zsh"
             missing=0
-            for fn in cheatsheet agdoctor theme agupdate mkcd up serve ports killport \
+            for fn in cheatsheet fzdoctor theme fzupdate mkcd up serve ports killport \
                       fkill fe bak sizeof gprune paths reload \
                       weather cheat qr gitignore note timer sysinfo dockerclean; do
               if typeset -f $fn >/dev/null 2>&1 || alias $fn >/dev/null 2>&1; then
@@ -275,6 +275,21 @@ jobs:
               fi
             done
             exit $missing
+          '
+
+      - name: The pre-furnizsh ag* names still resolve
+        run: |
+          # agdoctor and agupdate shipped in 1.0.0. They are aliases now, and
+          # removing them would break every existing install and any script
+          # calling them.
+          zsh -c '
+            source "$HOME/.config/furnizsh/furnizsh.zsh"
+            fail=0
+            for old in agdoctor agupdate; do
+              alias $old >/dev/null 2>&1 || { echo "  MISS $old"; fail=1; continue; }
+              echo "  OK   $old -> $(alias $old | sed "s/.*=//;s/'"'"'//g")"
+            done
+            exit $fail
           '
 
       - name: cheatsheet renders
@@ -311,9 +326,9 @@ jobs:
             || { echo "stamped version does not match VERSION"; exit 1; }
           echo "version stamped correctly"
 
-      - name: The install method is recorded for agupdate
+      - name: The install method is recorded for fzupdate
         run: |
-          # agupdate reads this to decide whether to run brew, npm, the
+          # fzupdate reads this to decide whether to run brew, npm, the
           # bootstrap or git pull. Without it, it can only tell the user to
           # work it out themselves.
           f="$HOME/.config/furnizsh/install-source"

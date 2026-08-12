@@ -18,7 +18,7 @@ Three of these tools have naming trouble on Debian and Ubuntu:
 
 `config/zsh/furnizsh.zsh` detects the renamed binaries and aliases both `bat`
 and `cat` to `batcat`, and both `fd` and `find` to `fdfind` — so once installed,
-everything works under the normal names regardless. `agdoctor` accepts either
+everything works under the normal names regardless. `fzdoctor` accepts either
 name as a pass.
 
 If you'd rather have the real names on `$PATH`:

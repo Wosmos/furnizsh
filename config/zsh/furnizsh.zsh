@@ -192,7 +192,7 @@ command -v tldr  >/dev/null 2>&1 && alias help='tldr'
 # live here, not in functions.zsh, so it runs in an earlier parse unit.
 # ------------------------------------------------------------
 for _furnizsh_name in \
-  cheatsheet chs agdoctor doctor theme agupdate mkcd up serve ports \
+  cheatsheet chs fzdoctor agdoctor doctor theme fzupdate agupdate mkcd up serve ports \
   killport fkill fe bak sizeof gprune paths reload \
   weather cheat qr gitignore note timer sysinfo dockerclean
 do
@@ -201,7 +201,7 @@ done
 unset _furnizsh_name
 
 # ------------------------------------------------------------
-# Helper commands — cheatsheet/chs, agdoctor, theme, agupdate,
+# Helper commands — cheatsheet/chs, fzdoctor, theme, fzupdate,
 # mkcd, up, serve, ports, killport, fkill, fe, bak, sizeof,
 # gprune, paths, reload.  Full reference: docs/COMMANDS.md
 # ------------------------------------------------------------

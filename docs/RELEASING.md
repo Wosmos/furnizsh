@@ -1,6 +1,6 @@
 # Releasing
 
-For maintainers. If you just want to update your own install, run `agupdate`.
+For maintainers. If you just want to update your own install, run `fzupdate`.
 
 ## The problem this solves
 
@@ -61,7 +61,7 @@ until the tag exists. The release workflow computes it and commits it to the tap
   `.zshrc` block layout changes such that an old install will not cleanly
   upgrade.
 
-`agupdate` re-runs the installer, which is append-only and idempotent, so minor
+`fzupdate` re-runs the installer, which is append-only and idempotent, so minor
 and patch upgrades never need a manual step. A major one should say what to do
 in its changelog entry.
 

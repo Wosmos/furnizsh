@@ -170,7 +170,7 @@ The installer:
 
 ```powershell
 .\doctor.ps1     # standalone — works before the profile is loaded
-agdoctor         # same checks, from any session once installed
+fzdoctor         # same checks, from any session once installed
 cheatsheet       # the reference card
 ```
 
@@ -217,7 +217,7 @@ gone: no `ESC ESC` for sudo, no `x` extract command, no `copypath`, no
 them, [posh-git](https://github.com/dahlbyk/posh-git) covers some ground.
 
 **All 24 furnizsh commands work**, ported to PowerShell — `cheatsheet`,
-`agdoctor`, `theme`, `agupdate`, `mkcd`, `up`, `serve`, `ports`, `killport`,
+`fzdoctor`, `theme`, `fzupdate`, `mkcd`, `up`, `serve`, `ports`, `killport`,
 `fkill`, `fe`, `bak`, `sizeof`, `gprune`, `paths`, `reload`, plus the eight
 extras (`weather`, `cheat`, `qr`, `gitignore`, `note`, `timer`, `sysinfo`,
 `dockerclean`).
@@ -246,7 +246,7 @@ name is wrong. It must be `JetBrainsMono Nerd Font Mono` — plain `JetBrains
 Mono` is a different, icon-free font. Restart Windows Terminal fully after
 installing a font; it caches the list.
 
-**`agdoctor` says PSReadLine is too old.** Windows ships an old bundled version
+**`fzdoctor` says PSReadLine is too old.** Windows ships an old bundled version
 that can't self-update while loaded. From an elevated PowerShell:
 
 ```powershell
