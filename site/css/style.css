@@ -66,6 +66,10 @@
   --fs-3xl:  2.25rem;
   --fs-hero: clamp(3rem, 11vw, 6.25rem);
 
+  /* Which theme-switch slot the thumb sits in. JS overrides it per switch;
+     0 is Auto, which is also the state before JS runs. */
+  --theme-i: 0;
+
   /* per-element reveal delay; JS overrides it inline to stagger a group */
   --d: 0ms;
 }
