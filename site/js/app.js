@@ -22,8 +22,15 @@
   function applyTheme(mode) {
     if (mode === 'light' || mode === 'dark') root.setAttribute('data-theme', mode);
     else root.removeAttribute('data-theme');
+    var active = mode || 'auto';
     themeButtons.forEach(function (b) {
-      b.setAttribute('aria-pressed', String(b.dataset.themeSet === (mode || 'auto')));
+      b.setAttribute('aria-pressed', String(b.dataset.themeSet === active));
+    });
+    // Slide the thumb to the active slot.
+    var order = ['auto', 'light', 'dark'];
+    var i = order.indexOf(active);
+    document.querySelectorAll('.theme-switch').forEach(function (sw) {
+      sw.style.setProperty('--theme-i', i < 0 ? 0 : i);
     });
   }
 

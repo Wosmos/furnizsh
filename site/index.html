@@ -73,6 +73,7 @@
       <a href="https://github.com/Wosmos/furnizsh">github</a>
     </nav>
     <div class="theme-switch" role="group" aria-label="Colour theme">
+      <span class="theme-thumb" aria-hidden="true"></span>
       <button type="button" data-theme-set="auto"  aria-pressed="true">Auto</button>
       <button type="button" data-theme-set="light" aria-pressed="false">Light</button>
       <button type="button" data-theme-set="dark"  aria-pressed="false">Dark</button>
@@ -88,11 +89,6 @@
       <p class="eyebrow">macOS · Linux · Windows</p>
       <h1>furnizsh</h1>
       <p class="tagline">fit out your terminal in one command</p>
-      <p class="blurb">
-        You arrive at a bare shell. One command later it has a themed prompt, a
-        proper terminal, and faster replacements for the tools you already use —
-        all installed, matched and wired together.
-      </p>
 
       <div class="term">
         <div class="term-bar">
@@ -101,25 +97,15 @@
         </div>
         <div class="term-body">
           <div class="line"><span class="p">❯</span><span class="cmd">curl -fsSL https://wosmos.github.io/furnizsh/install | sh</span></div>
-          <div class="out">50 KB. no clone, no repo to keep around.</div>
         </div>
         <div class="term-actions">
           <button class="btn" type="button" data-clip="curl -fsSL https://wosmos.github.io/furnizsh/install | sh">Copy</button>
-          <a class="btn" href="install.html">Other ways to install</a>
         </div>
       </div>
 
       <div class="cta-row">
         <a class="btn primary" href="install.html">Get started</a>
-        <a class="btn" href="themes.html">See the themes</a>
         <a class="btn" href="commands.html">All 24 commands</a>
-      </div>
-
-      <div class="badges">
-        <span class="badge">macOS <b>full</b></span>
-        <span class="badge">Linux <b>full</b></span>
-        <span class="badge warn">Windows <b>PowerShell / WSL2</b></span>
-        <span class="badge">MIT</span>
       </div>
     </div>
 
@@ -129,6 +115,15 @@
     </div>
   </div>
 </header>
+
+<!-- The stack, as a marquee. Duplicated once so the loop is seamless; the
+     copy is aria-hidden so it is not announced twice. -->
+<div class="marquee" role="group" aria-label="What furnizsh installs">
+  <div class="marquee-track">
+    <div class="marquee-run"><span>ghostty</span><i aria-hidden="true">·</i><span>zsh</span><i aria-hidden="true">·</i><span>oh-my-zsh</span><i aria-hidden="true">·</i><span>starship</span><i aria-hidden="true">·</i><span>eza</span><i aria-hidden="true">·</i><span>bat</span><i aria-hidden="true">·</i><span>fd</span><i aria-hidden="true">·</i><span>zoxide</span><i aria-hidden="true">·</i><span>fzf</span><i aria-hidden="true">·</i><span>ripgrep</span><i aria-hidden="true">·</i><span>delta</span><i aria-hidden="true">·</i><span>lazygit</span><i aria-hidden="true">·</i><span>tmux</span><i aria-hidden="true">·</i><span>nerd fonts</span><i aria-hidden="true">·</i></div>
+    <div class="marquee-run" aria-hidden="true"><span>ghostty</span><i aria-hidden="true">·</i><span>zsh</span><i aria-hidden="true">·</i><span>oh-my-zsh</span><i aria-hidden="true">·</i><span>starship</span><i aria-hidden="true">·</i><span>eza</span><i aria-hidden="true">·</i><span>bat</span><i aria-hidden="true">·</i><span>fd</span><i aria-hidden="true">·</i><span>zoxide</span><i aria-hidden="true">·</i><span>fzf</span><i aria-hidden="true">·</i><span>ripgrep</span><i aria-hidden="true">·</i><span>delta</span><i aria-hidden="true">·</i><span>lazygit</span><i aria-hidden="true">·</i><span>tmux</span><i aria-hidden="true">·</i><span>nerd fonts</span><i aria-hidden="true">·</i></div>
+  </div>
+</div>
 
 <section class="wrap">
   <div class="section-head">

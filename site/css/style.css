@@ -64,7 +64,7 @@
   --fs-xl:   1.375rem;
   --fs-2xl:  1.75rem;
   --fs-3xl:  2.25rem;
-  --fs-hero: clamp(2.5rem, 9vw, 4.75rem);
+  --fs-hero: clamp(3rem, 11vw, 6.25rem);
 
   /* per-element reveal delay; JS overrides it inline to stagger a group */
   --d: 0ms;
@@ -193,19 +193,33 @@ p:last-child { margin-bottom: 0; }
 .topnav a[aria-current="page"] { color: var(--accent); }
 
 .theme-switch {
-  display: flex; gap: 2px; padding: 2px; flex: none;
+  position: relative;
+  display: flex; padding: 2px; flex: none;
   background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px;
 }
+/* One thumb that slides, rather than a background jumping between buttons.
+   No gap between buttons, so each is exactly a third and translateX(100%)
+   lands the thumb precisely on the next one. */
+.theme-thumb {
+  position: absolute; z-index: 0;
+  top: 2px; bottom: 2px; left: 2px;
+  width: calc((100% - 4px) / 3);
+  border-radius: 999px;
+  background: var(--accent);
+  transform: translateX(calc(var(--theme-i, 0) * 100%));
+  transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+}
+@media (prefers-reduced-motion: reduce) { .theme-thumb { transition: none; } }
 .theme-switch button {
+  position: relative; z-index: 1;
+  flex: 1 1 0; min-width: 4.1rem;
   font-family: var(--mono); font-size: var(--fs-xs);
   padding: .3rem .62rem; border: 0; border-radius: 999px;
   background: transparent; color: var(--ink-faint); cursor: pointer; line-height: 1.4;
-  transition: color .15s, background .15s;
+  transition: color .2s;
 }
 .theme-switch button:hover { color: var(--ink); }
-.theme-switch button[aria-pressed="true"] {
-  background: var(--accent); color: var(--accent-ink); font-weight: 600;
-}
+.theme-switch button[aria-pressed="true"] { color: var(--accent-ink); font-weight: 600; }
 
 /* ------------------------------------------------------------
    sections
@@ -236,8 +250,8 @@ section + section { border-top: 1px solid var(--line-soft); }
   letter-spacing: -.055em; line-height: .95; margin-bottom: .5rem;
 }
 .hero .tagline {
-  font-family: var(--mono); font-size: clamp(.95rem, 2.2vw, 1.2rem);
-  color: var(--ink-dim); margin-bottom: 1.25rem;
+  font-family: var(--mono); font-size: clamp(1rem, 2.4vw, 1.35rem);
+  color: var(--ink-dim); margin-bottom: 2rem;
 }
 .hero .blurb { max-width: 46ch; color: var(--ink-dim); margin-bottom: 1.75rem; }
 .hero-art { justify-self: center; }
@@ -419,4 +433,41 @@ footer {
   section { padding-block: 2.75rem; }
   .term-body { font-size: var(--fs-xs); }
   .theme-switch button { padding: .3rem .5rem; }
+}
+
+
+/* ------------------------------------------------------------
+   The stack, scrolling. A band under the hero that carries the
+   tool list without spending hero space on it.
+   ------------------------------------------------------------ */
+.marquee {
+  position: relative;
+  overflow: hidden;
+  margin: 0 0 4rem;
+  padding: 1rem 0;
+  border-block: 1px solid var(--line);
+  background: var(--surface);
+  /* Fade both ends so items enter and leave rather than being cut off. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track { display: flex; width: max-content; }
+.marquee-run {
+  display: flex; align-items: center; gap: 1.5rem;
+  padding-right: 1.5rem;
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  color: var(--ink-dim);
+  white-space: nowrap;
+}
+.marquee-run i { color: var(--accent); font-style: normal; opacity: .55; }
+
+/* Each run is exactly half the track, so -50% lands on a seam. */
+@media (prefers-reduced-motion: no-preference) {
+  .marquee-track { animation: marquee 38s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
