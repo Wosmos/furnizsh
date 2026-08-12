@@ -235,37 +235,6 @@ section + section { border-top: 1px solid var(--line-soft); }
   font-size: var(--fs-hero); font-weight: 800;
   letter-spacing: -.055em; line-height: .95; margin-bottom: .5rem;
 }
-/* Screen readers and search engines get the real word; the block letters are
-   decoration and are hidden from both. */
-.visually-hidden {
-  position: absolute; width: 1px; height: 1px;
-  margin: -1px; padding: 0; border: 0;
-  clip-path: inset(50%); overflow: hidden; white-space: nowrap;
-}
-
-/* The wordmark is a fixed 62 columns, so it is sized in vw and simply scales
-   with the viewport rather than needing a breakpoint. */
-.wordmark {
-  font-family: var(--mono);
-  font-size: clamp(.4rem, 1.42vw, .95rem);
-  line-height: 1.04;
-  color: var(--ink);
-  margin: 0 0 .9rem;
-  white-space: pre;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-.wordmark .lure { color: var(--accent); }
-
-/* The lure is the one bright thing on the page — a slow breath, not a blink. */
-@media (prefers-reduced-motion: no-preference) {
-  .wordmark .lure { animation: lure-pulse 4s ease-in-out infinite; }
-}
-@keyframes lure-pulse {
-  0%, 100% { opacity: .72; }
-  50%      { opacity: 1; }
-}
-
 .hero .tagline {
   font-family: var(--mono); font-size: clamp(.95rem, 2.2vw, 1.2rem);
   color: var(--ink-dim); margin-bottom: 1.25rem;
