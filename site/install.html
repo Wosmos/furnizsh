@@ -147,60 +147,52 @@
     <p class="lede">The whole payload is about 50 KB. Nothing needs a repo left on disk.</p>
   </div>
 
-  <div class="grid">
-    <div class="card">
-      <span class="mark">[ anywhere ]</span>
-      <h3>curl</h3>
-      <p>POSIX sh, so it runs before you know anything about the machine.</p>
-      <div class="term" style="margin-top:.9rem;box-shadow:none">
-        <div class="term-body" style="padding:.75rem .85rem">
-          <div class="line"><span class="p">❯</span><span class="cmd">curl -fsSL https://wosmos.github.io/furnizsh/install | sh</span></div>
-        </div>
-      </div>
-      <div class="cta-row" style="margin-top:.8rem">
-        <button class="btn" type="button" data-clip="curl -fsSL https://wosmos.github.io/furnizsh/install | sh">Copy</button>
-      </div>
+  <div class="term install-term">
+    <div class="term-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="term-title">install</span>
     </div>
+    <div class="term-body">
+        <p class="c"># anywhere — POSIX sh, so it runs before you know anything about the machine.</p>
+        <button type="button" class="cmdline" data-clip="curl -fsSL https://wosmos.github.io/furnizsh/install | sh" title="Click to copy">
+          <span class="p" aria-hidden="true">❯</span><span class="cmd">curl -fsSL https://wosmos.github.io/furnizsh/install | sh</span>
+          <span class="copy-slot"><svg class="copy-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="done-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </button>
 
-    <div class="card">
-      <span class="mark">[ macOS · Linux ]</span>
-      <h3>Homebrew</h3>
-      <p>Installs the command; setting up your shell stays an explicit second step.</p>
-      <div class="term" style="margin-top:.9rem;box-shadow:none">
-        <div class="term-body" style="padding:.75rem .85rem">
-          <div class="line"><span class="p">❯</span><span class="cmd">brew tap wosmos/tap</span></div>
-          <div class="line"><span class="p">❯</span><span class="cmd">brew install furnizsh</span></div>
-          <div class="line"><span class="p">❯</span><span class="cmd">furnizsh install</span></div>
-        </div>
-      </div>
-      <div class="cta-row" style="margin-top:.8rem">
-        <button class="btn" type="button" data-clip="brew tap wosmos/tap && brew install furnizsh && furnizsh install">Copy</button>
-      </div>
-    </div>
+        <p class="c"># macOS · Linux — Installs the command; setting up your shell stays an explicit second step.</p>
+        <button type="button" class="cmdline" data-clip="brew tap wosmos/tap" title="Click to copy">
+          <span class="p" aria-hidden="true">❯</span><span class="cmd">brew tap wosmos/tap</span>
+          <span class="copy-slot"><svg class="copy-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="done-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </button>
+        <button type="button" class="cmdline" data-clip="brew install furnizsh" title="Click to copy">
+          <span class="p" aria-hidden="true">❯</span><span class="cmd">brew install furnizsh</span>
+          <span class="copy-slot"><svg class="copy-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="done-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </button>
+        <button type="button" class="cmdline" data-clip="furnizsh install" title="Click to copy">
+          <span class="p" aria-hidden="true">❯</span><span class="cmd">furnizsh install</span>
+          <span class="copy-slot"><svg class="copy-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="done-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </button>
 
-    <div class="card">
-      <span class="mark">[ anywhere with Node ]</span>
-      <h3>npm</h3>
-      <p>Node is only the delivery mechanism — nothing runs on install.</p>
-      <div class="term" style="margin-top:.9rem;box-shadow:none">
-        <div class="term-body" style="padding:.75rem .85rem">
-          <div class="line"><span class="p">❯</span><span class="cmd">npm i -g furnizsh</span></div>
-          <div class="line"><span class="p">❯</span><span class="cmd">furnizsh install</span></div>
-        </div>
-      </div>
-    </div>
+        <p class="c"># anywhere with Node — Node is only the delivery mechanism — nothing runs on install.</p>
+        <button type="button" class="cmdline" data-clip="npm i -g furnizsh" title="Click to copy">
+          <span class="p" aria-hidden="true">❯</span><span class="cmd">npm i -g furnizsh</span>
+          <span class="copy-slot"><svg class="copy-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="done-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </button>
+        <button type="button" class="cmdline" data-clip="furnizsh install" title="Click to copy">
+          <span class="p" aria-hidden="true">❯</span><span class="cmd">furnizsh install</span>
+          <span class="copy-slot"><svg class="copy-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="done-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </button>
 
-    <div class="card">
-      <span class="mark">[ Windows ]</span>
-      <h3>PowerShell Gallery</h3>
-      <p>The native Windows channel — real cmdlets, not a folder of loose files.</p>
-      <div class="term" style="margin-top:.9rem;box-shadow:none">
-        <div class="term-body" style="padding:.75rem .85rem">
-          <div class="line"><span class="p">❯</span><span class="cmd">Install-Module furnizsh -Scope CurrentUser</span></div>
-          <div class="line"><span class="p">❯</span><span class="cmd">Install-Furnizsh</span></div>
-        </div>
+        <p class="c"># Windows — The native Windows channel — real cmdlets, not a folder of loose files.</p>
+        <button type="button" class="cmdline" data-clip="Install-Module furnizsh -Scope CurrentUser" title="Click to copy">
+          <span class="p" aria-hidden="true">❯</span><span class="cmd">Install-Module furnizsh -Scope CurrentUser</span>
+          <span class="copy-slot"><svg class="copy-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="done-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </button>
+        <button type="button" class="cmdline" data-clip="Install-Furnizsh" title="Click to copy">
+          <span class="p" aria-hidden="true">❯</span><span class="cmd">Install-Furnizsh</span>
+          <span class="copy-slot"><svg class="copy-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="done-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </button>
       </div>
-    </div>
   </div>
 
   <p class="note">
@@ -369,8 +361,8 @@
 <footer class="wrap">
   <div class="footer-grid">
     <div>
-      <a class="brand" href="index.html" style="font-size:1.2rem"><img src="assets/icons/icon-64.png" alt="" width="24" height="24">furnizsh</a>
-      <p style="margin:.5rem 0 0;color:var(--ink-faint);font-size:var(--fs-sm)">MIT — take it, fork it, make it yours.</p>
+      <a class="brand footer-brand" href="index.html"><img src="assets/icons/icon-64.png" alt="" width="24" height="24">furnizsh</a>
+      <p class="footer-note">MIT — take it, fork it, make it yours.</p>
     </div>
     <nav class="footer-links" aria-label="Documentation">
       <a href="https://github.com/Wosmos/furnizsh">repo</a>

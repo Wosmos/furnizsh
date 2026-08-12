@@ -57,13 +57,20 @@
   }
 
   document.querySelectorAll('[data-clip]').forEach(function (btn) {
-    var label = btn.textContent;
+    // Command rows hold a prompt, the text and an icon, so their feedback is
+    // the icon swapping - rewriting textContent would wipe all three out.
+    var isRow = btn.classList.contains('cmdline');
+    var label = isRow ? null : btn.textContent;
+
     btn.addEventListener('click', function () {
       var text = btn.dataset.clip;
       var done = function () {
-        btn.textContent = 'Copied';
+        if (!isRow) btn.textContent = 'Copied';
         btn.dataset.copied = '1';
-        setTimeout(function () { btn.textContent = label; delete btn.dataset.copied; }, 1800);
+        setTimeout(function () {
+          if (!isRow) btn.textContent = label;
+          delete btn.dataset.copied;
+        }, 1800);
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text, done); });

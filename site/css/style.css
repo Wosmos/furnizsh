@@ -293,6 +293,54 @@ section + section { border-top: 1px solid var(--line-soft); }
 .term-actions { display: flex; gap: .45rem; padding: 0 1.05rem 1.05rem; flex-wrap: wrap; }
 
 /* ------------------------------------------------------------
+   Install terminal — every command is its own click target, so
+   there is no separate Copy button to keep in sync with it.
+   ------------------------------------------------------------ */
+.install-term .term-body { padding: 1.1rem .6rem 1.25rem; line-height: 1.75; }
+
+/* Comments carry what the cards used to say. */
+.install-term .c {
+  color: var(--ink-faint);
+  margin: 1.4rem 0 .35rem; padding: 0 .45rem;
+  font-size: var(--fs-sm); line-height: 1.6;
+}
+.install-term .c:first-child { margin-top: 0; }
+
+.cmdline {
+  display: flex; align-items: center; gap: .55rem;
+  width: 100%; margin: 0; padding: .3rem .45rem;
+  border: 0; border-radius: 8px;
+  background: transparent; color: inherit;
+  font: inherit; text-align: left; cursor: pointer;
+  transition: background .15s;
+}
+.cmdline:hover,
+.cmdline:focus-visible { background: var(--surface-2); }
+.cmdline .p   { color: var(--accent); flex: none; }
+.cmdline .cmd { color: var(--ink); word-break: break-all; }
+
+/* The icon holds its slot at all times so rows never reflow on hover. */
+.copy-slot {
+  flex: none; margin-left: auto; display: grid; place-items: center;
+  width: 1.6rem; height: 1.6rem; color: var(--ink-faint);
+  opacity: 0; transition: opacity .15s, color .15s;
+}
+.cmdline:hover .copy-slot,
+.cmdline:focus-visible .copy-slot { opacity: 1; }
+.copy-slot svg { width: 15px; height: 15px; grid-area: 1 / 1; }
+.copy-slot .done-ico { opacity: 0; color: var(--green); }
+
+.cmdline[data-copied] .copy-slot { opacity: 1; }
+.cmdline[data-copied] .copy-ico  { opacity: 0; }
+.cmdline[data-copied] .done-ico  { opacity: 1; }
+
+/* Touch has no hover, so the affordance has to be permanent there. */
+@media (hover: none) {
+  .copy-slot { opacity: .55; }
+}
+
+
+/* ------------------------------------------------------------
    buttons
    ------------------------------------------------------------ */
 .btn {
@@ -471,3 +519,26 @@ footer {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
+
+
+.footer-brand { font-size: 1.2rem; }
+.footer-note  { margin: .5rem 0 0; color: var(--ink-faint); font-size: var(--fs-sm); }
+
+/* ------------------------------------------------------------
+   A faint grain over the whole page. Inline SVG turbulence, so
+   it costs no request and stays inside the CSP. Deliberately
+   near-invisible - it should read as paper, not as an effect.
+   ------------------------------------------------------------ */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+  opacity: .022;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+:root:not([data-theme="dark"]) body::before { opacity: .03; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body::before { opacity: .022; }
+}
+:root[data-theme="dark"] body::before { opacity: .022; }
+/* Everything real sits above the grain. */
+body > * { position: relative; z-index: 1; }
