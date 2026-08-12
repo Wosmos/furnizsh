@@ -475,6 +475,17 @@ install_theme() {
     mkdir -p "$FURNIZSH_HOME"
     printf '%s' "$THEME" > "$FURNIZSH_HOME/current-theme"
     printf '%s' "$FURNIZSH_VERSION" > "$FURNIZSH_HOME/VERSION"
+
+    # Record how furnizsh got here, so `agupdate` runs the right updater
+    # rather than assuming a git checkout — most people install another way.
+    method="git"
+    case "$REPO_DIR" in
+      */Cellar/furnizsh/*)          method="brew"  ;;
+      */node_modules/furnizsh*)     method="npm"   ;;
+      "$HOME/.local/share/furnizsh") method="curl" ;;
+      *) [ -d "$REPO_DIR/.git" ] || method="unknown" ;;
+    esac
+    printf '%s\n%s\n' "$method" "$REPO_DIR" > "$FURNIZSH_HOME/install-source"
   fi
 }
 

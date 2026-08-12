@@ -468,6 +468,12 @@ function reload {
 # ============================================================
 $script:AGHome = Join-Path $HOME '.config\furnizsh'
 
+function Get-FurnizshVersion {
+    <#  .SYNOPSIS  The installed version, as stamped by install.ps1.  #>
+    $f = Join-Path $script:AGHome 'VERSION'
+    if (Test-Path $f) { (Get-Content $f -Raw).Trim() } else { 'unknown' }
+}
+
 function Get-FurnizshTheme {
     $marker = Join-Path $script:AGHome 'current-theme'
     if (Test-Path $marker) { (Get-Content $marker -Raw).Trim() } else { 'neon' }
@@ -564,19 +570,58 @@ function theme {
 }
 
 function agupdate {
-    <#  .SYNOPSIS  git pull the furnizsh repo and reapply it.  #>
+    <#  .SYNOPSIS  Update furnizsh, whichever way it was installed.  #>
     $c = $script:AGColors
-    $repo = if ($env:FURNIZSH_REPO) { $env:FURNIZSH_REPO } else { Join-Path $HOME 'Documents\GitHub\furnizsh' }
 
-    if (-not (Test-Path (Join-Path $repo '.git'))) {
-        Write-Error "agupdate: no furnizsh checkout at $repo. Set `$env:FURNIZSH_REPO."
+    $here = Get-FurnizshVersion
+    $latest = $null
+    try {
+        $latest = (Invoke-RestMethod -TimeoutSec 5 `
+            'https://api.github.com/repos/Wosmos/furnizsh/releases/latest').tag_name -replace '^v', ''
+    } catch { }
+
+    if ($latest -and $latest -eq $here) {
+        Write-Host "$($c.Gray)furnizsh $here is already the latest.$($c.Reset)"
         return
     }
-    Write-Host "$($c.Gray)Updating $repo$($c.Reset)"
-    git -C $repo pull --ff-only
-    if ($LASTEXITCODE -ne 0) { Write-Error "agupdate: pull failed"; return }
-    & (Join-Path $repo 'install.ps1') -Yes
-    Write-Host "$($c.Green)OK$($c.Reset) updated - run $($c.Yellow)reload$($c.Reset)"
+    if ($latest) { Write-Host "$($c.Gray)$here -> $latest$($c.Reset)`n" }
+
+    # install.ps1 records how furnizsh arrived. Without it we can only guess,
+    # and guessing wrong means telling someone to git pull a directory that
+    # was never a checkout.
+    $marker = Join-Path $script:AGHome 'install-source'
+    $method = ''; $source = ''
+    if (Test-Path $marker) {
+        $lines  = Get-Content $marker
+        $method = $lines[0]
+        if ($lines.Count -gt 1) { $source = $lines[1] }
+    }
+
+    switch ($method) {
+        'psgallery' {
+            Write-Host "$($c.Gray)Installed from the PowerShell Gallery.$($c.Reset)"
+            Update-Module furnizsh -Force
+            if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { Write-Error 'agupdate: update failed'; return }
+        }
+        'git' {
+            Write-Host "$($c.Gray)Installed from a checkout at $source.$($c.Reset)"
+            if (-not (Test-Path (Join-Path $source '.git'))) {
+                Write-Error "agupdate: $source is no longer a checkout - reinstall to fix"; return
+            }
+            git -C $source pull --ff-only
+            if ($LASTEXITCODE -ne 0) { Write-Error 'agupdate: pull failed'; return }
+            & (Join-Path $source 'install.ps1') -Yes
+            if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { Write-Error 'agupdate: install failed'; return }
+        }
+        default {
+            Write-Host "$($c.Orange)Can't tell how furnizsh was installed.$($c.Reset) Update it the way you got it:"
+            Write-Host "  $($c.Yellow)Update-Module furnizsh$($c.Reset)"
+            Write-Host "  $($c.Yellow)git -C <checkout> pull; .\install.ps1 -Yes$($c.Reset)"
+            return
+        }
+    }
+
+    Write-Host "`n$($c.Green)OK$($c.Reset) updated - run $($c.Yellow)reload$($c.Reset)"
 }
 
 # >>> furnizsh extras >>>

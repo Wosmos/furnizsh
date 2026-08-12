@@ -67,6 +67,11 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $RepoDir       = $PSScriptRoot
+# VERSION at the repo root is the single source of truth; CI checks that the
+# packaging manifests agree with it.
+$FurnizshVersion = if (Test-Path (Join-Path $PSScriptRoot 'VERSION')) {
+    (Get-Content (Join-Path $PSScriptRoot 'VERSION') -Raw).Trim()
+} else { 'unknown' }
 $BackupDir     = Join-Path $HOME ".furnizsh-backup\$(Get-Date -Format 'yyyyMMdd-HHmmss')"
 $ConfigDir     = Join-Path $HOME '.config'
 
@@ -379,6 +384,14 @@ function Install-Config {
     if (-not $DryRun) {
         New-Item -ItemType Directory -Force -Path $agHome | Out-Null
         Set-Content -Path (Join-Path $agHome 'current-theme') -Value $Theme -NoNewline
+        Set-Content -Path (Join-Path $agHome 'VERSION') -Value $FurnizshVersion -NoNewline
+
+        # Record how furnizsh got here, so agupdate runs the right updater
+        # rather than assuming a git checkout - most people install another way.
+        $method = if (Test-Path (Join-Path $RepoDir '.git')) { 'git' }
+                  elseif ($RepoDir -match 'PowerShell\\Modules\\furnizsh') { 'psgallery' }
+                  else { 'unknown' }
+        Set-Content -Path (Join-Path $agHome 'install-source') -Value @($method, $RepoDir)
     }
 }
 

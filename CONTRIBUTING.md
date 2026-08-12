@@ -84,6 +84,12 @@ Four files, and CI checks the wiring:
 - Comments explain *why*; the code already says what
 - British or American spelling, just be consistent within a file
 
+## Releasing
+
+Maintainers only — see [docs/RELEASING.md](docs/RELEASING.md). The short version
+is `./scripts/bump.sh patch`, which updates all five version-carrying files at
+once so CI's consistency check passes.
+
 ## Reporting a bug
 
 Include the output of `./doctor.sh` (or `agdoctor`), your OS and shell, and the

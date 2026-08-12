@@ -149,22 +149,74 @@ _furnizsh_theme_complete() {
 compdef _furnizsh_theme_complete theme 2>/dev/null
 
 # ============================================================
-#  agupdate — pull the latest furnizsh and reapply it
+#  agupdate — update furnizsh, whichever way it was installed
 # ============================================================
 agupdate() {
-  local GRAY=$FURNIZSH_C[gray] C=$FURNIZSH_C[reset] GREEN=$FURNIZSH_C[green]
-  local repo="${FURNIZSH_REPO:-$HOME/Documents/GitHub/furnizsh}"
+  local GRAY=$FURNIZSH_C[gray] C=$FURNIZSH_C[reset]
+  local GREEN=$FURNIZSH_C[green] YELLOW=$FURNIZSH_C[yellow] ORANGE=$FURNIZSH_C[orange]
 
-  if [[ ! -d "$repo/.git" ]]; then
-    print -u2 "agupdate: no furnizsh checkout at $repo"
-    print -u2 "          set FURNIZSH_REPO to where you cloned it."
-    return 1
+  local here="$(_furnizsh_version)"
+  local latest=""
+  if command -v curl >/dev/null 2>&1; then
+    latest=$(curl -fsS --max-time 5 \
+      https://api.github.com/repos/Wosmos/furnizsh/releases/latest 2>/dev/null \
+      | sed -n 's/.*"tag_name": *"v\{0,1\}\([^"]*\)".*/\1/p' | head -1)
   fi
 
-  printf "%sUpdating %s%s\n" "$GRAY" "$repo" "$C"
-  git -C "$repo" pull --ff-only || { print -u2 "agupdate: pull failed"; return 1 }
-  "$repo/install.sh" --yes || return 1
-  printf "%s✓%s updated — run %sreload%s\n" "$GREEN" "$C" "$FURNIZSH_C[yellow]" "$C"
+  if [[ -n "$latest" && "$latest" == "$here" ]]; then
+    printf "%sfurnizsh %s is already the latest.%s\n" "$GRAY" "$here" "$C"
+    return 0
+  fi
+  [[ -n "$latest" ]] && printf "%s%s -> %s%s\n\n" "$GRAY" "$here" "$latest" "$C"
+
+  # install.sh records how furnizsh arrived; without that file we can only
+  # guess, and guessing wrong means telling someone to git pull a directory
+  # that was never a checkout.
+  local method="" source=""
+  if [[ -f "$FURNIZSH_DIR/install-source" ]]; then
+    method=$(sed -n 1p "$FURNIZSH_DIR/install-source")
+    source=$(sed -n 2p "$FURNIZSH_DIR/install-source")
+  fi
+
+  case "$method" in
+    brew)
+      printf "%sInstalled via Homebrew.%s\n" "$GRAY" "$C"
+      brew update && brew upgrade furnizsh && furnizsh install --yes
+      ;;
+    npm)
+      printf "%sInstalled via npm.%s\n" "$GRAY" "$C"
+      npm install -g furnizsh && furnizsh install --yes
+      ;;
+    curl)
+      printf "%sInstalled via the bootstrap script.%s\n" "$GRAY" "$C"
+      curl -fsSL https://wosmos.github.io/furnizsh/install | sh -s -- --yes
+      ;;
+    git)
+      printf "%sInstalled from a checkout at %s.%s\n" "$GRAY" "$source" "$C"
+      if [[ ! -d "$source/.git" ]]; then
+        print -u2 "agupdate: $source is no longer a checkout — reinstall to fix"
+        return 1
+      fi
+      git -C "$source" pull --ff-only || { print -u2 "agupdate: pull failed"; return 1 }
+      "$source/install.sh" --yes || return 1
+      ;;
+    *)
+      printf "%sCan't tell how furnizsh was installed.%s Update it the way you got it:\n" "$ORANGE" "$C"
+      printf "  %sbrew upgrade furnizsh%s\n" "$YELLOW" "$C"
+      printf "  %snpm install -g furnizsh%s\n" "$YELLOW" "$C"
+      printf "  %scurl -fsSL https://wosmos.github.io/furnizsh/install | sh%s\n" "$YELLOW" "$C"
+      printf "  %sUpdate-Module furnizsh%s   (PowerShell)\n" "$YELLOW" "$C"
+      return 1
+      ;;
+  esac
+  # $status is a zsh synonym for $?, so this local must not be called that.
+  local rc=$?
+  if (( rc != 0 )); then
+    print -u2 "agupdate: update failed (exit $rc)"
+    return $rc
+  fi
+
+  printf "\n%s✓%s updated — run %sreload%s\n" "$GREEN" "$C" "$YELLOW" "$C"
 }
 
 # ============================================================
@@ -223,7 +275,7 @@ cheatsheet() {
       printf "  %scheatsheet%s / %schs%s   this reference (--comp for the full version)\n" "$YELLOW" "$D" "$YELLOW" "$D"
       printf "  %sagdoctor%s        health-check every part of the setup, with the fix for each failure\n" "$YELLOW" "$D"
       printf "  %stheme%s [name]    list themes, or switch ghostty + starship + lazygit together\n" "$YELLOW" "$D"
-      printf "  %sagupdate%s        git pull the repo and reapply the setup\n" "$YELLOW" "$D"
+      printf "  %sagupdate%s        update furnizsh, however you installed it\n" "$YELLOW" "$D"
       printf "  %smkcd%s <dir>      create a directory and cd into it\n" "$YELLOW" "$D"
       printf "  %sup%s [n]          cd up n levels (default 1)\n" "$YELLOW" "$D"
       printf "  %sserve%s [port]    static HTTP server in the current dir, prints the LAN URL\n" "$YELLOW" "$D"
@@ -288,7 +340,7 @@ cheatsheet() {
       printf "  %sfe%s [query]    fzf-pick + edit a file    %sbak%s <file>      timestamped backup\n" "$YELLOW" "$D" "$YELLOW" "$D"
       printf "  %ssizeof%s [dir]  what's eating the disk    %sgclean%s          prune merged branches\n" "$YELLOW" "$D" "$YELLOW" "$D"
       printf "  %spaths%s         \$PATH, one per line       %sreload%s          restart zsh\n" "$YELLOW" "$D" "$YELLOW" "$D"
-      printf "  %sagupdate%s      pull + reapply\n\n" "$YELLOW" "$D"
+      printf "  %sagupdate%s      update furnizsh\n\n" "$YELLOW" "$D"
 
       printf "%s%sGhostty keybinds%s\n" "$B" "$ORANGE" "$D"
       printf "  cmd+n / cmd+t          new window / tab\n"

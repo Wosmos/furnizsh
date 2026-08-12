@@ -3,6 +3,32 @@
 Notable changes to furnizsh. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+
+- `scripts/bump.sh` — bumps the version across all five files CI cross-checks,
+  promotes the `Unreleased` changelog section, and re-runs the consistency
+  check. Documented in [docs/RELEASING.md](docs/RELEASING.md).
+- `install.sh` and `install.ps1` now record how furnizsh was installed, in
+  `~/.config/furnizsh/install-source`.
+- `install.ps1` stamps the installed version, which it never did before — so
+  Windows had no version to report.
+
+### Changed
+
+- `agupdate` updates by whichever channel you installed from — the bootstrap
+  script, Homebrew, npm, the PowerShell Gallery or a git checkout — instead of
+  assuming a git checkout and failing for everyone else. It also checks the
+  current release first and stops early if you are already on it.
+
+### Fixed
+
+- `agupdate` reported success even when the update had failed.
+- Uninstall left behind the blank line the installer wrote above its block, so
+  a full cycle did not restore `.zshrc` byte-for-byte as documented. CI now
+  asserts byte-equality instead of only grepping the marker away.
+
 ## [1.0.0] — 2026-08-12
 
 First public release.

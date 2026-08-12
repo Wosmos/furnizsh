@@ -14,6 +14,7 @@ together. macOS, Linux and Windows.
 [Setup guide](docs/SETUP.md) ·
 [Cheatsheet](docs/CHEATSHEET.md) ·
 [Commands](docs/COMMANDS.md) ·
+[Releasing](docs/RELEASING.md) ·
 [Changelog](CHANGELOG.md)
 
 ![macOS](https://img.shields.io/badge/macOS-supported-a6e3a1?style=flat-square)
@@ -161,7 +162,7 @@ any archive, and more. Full list in the [cheatsheet](docs/CHEATSHEET.md).
 cheatsheet / chs   the reference card (--comp for everything)
 agdoctor           health-check every part of the setup
 theme [name]       list themes, or switch the whole look
-agupdate           git pull and reapply
+agupdate           update furnizsh, however you installed it
 mkcd <dir>         create a directory and cd into it
 up [n]             cd up n levels
 serve [port]       static HTTP server here, prints the LAN URL
@@ -245,7 +246,8 @@ hostnames — just the terminal. CI fails the build if any of that sneaks in.
 - **Fewer plugins:** trim the `plugins=(...)` array in
   `config/zsh/furnizsh.zsh`. Keep `zsh-syntax-highlighting` last.
 
-Then `./install.sh` again, or `agupdate` to pull and reapply in one go.
+Then `./install.sh` again, or just `agupdate` — it detects how furnizsh was
+installed and runs the right updater.
 
 ---
 

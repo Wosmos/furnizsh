@@ -10,7 +10,7 @@ the same behaviour.
 | [`cheatsheet` / `chs`](#cheatsheet--chs) | the reference card |
 | [`agdoctor`](#agdoctor) | health-check the setup |
 | [`theme`](#theme-name) | switch the whole look |
-| [`agupdate`](#agupdate) | pull and reapply |
+| [`agupdate`](#agupdate) | update furnizsh |
 | [`mkcd`](#mkcd-dir) | create a directory and enter it |
 | [`up`](#up-n) | cd up N levels |
 | [`serve`](#serve-port) | static HTTP server here |
@@ -107,21 +107,28 @@ you at the matching Windows Terminal scheme.
 
 ## `agupdate`
 
-Pull the latest furnizsh and reapply it.
+Update furnizsh to the latest release.
 
 ```bash
 agupdate
 ```
 
-Runs `git pull --ff-only` in the repo, then `install.sh --yes`. It looks for the
-checkout at `~/Documents/GitHub/furnizsh`; set `FURNIZSH_REPO` if yours is
-elsewhere:
+It first checks the current release and stops early if you are already on it.
+Otherwise it updates using whichever channel you installed from — `install.sh`
+records that at install time, so this works the same whether you used the
+bootstrap script, Homebrew, npm or a git checkout:
 
-```bash
-export FURNIZSH_REPO=~/code/furnizsh
-```
+| Installed via | What `agupdate` runs |
+|---|---|
+| bootstrap script | re-runs the installer from the site |
+| Homebrew | `brew update && brew upgrade furnizsh` |
+| npm | `npm install -g furnizsh` |
+| git checkout | `git pull --ff-only`, then `install.sh --yes` |
 
----
+If it cannot tell (an install predating this, or a hand-copied config) it prints
+the four commands and exits non-zero rather than guessing.
+
+Run `reload` afterwards to pick up the new shell config.
 
 ## `mkcd <dir>`
 

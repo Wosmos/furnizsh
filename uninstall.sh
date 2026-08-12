@@ -109,11 +109,21 @@ unwire_zshrc() {
   # Keep a safety copy of the pre-edit .zshrc regardless.
   cp -a "$zshrc" "$zshrc.furnizsh-uninstall.bak"
 
-  # Delete everything between the markers, inclusive. Portable across
-  # BSD and GNU sed (no -i, no in-place extension differences).
+  # Delete everything between the markers, inclusive — plus the single blank
+  # line the installer wrote just above MARKER_START, so a full
+  # install/uninstall cycle leaves the file byte-identical. Blank lines the
+  # user put there are held back and reprinted; only one is absorbed.
   local tmp
   tmp="$(mktemp)"
-  sed "/^${MARKER_START}\$/,/^${MARKER_END}\$/d" "$zshrc" >"$tmp"
+  awk -v s="$MARKER_START" -v e="$MARKER_END" '
+    skip                      { if ($0 == e) skip = 0; next }
+    $0 == s                   { if (held > 0) held--
+                                while (held > 0) { print ""; held-- }
+                                skip = 1; next }
+    /^[[:space:]]*$/          { held++; next }
+                              { while (held > 0) { print ""; held-- }; print }
+    END                       { while (held > 0) { print ""; held-- } }
+  ' "$zshrc" >"$tmp"
   mv "$tmp" "$zshrc"
 
   ok "removed (pre-edit copy at ~/.zshrc.furnizsh-uninstall.bak)"

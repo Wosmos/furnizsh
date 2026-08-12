@@ -28,7 +28,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y shellcheck
 
       - name: Lint bash scripts
-        run: shellcheck --severity=warning install.sh uninstall.sh doctor.sh bin/furnizsh
+        run: shellcheck --severity=warning install.sh uninstall.sh doctor.sh bin/furnizsh scripts/*.sh
 
       - name: The bootstrap must be POSIX sh, not bash
         run: |
@@ -234,6 +234,13 @@ jobs:
 
       - uses: actions/checkout@v4
 
+      - name: Seed a .zshrc that must survive the whole cycle
+        run: |
+          # Content on both sides of where the block lands, plus interior blank
+          # lines, so the uninstall check exercises more than an empty file.
+          printf '# my own zshrc\nexport FOO=bar\n\n\nalias mine="echo hi"\n' > "$HOME/.zshrc"
+          cp "$HOME/.zshrc" /tmp/zshrc.orig
+
       - name: Dry run changes nothing
         run: |
           cp "$HOME/.zshrc" /tmp/zshrc.before 2>/dev/null || touch /tmp/zshrc.before
@@ -299,6 +306,19 @@ jobs:
             || { echo "stamped version does not match VERSION"; exit 1; }
           echo "version stamped correctly"
 
+      - name: The install method is recorded for agupdate
+        run: |
+          # agupdate reads this to decide whether to run brew, npm, the
+          # bootstrap or git pull. Without it, it can only tell the user to
+          # work it out themselves.
+          f="$HOME/.config/furnizsh/install-source"
+          test -f "$f" || { echo "install-source was not written"; exit 1; }
+          test "$(sed -n 1p "$f")" = "git" \
+            || { echo "expected method 'git' from a checkout, got '$(sed -n 1p "$f")'"; exit 1; }
+          test -d "$(sed -n 2p "$f")/.git" \
+            || { echo "recorded path is not a checkout"; exit 1; }
+          echo "install source recorded: $(sed -n 1p "$f")"
+
       - name: Rerun is idempotent
         run: |
           sha_before=$(sha256sum "$HOME/.zshrc" | cut -d' ' -f1)
@@ -308,12 +328,21 @@ jobs:
           [ "$(grep -c 'furnizsh.zsh' "$HOME/.zshrc")" = "1" ] || { echo "duplicate source line"; exit 1; }
           echo "idempotent"
 
-      - name: Uninstall restores the original .zshrc
+      - name: Uninstall restores the original .zshrc byte-for-byte
         run: |
+          # The README and the site both claim byte-for-byte restoration, so
+          # assert exactly that rather than just grepping the marker away.
+          # (A .zshrc with no trailing newline gains one — POSIX text files end
+          # in a newline — so the reference copy is normalised the same way.)
           ./uninstall.sh --yes
           grep -q 'furnizsh' "$HOME/.zshrc" && { echo "block still present"; exit 1; }
           test ! -d "$HOME/.config/furnizsh" || { echo "config dir still present"; exit 1; }
-          echo "clean uninstall"
+          cmp -s /tmp/zshrc.orig "$HOME/.zshrc" || {
+            echo "restored .zshrc differs from the original:"
+            diff /tmp/zshrc.orig "$HOME/.zshrc" || true
+            exit 1
+          }
+          echo "clean uninstall, byte-identical"
 
   # ------------------------------------------------------------
   # Version consistency. Cheap, and catches the mistake that would
