@@ -1,0 +1,33 @@
+name: npm unpublish (one-shot)
+
+# Temporary. 1.0.0 was published prematurely and nobody installed it; npm only
+# allows removal within 72 hours of publishing. Delete this file once it has run.
+#
+# npm never permits republishing an unpublished version, so 1.0.0 is burned on
+# npm permanently after this.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to unpublish (e.g. 1.0.0)'
+        required: true
+
+jobs:
+  unpublish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Unpublish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          V="${{ inputs.version }}"
+          echo "before:"; npm view furnizsh versions --json || true
+          npm unpublish "furnizsh@$V"
+          echo "after:"
+          npm view furnizsh versions --json 2>&1 || echo "package no longer published"
