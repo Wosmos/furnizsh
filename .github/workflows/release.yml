@@ -290,4 +290,9 @@ jobs:
             exit 0
           }
 
-          Publish-Module -Path dist/furnizsh -NuGetApiKey $env:PSGALLERY_KEY -Verbose
+          # -Force because 1.0.0 was published prematurely and the Gallery has no
+          # delete - unlisting hides it but it stays in the repository forever.
+          # Publish-Module refuses a version lower than the highest one present,
+          # so every 0.x release needs this until we pass 1.0.0. The idempotency
+          # check above is what stops it overwriting an existing version.
+          Publish-Module -Path dist/furnizsh -NuGetApiKey $env:PSGALLERY_KEY -Force -Verbose
