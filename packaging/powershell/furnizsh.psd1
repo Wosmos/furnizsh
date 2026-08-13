@@ -12,7 +12,7 @@
 
 @{
     RootModule        = 'furnizsh.psm1'
-    ModuleVersion     = '1.0.0'
+    ModuleVersion     = '0.1.0'
     GUID              = 'b6f4a2c1-8d3e-4f7a-9c5b-2e1d0a8f6b34'
 
     Author            = 'Wosmos'

@@ -6,9 +6,9 @@
 #  build if any one of them drifts. Editing them by hand is a trap,
 #  so this does all five, writes the CHANGELOG entry, and tags.
 #
-#    ./scripts/bump.sh patch          1.0.0 -> 1.0.1
-#    ./scripts/bump.sh minor          1.0.0 -> 1.1.0
-#    ./scripts/bump.sh major          1.0.0 -> 2.0.0
+#    ./scripts/bump.sh patch          0.1.0 -> 0.1.1
+#    ./scripts/bump.sh minor          0.1.0 -> 0.2.0
+#    ./scripts/bump.sh major          0.1.0 -> 1.0.0
 #    ./scripts/bump.sh 1.4.2          explicit
 #    ./scripts/bump.sh patch --dry-run
 #

@@ -3,7 +3,12 @@
 Notable changes to furnizsh. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.1.0] — 2026-08-13
+
+First release. Pre-1.0 on purpose: the macOS and Linux paths are exercised
+end-to-end by CI on Ubuntu, Fedora and Arch, but the PowerShell scripts are
+linted rather than executed, so Windows is untested. Expect the command set to
+move before 1.0.
 
 ### Added
 
@@ -36,8 +41,6 @@ Notable changes to furnizsh. Format loosely follows
 - Uninstall left behind the blank line the installer wrote above its block, so
   a full cycle did not restore `.zshrc` byte-for-byte as documented. CI now
   asserts byte-equality instead of only grepping the marker away.
-
-## [1.0.0] — 2026-08-12
 
 First public release.
 

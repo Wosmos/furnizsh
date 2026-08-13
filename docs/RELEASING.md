@@ -20,9 +20,9 @@ good way to lose ten minutes to a typo.
 ## Cutting a release
 
 ```bash
-./scripts/bump.sh patch          # 1.0.0 -> 1.0.1
-./scripts/bump.sh minor          # 1.0.0 -> 1.1.0
-./scripts/bump.sh major          # 1.0.0 -> 2.0.0
+./scripts/bump.sh patch          # 0.1.0 -> 0.1.1
+./scripts/bump.sh minor          # 0.1.0 -> 0.2.0
+./scripts/bump.sh major          # 0.1.0 -> 1.0.0
 ./scripts/bump.sh 1.4.2          # explicit
 ./scripts/bump.sh patch --dry-run
 ```

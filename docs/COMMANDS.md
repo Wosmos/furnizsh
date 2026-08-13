@@ -55,7 +55,7 @@ The written version of the full output is [CHEATSHEET.md](CHEATSHEET.md).
 ---
 
 > **The old `ag*` names still work.** `agdoctor` and `agupdate` shipped in
-> 1.0.0, before the project was called furnizsh. They are aliases for `fzdoctor`
+> the project was called furnizsh. They are aliases for `fzdoctor`
 > and `fzupdate` now — undocumented, but they will not be removed.
 
 ## `fzdoctor`

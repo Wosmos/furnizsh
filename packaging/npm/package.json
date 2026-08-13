@@ -1,6 +1,6 @@
 {
   "name": "furnizsh",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A neon terminal in one command — Ghostty + zsh + Starship, four matched themes, 24 helper commands. macOS, Linux and Windows.",
   "keywords": [
     "terminal",

@@ -279,7 +279,7 @@ jobs:
 
       - name: The pre-furnizsh ag* names still resolve
         run: |
-          # agdoctor and agupdate shipped in 1.0.0. They are aliases now, and
+          # agdoctor and agupdate are aliases now, and
           # removing them would break every existing install and any script
           # calling them.
           zsh -c '

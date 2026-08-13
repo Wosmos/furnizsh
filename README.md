@@ -17,14 +17,21 @@ together. macOS, Linux and Windows.
 [Releasing](docs/RELEASING.md) ·
 [Changelog](CHANGELOG.md)
 
+![version](https://img.shields.io/badge/version-0.1.0-fab387?style=flat-square)
 ![macOS](https://img.shields.io/badge/macOS-supported-a6e3a1?style=flat-square)
 ![Linux](https://img.shields.io/badge/Linux-supported-a6e3a1?style=flat-square)
-![Windows](https://img.shields.io/badge/Windows-PowerShell%20%2F%20WSL2-f9e2af?style=flat-square)
+![Windows](https://img.shields.io/badge/Windows-untested-f38ba8?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-cba6f7?style=flat-square)
 
 </div>
 
 ---
+
+
+> **Pre-1.0.** macOS and Linux are exercised end-to-end by CI on Ubuntu, Fedora
+> and Arch — install, verify, re-run and uninstall. The PowerShell scripts are
+> linted but never executed, so **Windows is untested**. The command set may
+> still move before 1.0.
 
 ## Install
 
