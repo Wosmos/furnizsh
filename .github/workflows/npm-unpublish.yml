@@ -28,6 +28,8 @@ jobs:
         run: |
           V="${{ inputs.version }}"
           echo "before:"; npm view furnizsh versions --json || true
-          npm unpublish "furnizsh@$V"
+          # --force because this is the only version, so the whole package
+          # goes. npm then locks the name for 24 hours.
+          npm unpublish "furnizsh@$V" --force
           echo "after:"
           npm view furnizsh versions --json 2>&1 || echo "package no longer published"
