@@ -386,7 +386,7 @@ function Install-Config {
         Set-Content -Path (Join-Path $agHome 'current-theme') -Value $Theme -NoNewline
         Set-Content -Path (Join-Path $agHome 'VERSION') -Value $FurnizshVersion -NoNewline
 
-        # Record how furnizsh got here, so agupdate runs the right updater
+        # Record how furnizsh got here, so fzupdate runs the right updater
         # rather than assuming a git checkout - most people install another way.
         $method = if (Test-Path (Join-Path $RepoDir '.git')) { 'git' }
                   elseif ($RepoDir -match 'PowerShell\\Modules\\furnizsh') { 'psgallery' }
@@ -490,7 +490,7 @@ try {
         if (Test-Path $BackupDir) { Write-Info "Backups: $BackupDir" }
         Write-Info "Open a new PowerShell window, then run:"
         Write-Host "      $($C.Yellow)cheatsheet$($C.Reset)   the reference"
-        Write-Host "      $($C.Yellow)agdoctor$($C.Reset)     verify every piece of the setup"
+        Write-Host "      $($C.Yellow)fzdoctor$($C.Reset)     verify every piece of the setup"
     }
     Write-Host ""
 }

@@ -54,10 +54,6 @@ The written version of the full output is [CHEATSHEET.md](CHEATSHEET.md).
 
 ---
 
-> **The old `ag*` names still work.** `agdoctor` and `agupdate` shipped in
-> the project was called furnizsh. They are aliases for `fzdoctor`
-> and `fzupdate` now — undocumented, but they will not be removed.
-
 ## `fzdoctor`
 
 Checks every part of the setup — tools on `$PATH`, the login shell, Oh My Zsh

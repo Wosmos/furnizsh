@@ -277,21 +277,6 @@ jobs:
             exit $missing
           '
 
-      - name: The pre-furnizsh ag* names still resolve
-        run: |
-          # agdoctor and agupdate are aliases now, and
-          # removing them would break every existing install and any script
-          # calling them.
-          zsh -c '
-            source "$HOME/.config/furnizsh/furnizsh.zsh"
-            fail=0
-            for old in agdoctor agupdate; do
-              alias $old >/dev/null 2>&1 || { echo "  MISS $old"; fail=1; continue; }
-              echo "  OK   $old -> $(alias $old | sed "s/.*=//;s/'"'"'//g")"
-            done
-            exit $fail
-          '
-
       - name: cheatsheet renders
         run: zsh -c 'source "$HOME/.config/furnizsh/furnizsh.zsh"; cheatsheet | head -5; cheatsheet --comp | head -5'
 

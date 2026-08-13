@@ -321,10 +321,6 @@ cheatsheet() {
 }
 alias chs='cheatsheet'
 
-# The ag* prefix is left over from the name this project had before furnizsh.
-# Kept working as an alias — undocumented, but never removed.
-alias agupdate='fzupdate'
-alias agdoctor='fzdoctor'
 
 # ============================================================
 #  fzdoctor — health-check the setup

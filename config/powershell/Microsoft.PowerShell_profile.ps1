@@ -188,11 +188,6 @@ function cheatsheet {
 }
 Set-Alias chs cheatsheet
 
-# The ag* prefix predates the furnizsh name. Kept as an alias, so it keeps
-# working - undocumented, but never removed.
-Set-Alias agdoctor fzdoctor
-Set-Alias agupdate fzupdate
-
 function fzdoctor {
     <#
     .SYNOPSIS

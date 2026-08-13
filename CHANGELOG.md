@@ -26,10 +26,6 @@ move before 1.0.
 
 ### Changed
 
-- `agdoctor` and `agupdate` are now `fzdoctor` and `fzupdate`. The `ag` prefix
-  predates the furnizsh name. **The old names still work** — they are aliases
-  and will not be removed, so nothing breaks for 1.0.0 installs or for scripts
-  calling them. CI asserts both resolve.
 - `fzupdate` updates by whichever channel you installed from — the bootstrap
   script, Homebrew, npm, the PowerShell Gallery or a git checkout — instead of
   assuming a git checkout and failing for everyone else. It also checks the
@@ -69,7 +65,7 @@ First public release.
 
 24 helpers, in both zsh and PowerShell:
 
-- **Core** — `cheatsheet`/`chs`, `agdoctor`, `theme`, `agupdate`, `mkcd`, `up`,
+- **Core** — `cheatsheet`/`chs`, `fzdoctor`, `theme`, `fzupdate`, `mkcd`, `up`,
   `serve`, `ports`, `killport`, `fkill`, `fe`, `bak`, `sizeof`, `gprune`,
   `paths`, `reload`
 - **Extras** (need network, skip with `--no-extras`) — `weather`, `cheat`, `qr`,

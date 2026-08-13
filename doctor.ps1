@@ -6,7 +6,7 @@
 .DESCRIPTION
     Verifies every part of the setup and tells you the exact command to fix
     whatever is missing. This is the standalone version; once the profile is
-    installed, `agdoctor` does the same thing from inside any PowerShell
+    installed, `fzdoctor` does the same thing from inside any PowerShell
     session.
 
     Exits 0 if everything passes, 1 otherwise — safe to use in CI.

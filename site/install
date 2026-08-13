@@ -98,6 +98,17 @@ tar -xzf "$TMP/furnizsh.tar.gz" -C "$TMP/x" --strip-components=1 \
 # lives in ~/.config/furnizsh, which install.sh manages separately.
 # ------------------------------------------------------------
 info "Installing to $PREFIX"
+# Safety: never `rm -rf` a PREFIX that isn't clearly our own install dir.
+# A stale or hostile FURNIZSH_PREFIX (e.g. =$HOME, =/, or unset-to-empty) must
+# not wipe the user's data — this script runs straight from `curl | sh`.
+case "$PREFIX" in
+  ""|/|"$HOME"|"$HOME/")
+    die "refusing to wipe FURNIZSH_PREFIX='$PREFIX' — that is not a furnizsh install dir." ;;
+esac
+case "$PREFIX" in
+  */furnizsh|*/furnizsh/) ;;
+  *) die "FURNIZSH_PREFIX must point at a path ending in '/furnizsh' (got '$PREFIX')." ;;
+esac
 rm -rf "$PREFIX"
 mkdir -p "$(dirname "$PREFIX")"
 cp -R "$TMP/x" "$PREFIX"

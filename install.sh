@@ -470,13 +470,13 @@ install_theme() {
   install_file "$REPO_DIR/config/themes/lazygit/$LAZYGIT_PALETTE.yml" "$lazygit_dir/config.yml"
 
   # Record the active theme and version so `theme`, `cheatsheet` and
-  # `agdoctor` can report them without needing the repo on disk.
+  # `fzdoctor` can report them without needing the repo on disk.
   if [ "$DRY_RUN" -eq 0 ]; then
     mkdir -p "$FURNIZSH_HOME"
     printf '%s' "$THEME" > "$FURNIZSH_HOME/current-theme"
     printf '%s' "$FURNIZSH_VERSION" > "$FURNIZSH_HOME/VERSION"
 
-    # Record how furnizsh got here, so `agupdate` runs the right updater
+    # Record how furnizsh got here, so `fzupdate` runs the right updater
     # rather than assuming a git checkout — most people install another way.
     method="git"
     case "$REPO_DIR" in
@@ -650,7 +650,7 @@ main() {
     [ -d "$BACKUP_DIR" ] && info "Backups: ${BACKUP_DIR/#$HOME/~}"
     info "Open a new terminal, then run:"
     printf "      %scheatsheet%s   the reference\n" "$C_YELLOW" "$C_RESET"
-    printf "      %sagdoctor%s     verify every piece of the setup\n" "$C_YELLOW" "$C_RESET"
+    printf "      %sfzdoctor%s     verify every piece of the setup\n" "$C_YELLOW" "$C_RESET"
     printf "      %stheme%s        list themes, or switch to another\n" "$C_YELLOW" "$C_RESET"
     [ "$OS" = "Darwin" ] && info "Set Ghostty's font to JetBrainsMono Nerd Font Mono if icons show as boxes."
   fi

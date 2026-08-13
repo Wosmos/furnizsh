@@ -9,7 +9,7 @@
 #  of step with what's actually on disk, so this dispatches on the channel
 #  recorded at install time rather than guessing.
 #
-#  Reached as `furnizsh update`, or as `agupdate` inside zsh.
+#  Reached as `furnizsh update`, or as `fzupdate` inside zsh.
 # ============================================================
 
 set -u

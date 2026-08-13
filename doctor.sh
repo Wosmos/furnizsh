@@ -5,7 +5,7 @@
 #
 #  Verifies every part of the setup and tells you the exact command
 #  to fix whatever is missing. This is the standalone version; once
-#  the shell config is installed, `agdoctor` does the same thing
+#  the shell config is installed, `fzdoctor` does the same thing
 #  from inside zsh.
 #
 #  Exits 0 if everything passes, 1 otherwise — safe to use in CI.
