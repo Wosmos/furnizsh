@@ -470,6 +470,19 @@ footer {
 .footer-links a:hover { color: var(--accent); }
 .credits { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: 1.6rem; max-width: 62ch; line-height: 1.7; }
 
+.made-by { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: .75rem; }
+.made-by a { display: inline-flex; align-items: center; gap: .4em; color: inherit; text-decoration: none; }
+.made-by a:hover { color: var(--ink-dim); }
+.footer-wordmark { height: 12px; width: auto; opacity: .7; transition: opacity .15s; }
+.made-by a:hover .footer-wordmark { opacity: 1; }
+
+/* the wordmark svg is fixed white-fill (built for dark backgrounds), so
+   light mode needs it flipped rather than left invisible */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .footer-wordmark { filter: invert(1); }
+}
+:root[data-theme="light"] .footer-wordmark { filter: invert(1); }
+
 /* ------------------------------------------------------------
    scroll reveal — elements are only hidden once JS can reveal
    them, so the page reads fully without JavaScript
