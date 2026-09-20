@@ -347,7 +347,10 @@ Or by hand:
 installed (`ls ~/Library/Fonts | grep -i jetbrains` on macOS, `fc-list | grep -i
 "jetbrains.*nerd"` on Linux) and that your terminal's font is set to
 `JetBrainsMono Nerd Font Mono` exactly — the plain `JetBrains Mono` is a
-different, icon-free font.
+different, icon-free font. On macOS, `./install.sh` sets Terminal.app's
+default profile font automatically; if you still see boxes there, reopen the
+window (existing windows don't pick up the change) or set it manually:
+Terminal > Settings > Profiles > Text > Font.
 
 **The prompt looks broken or doubled.** An Oh My Zsh theme is still set. Confirm
 `ZSH_THEME=""` and that `starship init zsh` runs after `source $ZSH/oh-my-zsh.sh`.

@@ -112,6 +112,10 @@ if [ "$OS" = "Darwin" ]; then
   check "Ghostty installed" "brew install --cask ghostty" test -d "/Applications/Ghostty.app"
   check "JetBrainsMono Nerd Font" "brew install --cask font-jetbrains-mono-nerd-font" \
     sh -c 'ls ~/Library/Fonts /Library/Fonts 2>/dev/null | grep -qi "jetbrainsmono.*nerd"'
+  if [ "${TERM_PROGRAM:-}" = "Apple_Terminal" ]; then
+    check "Terminal.app font" "Preferences > Profiles > Text > Font -> JetBrainsMono Nerd Font Mono" \
+      sh -c 'osascript -e "tell application \"Terminal\" to get font name of default settings" 2>/dev/null | grep -qiE "nerd|nfm"'
+  fi
 else
   check "Ghostty installed" "see ghostty.org/docs/install" command -v ghostty
   check "JetBrainsMono Nerd Font" "see docs/LINUX.md" \

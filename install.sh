@@ -347,6 +347,22 @@ install_nerd_font_linux() {
   ok "JetBrains Mono Nerd Font"
 }
 
+# Terminal.app keeps its own font preference, separate from what's installed
+# system-wide, so having the Nerd Font installed isn't enough — it still
+# renders icons as boxes until its default profile is pointed at it.
+configure_terminal_app_font() {
+  [ "$OS" = "Darwin" ] || return 0
+  [ "$INSTALL_FONT" -eq 1 ] || return 0
+  command -v osascript >/dev/null 2>&1 || return 0
+
+  step "Terminal.app font"
+  if run osascript -e 'tell application "Terminal" to set font name of default settings to "JetBrainsMono Nerd Font Mono"'; then
+    ok "default profile set to JetBrainsMono Nerd Font Mono"
+  else
+    warn "couldn't set it automatically — Preferences > Profiles > Text > Font"
+  fi
+}
+
 # ------------------------------------------------------------
 # Oh My Zsh + custom plugins
 #
@@ -638,6 +654,7 @@ main() {
   install_packages
   install_omz
   install_configs
+  configure_terminal_app_font
   wire_zshrc
   configure_git
   set_default_shell
@@ -652,7 +669,7 @@ main() {
     printf "      %scheatsheet%s   the reference\n" "$C_YELLOW" "$C_RESET"
     printf "      %sfzdoctor%s     verify every piece of the setup\n" "$C_YELLOW" "$C_RESET"
     printf "      %stheme%s        list themes, or switch to another\n" "$C_YELLOW" "$C_RESET"
-    [ "$OS" = "Darwin" ] && info "Set Ghostty's font to JetBrainsMono Nerd Font Mono if icons show as boxes."
+    [ "$OS" = "Darwin" ] && info "If icons still show as boxes in Terminal.app, reopen the window (or Preferences > Profiles > Text > Font)."
   fi
   printf "\n"
 }
